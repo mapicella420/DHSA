@@ -1,4 +1,4 @@
-package com.group01.dhsa;
+package com.group01.dhsa.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

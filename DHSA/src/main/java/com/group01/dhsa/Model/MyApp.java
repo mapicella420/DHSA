@@ -1,4 +1,4 @@
-package com.group01.dhsa;
+package com.group01.dhsa.Model;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ import java.io.IOException;
 public class MyApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MyApp.class.getResource("MyAppView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MyApp.class.getResource("/com/group01/dhsa/View/MyAppView.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("MyApp!");
         stage.setScene(scene);
