@@ -1,0 +1,36 @@
+/* Generale */
+.root {
+    -fx-background-color: #e8f4fc; /* Colore azzurrino sfumato per lo sfondo */
+}
+
+/* Menu Bar */
+.menu-bar {
+    -fx-background-color: #5ba4d7; /* Colore azzurro per il menu */
+    -fx-text-fill: white; /* Colore del testo */
+    -fx-font-weight: bold;
+}
+
+/* Menu Items */
+.menu-item {
+    -fx-background-color: #5ba4d7; /* Colore di sfondo del menu */
+    -fx-text-fill: white; /* Colore del testo */
+}
+
+/* Menu Item - Hover Effect */
+.menu-item:hover {
+    -fx-background-color: #7dbde8; /* Colore più chiaro quando il mouse passa sopra */
+}
+
+/* Bottone rosso */
+.button-red {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Etichette principali */
+.label-title {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+}
