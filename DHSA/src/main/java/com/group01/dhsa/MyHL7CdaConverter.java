@@ -1,5 +1,6 @@
 package com.group01.dhsa;
 
+import com.group01.dhsa.Model.MongoInitializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,9 +17,21 @@ public class MyHL7CdaConverter extends Application {
         primaryStage.show();
     }
 
+    private static void initializeDatabase() {
+        try {
+            MongoInitializer.initializeDatabase();
+            System.out.println("Database initialized successfully.");
+        } catch (Exception e) {
+            System.err.println("Error initializing database: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
 
 
     public static void main(String[] args) {
+        initializeDatabase();
+
         launch(args);
     }
 }

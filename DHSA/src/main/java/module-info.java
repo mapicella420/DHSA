@@ -1,6 +1,10 @@
 module com.group01.dhsa {
     requires javafx.controls;
     requires javafx.fxml;
+    requires org.mongodb.driver.core;
+    requires org.mongodb.bson;
+    requires org.mongodb.driver.sync.client;
+    requires jbcrypt;
 
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)
     exports com.group01.dhsa;
