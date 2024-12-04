@@ -23,7 +23,7 @@ public class MongoInitializer {
             if (doctor != null) {
                 System.out.println("Doctor user already exists.");
             } else {
-                String adminPasswordHash = BCrypt.hashpw("docPassword", BCrypt.gensalt());
+                String adminPasswordHash = BCrypt.hashpw("doc123", BCrypt.gensalt());
 
                 Document adminUser = new Document("username", "doctor")
                         .append("passwordHash", adminPasswordHash)

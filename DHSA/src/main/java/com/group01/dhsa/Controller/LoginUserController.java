@@ -11,11 +11,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.bson.Document;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.KeyCode;
+
 import org.mindrot.jbcrypt.BCrypt;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class LoginUserController {
+public class LoginUserController{
 
     @FXML
     private TextField usernameField;
@@ -28,6 +31,13 @@ public class LoginUserController {
 
     @FXML
     private Button loginButton;
+
+    @FXML
+    private void initialize() {
+        // Aggiunge un listener all'intero layout per gestire "Invio"
+        usernameField.setOnKeyPressed(this::handleEnterPressed);
+        passwordField.setOnKeyPressed(this::handleEnterPressed);
+    }
 
     @FXML
     private void handleLogin() {
@@ -50,13 +60,15 @@ public class LoginUserController {
         }
     }
 
-//    private boolean validateCredentials(String username, String password) {
-//        return ("doctor".equals(username) && "doctor123".equals(password)) ||
-//                ("patient".equals(username) && "patient123".equals(password));
-//    }
+    @FXML
+    private void handleEnterPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            loginButton.fire(); // Simula il clic del pulsante login
+        }
+    }
 
     private boolean validateCredentials(String username, String password) {
-        try(MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")){
+        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
             MongoDatabase mongoDatabase = mongoClient.getDatabase("data_app");
             MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
             Document user = usersCollection.find(eq("username", username)).first();
