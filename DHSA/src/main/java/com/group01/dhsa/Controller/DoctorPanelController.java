@@ -1,30 +1,39 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.Model.CsvImporter;
+import com.group01.dhsa.Model.DicomImporter;
+import com.group01.dhsa.Model.ModelObserver;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 
-public class DoctorPanelController {
+public class DoctorPanelController implements ModelObserver {
 
     @FXML
     private Button dischargePatientButton;
 
+    private final CsvImporter csvImporter = new CsvImporter();
+    private final DicomImporter dicomImporter = new DicomImporter();
+
     @FXML
     public void initialize() {
-        // Initial setup logic for the screen, if needed
+        // Registra il controller come observer per i model
+        csvImporter.addObserver(this);
+        dicomImporter.addObserver(this);
     }
 
-    // Action for "Discharge Patient" button
+    // Azione per il bottone "Discharge Patient"
     @FXML
     private void onDischargePatientClick() {
         System.out.println("Discharge Patient button clicked!");
-        // Logic for discharging a patient
+        // Logica per dimettere il paziente
     }
 
-    // Action for "Close App" menu item
+    // Azione per il menu "Close App"
     @FXML
     private void onCloseApp() {
         System.out.println("Closing application...");
@@ -32,50 +41,62 @@ public class DoctorPanelController {
         stage.close();
     }
 
-    // Action for "Upload CSV File" menu item
+    // Azione per il menu "Upload CSV File"
     @FXML
     private void onUploadCsvMenuClick() {
-        System.out.println("Upload CSV menu item clicked!");
-        // Open File Chooser to select CSV file
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select CSV File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
-        );
-        Stage stage = (Stage) dischargePatientButton.getScene().getWindow();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        Stage stage = new Stage();
         File selectedFile = fileChooser.showOpenDialog(stage);
+
         if (selectedFile != null) {
             System.out.println("Selected CSV file: " + selectedFile.getAbsolutePath());
-            // Logic to process the CSV file
+            csvImporter.importCsv(selectedFile);
         } else {
             System.out.println("CSV file selection cancelled.");
         }
     }
 
-    // Action for "Import DICOM File" menu item
+    // Azione per il menu "Import DICOM File"
     @FXML
     private void onImportDicomMenuClick() {
-        System.out.println("Import DICOM menu item clicked!");
-        // Open File Chooser to select DICOM file
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select DICOM File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("DICOM Files", "*.dcm")
-        );
-        Stage stage = (Stage) dischargePatientButton.getScene().getWindow();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DICOM Files", "*.dcm"));
+
+        Stage stage = new Stage();
         File selectedFile = fileChooser.showOpenDialog(stage);
+
         if (selectedFile != null) {
             System.out.println("Selected DICOM file: " + selectedFile.getAbsolutePath());
-            // Logic to process the DICOM file
+            dicomImporter.importDicom(selectedFile);
         } else {
             System.out.println("DICOM file selection cancelled.");
         }
     }
 
-    // Action for "Convert CSV to FHIR" menu item
+    // Azione per il menu "Convert CSV to FHIR"
     @FXML
     private void onConvertCsvClick() {
         System.out.println("Convert CSV to FHIR menu item clicked!");
-        // Logic to convert CSV data to FHIR resources
+        // Implementa la logica per la conversione CSV-FHIR
+    }
+
+    // Implementazione del metodo dell'interfaccia ModelObserver
+    @Override
+    public void onModelUpdate(String message) {
+        // Notifica all'utente l'evento avvenuto nel modello
+        showAlert(message);
+    }
+
+    // Mostra un'alert all'utente
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Notification");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
