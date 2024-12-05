@@ -8,7 +8,11 @@ public class FhirImporterFactoryManager {
         // Verifica il tipo di risorsa in base al contenuto del nome del file
         if (fileNameLowerCase.contains("patient")) {
             return new PatientImporter();
-        } else if (fileNameLowerCase.contains("observation")) {
+        } else if (fileNameLowerCase.contains("organization")) {
+            return new OrganizationImporter();
+        } else if (fileNameLowerCase.contains("encounter")) {
+            return new EncounterImporter();
+        }else if (fileNameLowerCase.contains("observation")) {
             return new ObservationImporter();
         }
 
