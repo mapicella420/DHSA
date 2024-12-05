@@ -1,39 +1,47 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.Model.CsvImporter;
-import com.group01.dhsa.Model.DicomImporter;
-import com.group01.dhsa.Model.ModelObserver;
+import com.group01.dhsa.EventManager;
+import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 
-public class DoctorPanelController implements ModelObserver {
+public class DoctorPanelController {
 
     @FXML
     private Button dischargePatientButton;
 
-    private final CsvImporter csvImporter = new CsvImporter();
-    private final DicomImporter dicomImporter = new DicomImporter();
+    private EventObservable eventManager;
 
-    @FXML
-    public void initialize() {
-        // Registra il controller come observer per i model
-        csvImporter.addObserver(this);
-        dicomImporter.addObserver(this);
+    /**
+     *
+     */
+    public DoctorPanelController() {
+        this.eventManager = EventManager.getInstance().getEventObservable();
     }
 
-    // Azione per il bottone "Discharge Patient"
+    /**
+     * Azione per il bottone "Discharge Patient".
+     */
     @FXML
     private void onDischargePatientClick() {
         System.out.println("Discharge Patient button clicked!");
         // Logica per dimettere il paziente
+        if (eventManager == null) {
+            System.err.println("EventManager is not set!");
+            return;
+        }
+
+        // Notifica l'evento di dimissione
+        eventManager.notify("patient_discharge", null);
     }
 
-    // Azione per il menu "Close App"
+    /**
+     * Azione per chiudere l'applicazione.
+     */
     @FXML
     private void onCloseApp() {
         System.out.println("Closing application...");
@@ -41,62 +49,69 @@ public class DoctorPanelController implements ModelObserver {
         stage.close();
     }
 
-    // Azione per il menu "Upload CSV File"
-    @FXML
-    private void onUploadCsvMenuClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select CSV File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
-        Stage stage = new Stage();
-        File selectedFile = fileChooser.showOpenDialog(stage);
-
-        if (selectedFile != null) {
-            System.out.println("Selected CSV file: " + selectedFile.getAbsolutePath());
-            csvImporter.importCsv(selectedFile);
-        } else {
-            System.out.println("CSV file selection cancelled.");
-        }
-    }
-
-    // Azione per il menu "Import DICOM File"
-    @FXML
-    private void onImportDicomMenuClick() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select DICOM File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("DICOM Files", "*.dcm"));
-
-        Stage stage = new Stage();
-        File selectedFile = fileChooser.showOpenDialog(stage);
-
-        if (selectedFile != null) {
-            System.out.println("Selected DICOM file: " + selectedFile.getAbsolutePath());
-            dicomImporter.importDicom(selectedFile);
-        } else {
-            System.out.println("DICOM file selection cancelled.");
-        }
-    }
-
-    // Azione per il menu "Convert CSV to FHIR"
+    /**
+     * Azione per il menu "Convert CSV to FHIR"
+     */
     @FXML
     private void onConvertCsvClick() {
         System.out.println("Convert CSV to FHIR menu item clicked!");
         // Implementa la logica per la conversione CSV-FHIR
     }
 
-    // Implementazione del metodo dell'interfaccia ModelObserver
-    @Override
-    public void onModelUpdate(String message) {
-        // Notifica all'utente l'evento avvenuto nel modello
-        showAlert(message);
+    /**
+     * Azione per caricare un file CSV.
+     */
+    @FXML
+    private void onUploadCsvMenuClick() {
+        if (eventManager == null) {
+            System.err.println("EventManager is not set!");
+            return;
+        }
+
+        File selectedFile = openFileChooser("Select CSV File", "CSV Files", "*.csv");
+        if (selectedFile != null) {
+            System.out.println("Selected CSV file: " + selectedFile.getAbsolutePath());
+            eventManager.notify("csv_upload", selectedFile);
+            System.out.println("Notify all listeners");
+
+        } else {
+            System.out.println("CSV file selection cancelled.");
+        }
     }
 
-    // Mostra un'alert all'utente
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Notification");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    /**
+     * Azione per caricare un file DICOM.
+     */
+    @FXML
+    private void onImportDicomMenuClick() {
+        if (eventManager == null) {
+            System.err.println("EventManager is not set!");
+            return;
+        }
+
+        File selectedFile = openFileChooser("Select DICOM File", "DICOM Files", "*.dcm");
+        if (selectedFile != null) {
+            System.out.println("Selected DICOM file: " + selectedFile.getAbsolutePath());
+            eventManager.notify("dicom_upload", selectedFile);
+        } else {
+            System.out.println("DICOM file selection cancelled.");
+        }
+    }
+
+    /**
+     * Metodo di supporto per aprire un file chooser.
+     *
+     * @param title  Titolo della finestra di dialogo.
+     * @param filterName Nome del filtro (es. "CSV Files").
+     * @param filterPattern Pattern del filtro (es. "*.csv").
+     * @return Il file selezionato, o null se la selezione è stata annullata.
+     */
+    private File openFileChooser(String title, String filterName, String filterPattern) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(title);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(filterName, filterPattern));
+
+        Stage stage = new Stage();
+        return fileChooser.showOpenDialog(stage);
     }
 }
