@@ -19,7 +19,7 @@ public class EventManager {
     }
 
     /**
-     *  Metodo per ottenere l'istanza Singleton
+     *  Metodo per ottenere l'unica istanza Singleton
      * @return instance
      */
     public static EventManager getInstance() {
