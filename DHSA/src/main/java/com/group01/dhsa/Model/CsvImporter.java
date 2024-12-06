@@ -20,8 +20,11 @@ public class CsvImporter implements EventListener {
             String fileName = file.getName();
 
             // Usa la factory per ottenere l'importer corretto
-            FhirResourceImporter importer = FhirImporterFactoryManager.getImporter(fileName);
+            // Ottieni la factory appropriata
+            FhirResourceImporterFactory factory = FhirImporterFactoryManager.getFactory(fileName);
 
+            // Usa la factory per creare l'importer e importare il CSV
+            FhirResourceImporter importer = factory.createImporter();
             // Importa il CSV creando risorse FHIR
             System.out.println("Importing CSV: " + fileName);
             importer.importCsvToFhir(file.getAbsolutePath());

@@ -38,6 +38,7 @@ public class EventManager {
     private void initializeListeners() {
         // Registra il CsvImporter come listener
         CsvImporter csvImporter = new CsvImporter();
+
         eventObservable.subscribe("csv_upload", csvImporter);
     }
 }
