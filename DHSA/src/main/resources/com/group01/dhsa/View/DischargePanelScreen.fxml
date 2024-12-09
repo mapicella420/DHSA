@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DischargePanelController">
+<left>
+    <AnchorPane prefHeight="400.0" prefWidth="600.0">
+        <children>
+            <MenuBar prefHeight="25.0" prefWidth="600.0">
+                <menus>
+                    <!-- File Menu -->
+                    <Menu styleClass="menu-bar" text="File">
+                        <items>
+                            <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+            <VBox alignment="CENTER" spacing="20.0" />
+            <Label layoutX="200.0" layoutY="48.0" styleClass="label-title" text="Discharge Patient">
+                <font>
+                    <Font size="29.0" />
+                </font>
+            </Label>
+            <!-- Red Button -->
+            <Button fx:id="dischargePatientButton" layoutX="424.0" layoutY="317.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />
+            <TextField fx:id="firstNameField" layoutX="126.0" layoutY="121.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
+            <TextField fx:id="lastNameField" layoutX="126.0" layoutY="167.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
+            <MenuButton fx:id="patientIDMenu" disable="true" layoutX="121.0" layoutY="246.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID">
+              <items>
+                <MenuItem mnemonicParsing="false" />
+              </items>
+            </MenuButton>
+            <Button fx:id="searchButton" layoutX="347.0" layoutY="167.0" mnemonicParsing="false" onAction="#searchPatient" text="Search" />
+            <Label fx:id="errorLabel" layoutX="126.0" layoutY="214.0" />
+            <Button fx:id="backButton" layoutX="106.0" layoutY="321.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+        </children>
+        <BorderPane.margin>
+            <Insets />
+        </BorderPane.margin>
+    </AnchorPane>
+</left>
+</BorderPane>

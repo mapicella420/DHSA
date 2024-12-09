@@ -4,6 +4,7 @@ import com.group01.dhsa.EventManager;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -14,6 +15,9 @@ public class DoctorPanelController {
     @FXML
     private Button dischargePatientButton;
 
+    @FXML
+    private MenuItem logout;
+
     private EventObservable eventManager;
 
     /**
@@ -23,12 +27,23 @@ public class DoctorPanelController {
         this.eventManager = EventManager.getInstance().getEventObservable();
     }
 
+    @FXML
+    void logout() {
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/LoginUserScreen.fxml",currentStage,"Login Screen");
+    }
+
     /**
      * Azione per il bottone "Discharge Patient".
      */
     @FXML
     private void onDischargePatientClick() {
-        System.out.println("Discharge Patient button clicked!");
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml",currentStage,"Discharge Patient");
+
+        //System.out.println("Discharge Patient button clicked!");
         // Logica per dimettere il paziente
         if (eventManager == null) {
             System.err.println("EventManager is not set!");
