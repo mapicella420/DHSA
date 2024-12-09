@@ -5,6 +5,11 @@ module com.group01.dhsa {
     requires org.mongodb.bson;
     requires org.mongodb.driver.sync.client;
     requires jbcrypt;
+    requires hapi.fhir.base;
+    requires org.hl7.fhir.r5;
+    requires org.apache.commons.csv;
+    requires org.hl7.fhir.utilities;
+
 
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)
     exports com.group01.dhsa;
@@ -20,4 +25,7 @@ module com.group01.dhsa {
 
     // Permette l'accesso tramite riflessione al pacchetto Controller
     opens com.group01.dhsa.Controller to javafx.fxml;
+    exports com.group01.dhsa.ObserverPattern to javafx.graphics;
+    opens com.group01.dhsa.ObserverPattern to javafx.fxml;
+
 }

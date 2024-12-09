@@ -1,18 +1,42 @@
 package com.group01.dhsa.Model;
 
+import com.group01.dhsa.Model.FhirResources.*;
+import com.group01.dhsa.ObserverPattern.EventListener;
+
 import java.io.File;
 
-public class CsvImporter extends ObservableModel {
-    public void importCsv(File file) {
-        try {
-            // Simula l'importazione del file CSV
-            System.out.println("Importing CSV: " + file.getName());
-            Thread.sleep(1000); // Simula un'elaborazione
+public class CsvImporter implements EventListener {
 
-            // Dopo aver completato, notifica gli observer
-            notifyObservers("CSV file imported successfully: " + file.getName());
-        } catch (Exception e) {
-            notifyObservers("Failed to import CSV file: " + file.getName());
+    @Override
+    public void handleEvent(String eventType, File file) {
+        if ("csv_upload".equals(eventType)) {
+            importCsv(file);
         }
     }
+
+    public void importCsv(File file) {
+        try {
+            // Ottieni il nome del file
+            String fileName = file.getName();
+
+            // Usa la factory per ottenere l'importer corretto
+            // Ottieni la factory appropriata
+            FhirResourceImporterFactory factory = FhirImporterFactoryManager.getFactory(fileName);
+
+            // Usa la factory per creare l'importer e importare il CSV
+            FhirResourceImporter importer = factory.createImporter();
+            // Importa il CSV creando risorse FHIR
+            System.out.println("Importing CSV: " + fileName);
+            importer.importCsvToFhir(file.getAbsolutePath());
+
+            // Notifica gli observer dopo il completamento
+        } catch (IllegalArgumentException e) {
+            // Gestisce il caso in cui il tipo di risorsa non sia supportato
+            System.err.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            // Gestione generica delle eccezioni
+            System.err.println("Error during import: " + e.getMessage());
+        }
+    }
+
 }

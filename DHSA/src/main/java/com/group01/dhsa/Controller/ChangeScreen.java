@@ -45,7 +45,8 @@ public class ChangeScreen {
         } catch (IOException ex) {
             // Show an error dialog if loading fails
             Platform.runLater(() -> {
-                DialogUtil.showDialog("Error loading the screen: " + path, Alert.AlertType.ERROR, "Screen Change Error");
+                ex.printStackTrace(); // Stampa lo stack trace completo
+                DialogUtil.showDialog("Error loading the screen 1: " + path, Alert.AlertType.ERROR, "Screen Change Error");
             });
         }
         return null;
