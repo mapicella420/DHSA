@@ -5,10 +5,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.bson.Document;
 import javafx.scene.input.KeyEvent;
@@ -33,6 +30,12 @@ public class LoginUserController{
     private Button loginButton;
 
     @FXML
+    private MenuButton myHospitalMenuItem;
+
+    @FXML
+    private MenuItem otherHospitalMenuItem;
+
+    @FXML
     private void initialize() {
         // Aggiunge un listener all'intero layout per gestire "Invio"
         usernameField.setOnKeyPressed(this::handleEnterPressed);
@@ -44,16 +47,23 @@ public class LoginUserController{
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        if (validateCredentials(username, password)) {
+        String organization = myHospitalMenuItem.getText();
+
+        String role = validateCredentials(username, password, organization);
+
+        if (role != null) {
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
             ChangeScreen screenChanger = new ChangeScreen();
 
-            if ("doctor".equals(username)) {
-                screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", currentStage, "Doctor Dashboard");
-            } else if ("patient".equals(username)) {
-                screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanelScreen.fxml", currentStage, "Patient Dashboard");
-            } else {
-                errorMessage.setText("Unknown user role!");
+            switch (role) {
+                case "doctor":
+                    screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", currentStage, "Doctor Dashboard");
+                    break;
+                case "patient":
+                    screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanelScreen.fxml", currentStage, "Patient Dashboard");
+                    break;
+                default:
+                    errorMessage.setText("Unknown user role!");
             }
         } else {
             errorMessage.setText("Invalid credentials! Please try again.");
@@ -67,17 +77,46 @@ public class LoginUserController{
         }
     }
 
-    private boolean validateCredentials(String username, String password) {
-        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
-            MongoDatabase mongoDatabase = mongoClient.getDatabase("data_app");
-            MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
-            Document user = usersCollection.find(eq("username", username)).first();
+    @FXML
+    private void changeOrganization() {
+        String currentOrg = myHospitalMenuItem.getText();
+        String choosenOrg = otherHospitalMenuItem.getText();
+        myHospitalMenuItem.setText(choosenOrg);
+        otherHospitalMenuItem.setText(currentOrg);
 
-            if (user != null) {
-                String storedHash = user.getString("passwordHash");
-                return BCrypt.checkpw(password, storedHash);
+    }
+
+    private String validateCredentials(String username, String password, String organization) {
+        if (organization.equals("My Hospital")){
+            try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
+                MongoDatabase mongoDatabase = mongoClient.getDatabase("data_app");
+                MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
+                Document user = usersCollection.find(eq("username", username)).first();
+
+                if (user != null) {
+                    String storedHash = user.getString("passwordHash");
+                    if (BCrypt.checkpw(password, storedHash)) {
+                        return user.getString("role");
+                    }
+
+                }
             }
-            return false;
         }
+        else {
+            try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27018")) {
+                MongoDatabase mongoDatabase = mongoClient.getDatabase("data_app");
+                MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
+                Document user = usersCollection.find(eq("username", username)).first();
+
+                if (user != null) {
+                    String storedHash = user.getString("passwordHash");
+                    if (BCrypt.checkpw(password, storedHash)) {
+                        return user.getString("role");
+                    }
+
+                }
+            }
+        }
+        return null;
     }
 }
