@@ -7,9 +7,11 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -33,18 +35,33 @@
                     <Font size="29.0" />
                 </font>
             </Label>
-            <!-- Red Button -->
-            <Button fx:id="dischargePatientButton" layoutX="424.0" layoutY="317.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />
-            <TextField fx:id="firstNameField" layoutX="126.0" layoutY="121.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
-            <TextField fx:id="lastNameField" layoutX="126.0" layoutY="167.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
-            <MenuButton fx:id="patientIDMenu" disable="true" layoutX="121.0" layoutY="246.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID">
-              <items>
-                <MenuItem mnemonicParsing="false" />
-              </items>
-            </MenuButton>
-            <Button fx:id="searchButton" layoutX="347.0" layoutY="167.0" mnemonicParsing="false" onAction="#searchPatient" text="Search" />
-            <Label fx:id="errorLabel" layoutX="126.0" layoutY="214.0" />
-            <Button fx:id="backButton" layoutX="106.0" layoutY="321.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+            <StackPane layoutX="34.0" layoutY="88.0" prefHeight="287.0" prefWidth="552.0">
+               <children>
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="backButton" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+                        <MenuButton fx:id="patientIDMenu" disable="true" layoutX="92.0" layoutY="170.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID" />
+                        <Label fx:id="errorLabel" layoutX="92.0" layoutY="135.0" />
+                        <Button fx:id="searchButton" layoutX="304.0" layoutY="79.0" mnemonicParsing="false" onAction="#searchPatient" text="Search" />
+                        <TextField fx:id="lastNameField" layoutX="92.0" layoutY="78.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
+                        <!-- Red Button -->
+                        <Button fx:id="dischargePatientButton" layoutX="390.0" layoutY="225.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />
+                        <TextField fx:id="firstNameField" layoutX="92.0" layoutY="36.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
+            <StackPane layoutX="35.0" layoutY="94.0" prefHeight="304.0" prefWidth="558.0" visible="false">
+               <children>
+                  <AnchorPane prefHeight="298.0" prefWidth="558.0">
+                     <children>
+                        <Button layoutX="66.0" layoutY="230.0" mnemonicParsing="false" text="Back" />
+                        <Button layoutX="385.0" layoutY="238.0" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Upload CDA" />
+                        <TextArea editable="false" layoutX="23.0" layoutY="55.0" prefHeight="236.0" prefWidth="328.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </StackPane>
         </children>
         <BorderPane.margin>
             <Insets />

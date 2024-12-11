@@ -35,7 +35,8 @@ public class PatientImporter implements FhirResourceImporter {
 
                 // ID
                 if (record.isMapped("Id")) {
-                    patient.setId(record.get("Id"));
+                    //patient.setId(record.get("Id"));
+                    patient.addIdentifier().setValue(record.get("Id"));
                 }
 
                 // Nome

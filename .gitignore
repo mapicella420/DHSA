@@ -2,3 +2,4 @@
 DHSA/.idea/workspace.xml
 DHSA/docker-compose.yml
 DHSA/hapi-fhir-jpaserver-starter.tar
+/DHSA/.idea
