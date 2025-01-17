@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lettera di Dimissione</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 2px solid #ddd;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        h2, h3 {
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Lettera di Dimissione Ospedaliera</h1>
+    <p class="note">Documento CDA generato automaticamente</p>
+</header>
+
+<section id="introduzione">
+    <h2>2. Introduzione</h2>
+    <p><strong>Scopo del Documento:</strong> Fornire un riepilogo completo delle informazioni cliniche del paziente durante il ricovero.</p>
+    <p><strong>Contesto di Riferimento:</strong> Basato sulle linee guida CDA di HL7 Italia.</p>
+    <p><strong>Destinatari:</strong> Medici curanti, pazienti, e altre figure sanitarie interessate.</p>
+    <p>Paziente: {{patient}}</p>
+</section>
+
+<section id="header-cda">
+    <h2>3. Header CDA del Documento</h2>
+    <table>
+        <tr>
+            <th>Elemento</th>
+            <th>Valore</th>
+        </tr>
+        <tr>
+            <td>Root del documento</td>
+            <td>&lt;ClinicalDocument&gt;</td>
+        </tr>
+        <tr>
+            <td>Identificativo CDA2</td>
+            <td>&lt;typeId&gt;</td>
+        </tr>
+        <tr>
+            <td>Titolo del documento</td>
+            <td>Lettera di Dimissione</td>
+        </tr>
+        <tr>
+            <td>Data di creazione</td>
+            <td>2025-01-17</td>
+        </tr>
+    </table>
+</section>
+
+<section id="body-cda">
+    <h2>4. Body CDA del Documento</h2>
+
+    <h3>4.1 Motivo del Ricovero</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
+
+    <h3>4.2 Inquadramento Clinico Iniziale</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
+
+    <h3>4.3 Decorso Ospedaliero</h3>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
+</section>
+
+<section id="sezioni-aggiuntive">
+    <h2>5. Sezioni Aggiuntive</h2>
+
+    <h3>5.1 Allergie</h3>
+    <ul>
+        <li>Penicillina</li>
+        <li>Aspirina</li>
+    </ul>
+
+    <h3>5.2 Terapia Farmacologica</h3>
+    <ul>
+        <li>Paracetamolo 500mg - 1 compressa ogni 8 ore</li>
+        <li>Omeprazolo 20mg - 1 compressa al giorno</li>
+    </ul>
+</section>
+
+<footer>
+    <p class="note">© 2025 HL7 Italia - Documento CDA generato il 2025-01-17</p>
+</footer>
+
+</body>
+</html>

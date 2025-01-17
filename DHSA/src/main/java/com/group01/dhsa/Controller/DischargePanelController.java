@@ -7,6 +7,7 @@ import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Patient;
@@ -17,6 +18,15 @@ public class DischargePanelController {
 
     @FXML
     private Button backButton;
+
+    @FXML
+    private Button backButton2;
+
+    @FXML
+    private ProgressIndicator progressCDA;
+
+    @FXML
+    private Label cdaStatus;
 
     @FXML
     private Button dischargePatientButton;
@@ -36,6 +46,12 @@ public class DischargePanelController {
     @FXML
     private Button searchButton;
 
+    @FXML
+    private StackPane stackPaneCDA;
+
+    @FXML
+    private StackPane stackPaneDischarge;
+
     private EventObservable eventManager;
 
     public DischargePanelController() {
@@ -50,8 +66,15 @@ public class DischargePanelController {
     }
 
     @FXML
-    void dischargeSelectedPatient() {
+    void switchPanel() {
+        stackPaneDischarge.setVisible(true);
+        stackPaneCDA.setVisible(false);
+    }
 
+    @FXML
+    void dischargeSelectedPatient() {
+        stackPaneDischarge.setVisible(false);
+        stackPaneCDA.setVisible(true);
 
     }
 
@@ -100,6 +123,12 @@ public class DischargePanelController {
                 .execute();
 
         System.out.println("Found " + response.getEntry().size() );
+
+        if (response.getEntry().isEmpty()){
+            errorLabel.setText("Patient not found");
+        } else {
+            errorLabel.setText("");
+        }
 
         int i = 1;
         for(Bundle.BundleEntryComponent c:response.getEntry()) {
