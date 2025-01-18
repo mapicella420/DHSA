@@ -6,6 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCsvController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCSVController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" afterDir="false" />
@@ -14,6 +16,7 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/ClinicalModule/AllergyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/ClinicalModule/AllergyImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/UploadCSVScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/UploadCSVScreen.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

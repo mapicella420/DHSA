@@ -1,67 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.geometry.Pos?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"  fx:controller="com.group01.dhsa.Controller.UploadCsvController">
-    <top>
-        <MenuBar prefHeight="25.0" prefWidth="600.0">
-            <menus>
-                <Menu styleClass="menu-bar" text="File">
-                    <items>
-                        <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
-                    </items>
-                </Menu>
-                <Menu styleClass="menu-bar" text="Upload CSV">
-                    <items>
-                        <MenuItem onAction="#onUploadCsvMenuClick" styleClass="menu-item" text="Upload CSV File" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
-    </top>
-    <center>
-        <AnchorPane prefHeight="400.0" prefWidth="600.0">
-            <children>
-                <Label layoutX="100.0" layoutY="50.0" styleClass="label-title" text="Upload Your CSVs">
-                    <font>
-                        <Font size="20.0" />
-                    </font>
-                </Label>
-                <VBox layoutX="100.0" layoutY="100.0" spacing="10">
-                    <children>
-                        <Label text="Obligatory Fields" styleClass="label-header" />
-                        <HBox spacing="5">
-                            <children>
-                                <TextField fx:id="field1" promptText="Field 1" />
-                                <TextField fx:id="field2" promptText="Field 2" />
-                                <!-- Add more fields as needed -->
-                            </children>
-                        </HBox>
-                        <Label text="Optional Fields" styleClass="label-header" />
-                        <HBox spacing="5">
-                            <children>
-                                <TextField fx:id="field3" promptText="Field 3" />
-                                <TextField fx:id="field4" promptText="Field 4" />
-                                <!-- Add more fields as needed -->
-                            </children>
-                        </HBox>
-                        <Button text="Choose File" onAction="#onChooseFile" />
-                        <Button text="Upload" onAction="#onUpload" />
-                    </children>
-                </VBox>
-            </children>
-        </AnchorPane>
-    </center>
-    <bottom>
-        <Button text="Back" onAction="#onBack" />
-    </bottom>
-</BorderPane>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.UploadCSVController" spacing="10" alignment="TOP_LEFT" style="-fx-padding: 20;">
+    <Label text="Upload FHIR resources" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+    <!-- Livello 4 -->
+    <GridPane hgap="10" vgap="10" style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 10;">
+        <Label text="Level 4" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;" />
+
+        <Label text="Organization" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Button text="Upload CSV File" fx:id="organizationFileChooser" onAction="#onChooseOrganizationFile" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <Label text="Patient" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Button text="Upload CSV File" fx:id="patientFileChooser" onAction="#onChoosePatientFile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <Label text="Providers" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <Button text="Upload CSV File" fx:id="providersFileChooser" onAction="#onChooseProvidersFile" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Encounters" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <Button text="Upload CSV File" fx:id="encountersFileChooser" onAction="#onChooseEncountersFile" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+        <Label text="Devices" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <Button text="Upload CSV File" fx:id="devicesFileChooser" onAction="#onChooseDevicesFile" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    </GridPane>
+
+    <!-- Livello 5 -->
+    <GridPane hgap="10" vgap="10" style="-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 10;" disable="true" fx:id="level5Pane">
+        <Label text="Level 5" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;" />
+
+        <!-- Clinical Module -->
+        <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Label text="ClinicalModule" style="-fx-font-weight: bold;" />
+            <Label text="Allergie" />
+            <Button text="Choose File" fx:id="allergieFileChooser" onAction="#onChooseAllergieFile" />
+
+            <Label text="CarePlan" />
+            <Button text="Choose File" fx:id="carePlanFileChooser" onAction="#onChooseCarePlanFile" />
+
+            <Label text="Procedure" />
+            <Button text="Choose File" fx:id="procedureFileChooser" onAction="#onChooseProcedureFile" />
+        </VBox>
+
+        <!-- Diagnostic Module -->
+        <VBox spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label text="Diagnostic Module" style="-fx-font-weight: bold;" />
+            <Label text="Observation" />
+            <Button text="Choose File" fx:id="observationFileChooser" onAction="#onChooseObservationFile" />
+
+            <Label text="Imaging Studies" />
+            <Button text="Choose File" fx:id="imagingStudiesFileChooser" onAction="#onChooseImagingStudiesFile" />
+        </VBox>
+
+        <!-- Medication Module -->
+        <VBox spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label text="Medication Module" style="-fx-font-weight: bold;" />
+            <Label text="Medications" />
+            <Button text="Choose File" fx:id="medicationsFileChooser" onAction="#onChooseMedicationsFile" />
+
+            <Label text="Immunizations" />
+            <Button text="Choose File" fx:id="immunizationsFileChooser" onAction="#onChooseImmunizationsFile" />
+        </VBox>
+    </GridPane>
+
+    <!-- Bottone Upload -->
+    <Button text="Upload" fx:id="uploadButton" onAction="#onUpload" disable="true" style="-fx-padding: 10; -fx-font-size: 14px;" />
+</VBox>

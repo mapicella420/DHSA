@@ -17,30 +17,27 @@ public class DoctorPanelController {
     private EventObservable eventManager;
 
     /**
-     *
+     * Constructor
      */
     public DoctorPanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
     }
 
     /**
-     * Azione per il bottone "Discharge Patient".
+     * Action for "Discharge Patient" button.
      */
     @FXML
     private void onDischargePatientClick() {
         System.out.println("Discharge Patient button clicked!");
-        // Logica per dimettere il paziente
         if (eventManager == null) {
             System.err.println("EventManager is not set!");
             return;
         }
-
-        // Notifica l'evento di dimissione
         eventManager.notify("patient_discharge", null);
     }
 
     /**
-     * Azione per chiudere l'applicazione.
+     * Action to close the application.
      */
     @FXML
     private void onCloseApp() {
@@ -50,37 +47,27 @@ public class DoctorPanelController {
     }
 
     /**
-     * Azione per il menu "Convert CSV to FHIR"
+     * Action for the "Convert CSV to FHIR" menu.
      */
     @FXML
     private void onConvertCsvClick() {
         System.out.println("Convert CSV to FHIR menu item clicked!");
-        // Implementa la logica per la conversione CSV-FHIR
     }
 
     /**
-     * Azione per caricare un file CSV.
+     * Action to upload a CSV file and switch to the Upload CSV screen.
      */
     @FXML
     private void onUploadCsvMenuClick() {
-        if (eventManager == null) {
-            System.err.println("EventManager is not set!");
-            return;
-        }
-
-        File selectedFile = openFileChooser("Select CSV File", "CSV Files", "*.csv");
-        if (selectedFile != null) {
-            System.out.println("Selected CSV file: " + selectedFile.getAbsolutePath());
-            eventManager.notify("csv_upload", selectedFile);
-            System.out.println("Notify all listeners");
-
-        } else {
-            System.out.println("CSV file selection cancelled.");
-        }
+        System.out.println("Navigating to Upload CSV screen...");
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/UploadCSVScreen.fxml", currentStage, "Upload CSV");
     }
 
+
     /**
-     * Azione per caricare un file DICOM.
+     * Action to upload a DICOM file.
      */
     @FXML
     private void onImportDicomMenuClick() {
@@ -99,12 +86,12 @@ public class DoctorPanelController {
     }
 
     /**
-     * Metodo di supporto per aprire un file chooser.
+     * Helper method to open a file chooser.
      *
-     * @param title  Titolo della finestra di dialogo.
-     * @param filterName Nome del filtro (es. "CSV Files").
-     * @param filterPattern Pattern del filtro (es. "*.csv").
-     * @return Il file selezionato, o null se la selezione è stata annullata.
+     * @param title        The dialog title.
+     * @param filterName   The name of the file filter.
+     * @param filterPattern The file extension pattern.
+     * @return The selected file, or null if canceled.
      */
     private File openFileChooser(String title, String filterName, String filterPattern) {
         FileChooser fileChooser = new FileChooser();
