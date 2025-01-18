@@ -1,51 +1,44 @@
 package com.group01.dhsa.Model.CDAResources.SectionModels;
 
+import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "patient")
 public class PatientCDA {
 
-    @XmlElement
-    private String id;
+    @XmlElement(name = "name")
+    private Name name;
 
-    @XmlElement
-    private String city;
+    @XmlElement(name = "administrativeGenderCode")
+    private AdministrativeGenderCode administrativeGenderCode;
 
-    @XmlElement
-    private String streetAddressLine;
+    @XmlElement(name = "birthTime")
+    private BirthTime birthTime;
 
-    public PatientCDA(String id, String city, String streetAddressLine) {
-        this.id = id;
-        this.city = city;
-        this.streetAddressLine = streetAddressLine;
+    // Getter e Setter
+    public Name getName() {
+        return name;
     }
 
-    public PatientCDA() {} // Costruttore senza argomenti per JAXB
-
-    // Getter e setter
-    public String getId() {
-        return id;
+    public void setName(Name name) {
+        this.name = name;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public AdministrativeGenderCode getAdministrativeGenderCode() {
+        return administrativeGenderCode;
     }
 
-    public String getCity() {
-        return city;
+    public void setAdministrativeGenderCode(AdministrativeGenderCode administrativeGenderCode) {
+        this.administrativeGenderCode = administrativeGenderCode;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public BirthTime getBirthTime() {
+        return birthTime;
     }
 
-    public String getStreetAddressLine() {
-        return streetAddressLine;
-    }
-
-    public void setStreetAddressLine(String streetAddressLine) {
-        this.streetAddressLine = streetAddressLine;
+    public void setBirthTime(BirthTime birthTime) {
+        this.birthTime = birthTime;
     }
 }
-
 
