@@ -6,6 +6,9 @@ import jakarta.xml.bind.*;
 import org.hl7.fhir.r5.model.Observation;
 import org.hl7.fhir.r5.model.Patient;
 
+import java.io.File;
+import java.io.IOException;
+
 
 public class CdaDocumentBuilder {
 
@@ -38,7 +41,7 @@ public class CdaDocumentBuilder {
     }
 
     // Metodo che crea il documento CDA e lo serializza in XML
-    public void build() throws JAXBException {
+    public File  build() throws JAXBException, IOException {
         // Crea il contesto JAXB per il marshalling del documento CDA
         JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
 
@@ -46,8 +49,13 @@ public class CdaDocumentBuilder {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-        // Serializza l'intero ClinicalDocument in XML
-        marshaller.marshal(clinicalDocument, System.out);
+        // Crea un file temporaneo
+        File tempFile = File.createTempFile("clinicalDocument", ".xml");
+
+        // Serializza il ClinicalDocument nel file temporaneo
+        marshaller.marshal(clinicalDocument, tempFile);
+
+        return tempFile;
     }
 }
 
