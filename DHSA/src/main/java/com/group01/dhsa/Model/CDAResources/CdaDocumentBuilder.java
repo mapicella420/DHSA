@@ -15,30 +15,30 @@ public class CdaDocumentBuilder {
     private ClinicalDocument clinicalDocument;
     private ObjectFactory objectFactory;
 
-    public CdaDocumentBuilder() {
+    public CdaDocumentBuilder(Integer idNumber) {
         this.objectFactory = new ObjectFactory();
-        this.clinicalDocument = objectFactory.createClinicalDocument();
+        this.clinicalDocument = objectFactory.createClinicalDocument(idNumber);
     }
 
-    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
-        // Usa l'adapter per convertire il paziente FHIR in CDA
-        PatientAdapter patientAdapter = new PatientAdapter();
-        PatientCDA patientCDA = patientAdapter.toCdaObject(fhirPatient);
-
-        // Aggiungi la sezione paziente al ClinicalDocument
-        clinicalDocument.setPatientSection(patientCDA);
-        return this;
-    }
-
-    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
-        // Usa l'adapter per convertire l'osservazione FHIR in CDA
-        ObservationAdapter observationAdapter = new ObservationAdapter();
-        ObservationCDA observationCDA = observationAdapter.toCdaObject(fhirObservation);
-
-        // Aggiungi la sezione osservazione al ClinicalDocument
-        clinicalDocument.setObservationSection(observationCDA);
-        return this;
-    }
+//    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
+//        // Usa l'adapter per convertire il paziente FHIR in CDA
+//        PatientAdapter patientAdapter = new PatientAdapter();
+//        PatientCDA patientCDA = patientAdapter.toCdaObject(fhirPatient);
+//
+//        // Aggiungi la sezione paziente al ClinicalDocument
+//        clinicalDocument.setPatientSection(patientCDA);
+//        return this;
+//    }
+//
+//    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
+//        // Usa l'adapter per convertire l'osservazione FHIR in CDA
+//        ObservationAdapter observationAdapter = new ObservationAdapter();
+//        ObservationCDA observationCDA = observationAdapter.toCdaObject(fhirObservation);
+//
+//        // Aggiungi la sezione osservazione al ClinicalDocument
+//        clinicalDocument.setObservationSection(observationCDA);
+//        return this;
+//    }
 
     // Metodo che crea il documento CDA e lo serializza in XML
     public File  build() throws JAXBException, IOException {

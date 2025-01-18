@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model.CDAResources.SectionModels;
 
+import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.annotation.*;
 
 @XmlRegistry
@@ -9,16 +10,71 @@ public class ObjectFactory {
     public ObjectFactory() {}
 
     // Metodo per creare un'istanza di ClinicalDocument
-    public ClinicalDocument createClinicalDocument() {
-        return new ClinicalDocument();
+    public ClinicalDocument createClinicalDocument(Integer idNumber) {
+        return new ClinicalDocument(idNumber);
     }
 
-    // Metodo per creare un'istanza di Patient
+    // Metodo per creare un'istanza di TypeId
+    public TypeId createTypeId() {
+        return new TypeId();
+    }
+
+    // Metodo per creare un'istanza di TemplateId
+    public TemplateId createTemplateId() {
+        return new TemplateId();
+    }
+
+    // Metodo per creare un'istanza di Id
+    public Id createId() {
+        return new Id();
+    }
+
+    // Metodo per creare un'istanza di RealmCode
+    public RealmCode createRealmCode() {
+        return new RealmCode();
+    }
+
+    // Metodo per creare un'istanza di Code
+    public Code createCode() {
+        return new Code();
+    }
+
+    // Metodo per creare un'istanza di Title
+    public Title createTitle() {
+        return new Title();
+    }
+
+    // Metodo per creare un'istanza di EffectiveTime
+    public EffectiveTime createEffectiveTime() {
+        return new EffectiveTime();
+    }
+
+    // Metodo per creare un'istanza di ConfidentialityCode
+    public ConfidentialityCode createConfidentialityCode() {
+        return new ConfidentialityCode();
+    }
+
+    // Metodo per creare un'istanza di LanguageCode
+    public LanguageCode createLanguageCode() {
+        return new LanguageCode();
+    }
+
+    // Metodo per creare un'istanza di SetId
+    public SetId createSetId() {
+        return new SetId();
+    }
+
+    // Metodo per creare un'istanza di VersionNumber
+    public VersionNumber createVersionNumber() {
+        return new VersionNumber();
+    }
+
+    // Metodo per creare un'istanza di PatientCDA
     public PatientCDA createPatient() {
         return new PatientCDA();
     }
 
-    // Metodo per creare un'istanza di Observation
+    // Metodo per creare un'istanza di ObservationCDA
     public ObservationCDA createObservation() {
         return new ObservationCDA();
     }

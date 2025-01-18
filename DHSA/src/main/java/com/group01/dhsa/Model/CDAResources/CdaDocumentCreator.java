@@ -13,16 +13,19 @@ public class CdaDocumentCreator {
     File tempFile;
     // Metodo principale per creare il documento CDA
     public void createCdaDocument(String patientId) throws JAXBException {
-        // 1. Crea un oggetto CdaDocumentBuilder per costruire il documento CDA
-        CdaDocumentBuilder documentBuilder = new CdaDocumentBuilder();
-
         FHIRClient client = new FHIRClient();
 
         // Recupera paziente
         Patient fhirPatient = client.getPatientById(patientId);
 
+        //CERCARE QUANTE DISCHARGE CI SONO PER IL NUMERO
+        Integer idNumber = 1;
+
+        // 1. Crea un oggetto CdaDocumentBuilder per costruire il documento CDA
+        CdaDocumentBuilder documentBuilder = new CdaDocumentBuilder(idNumber);
+
         // 2. Aggiungi la sezione paziente
-        documentBuilder.addPatientSection(fhirPatient);
+//        documentBuilder.addPatientSection(fhirPatient);
 
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
@@ -31,7 +34,7 @@ public class CdaDocumentCreator {
 //                .collect(Collectors.toList());
 
         // 3. Aggiungi la sezione osservazione
-        documentBuilder.addObservationSection(fhirObservations.getFirst());
+//        documentBuilder.addObservationSection(fhirObservations.getFirst());
 
         // 4. Costruisci e serializza il documento CDA in XML
         // Crea il file XML temporaneo

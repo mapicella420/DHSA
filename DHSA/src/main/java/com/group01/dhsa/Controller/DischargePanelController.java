@@ -134,11 +134,14 @@ public class DischargePanelController {
         for(Bundle.BundleEntryComponent c:response.getEntry()) {
 
             Patient p = (Patient)c.getResource();
-            MenuItem item = new MenuItem(p.getIdentifier().get(0).getValue());
-            item.setId("item"+i);
-            i = i + 1;
-            item.setOnAction(this::switchSelectedPatient);
-            patientIDMenu.getItems().add(item);
+
+            if (!p.hasDeceased()) {
+                MenuItem item = new MenuItem(p.getIdentifier().get(0).getValue());
+                item.setId("item"+i);
+                i = i + 1;
+                item.setOnAction(this::switchSelectedPatient);
+                patientIDMenu.getItems().add(item);
+            }
         }
         patientIDMenu.setDisable(false);
     }
