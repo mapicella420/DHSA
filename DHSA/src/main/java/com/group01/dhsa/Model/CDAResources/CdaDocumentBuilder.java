@@ -1,41 +1,53 @@
 package com.group01.dhsa.Model.CDAResources;
 
-import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.*;
+import com.group01.dhsa.Model.CDAResources.SectionModels.*;
+import jakarta.xml.bind.*;
+import org.hl7.fhir.r5.model.Observation;
+import org.hl7.fhir.r5.model.Patient;
+
 
 public class CdaDocumentBuilder {
-    private StringBuilder cdaDocument;
+
+    private ClinicalDocument clinicalDocument;
+    private ObjectFactory objectFactory;
 
     public CdaDocumentBuilder() {
-        cdaDocument = new StringBuilder("<ClinicalDocument xsi:schemaLocation='urn:hl7-org:v3 CDA.xsd' xmlns='urn:hl7-org:v3' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>");
-        cdaDocument.append("<typeId extension='POCD_HD000040' root='2.16.840.1.113883.1.3'/>");
-        cdaDocument.append("<templateId root='2.16.840.1.113883.2.9.10.1.5'/>");
+        this.objectFactory = new ObjectFactory();
+        this.clinicalDocument = objectFactory.createClinicalDocument();
     }
 
-    public CdaDocumentBuilder addAuthor(String authorId, String authorName) {
-        cdaDocument.append("<author>");
-        cdaDocument.append("<assignedAuthor>");
-        cdaDocument.append("<id extension='").append(authorId).append("'/>");
-        cdaDocument.append("<assignedPerson>");
-        cdaDocument.append("<name>").append(authorName).append("</name>");
-        cdaDocument.append("</assignedPerson>");
-        cdaDocument.append("</assignedAuthor>");
-        cdaDocument.append("</author>");
+    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
+        // Usa l'adapter per convertire il paziente FHIR in CDA
+        PatientAdapter patientAdapter = new PatientAdapter();
+        PatientCDA patientCDA = patientAdapter.toCdaObject(fhirPatient);
+
+        // Aggiungi la sezione paziente al ClinicalDocument
+        clinicalDocument.setPatientSection(patientCDA);
         return this;
     }
 
-    public CdaDocumentBuilder addPatient(CdaSection patientAdapter) {
-        cdaDocument.append(patientAdapter.toCdaXml());
+    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
+        // Usa l'adapter per convertire l'osservazione FHIR in CDA
+        ObservationAdapter observationAdapter = new ObservationAdapter();
+        ObservationCDA observationCDA = observationAdapter.toCdaObject(fhirObservation);
+
+        // Aggiungi la sezione osservazione al ClinicalDocument
+        clinicalDocument.setObservationSection(observationCDA);
         return this;
     }
 
-    public CdaDocumentBuilder addObservation(CdaSection observationAdapter) {
-        cdaDocument.append("<component>").append(observationAdapter.toCdaXml()).append("</component>");
-        return this;
-    }
+    // Metodo che crea il documento CDA e lo serializza in XML
+    public void build() throws JAXBException {
+        // Crea il contesto JAXB per il marshalling del documento CDA
+        JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
 
-    public String build() {
-        cdaDocument.append("</ClinicalDocument>");
-        return cdaDocument.toString();
+        // Crea un marshaller per serializzare in XML
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        // Serializza l'intero ClinicalDocument in XML
+        marshaller.marshal(clinicalDocument, System.out);
     }
 }
 
