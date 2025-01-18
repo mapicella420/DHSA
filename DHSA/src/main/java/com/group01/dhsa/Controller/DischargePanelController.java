@@ -143,4 +143,9 @@ public class DischargePanelController {
         patientIDMenu.setDisable(false);
     }
 
+    @FXML
+    void downloadPDF(ActionEvent event) {
+
+    }
+
 }
