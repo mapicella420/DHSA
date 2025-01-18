@@ -38,7 +38,8 @@ public class OrganizationImporter implements FhirResourceImporter {
 
                 // ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    organization.setId(record.get("Id"));
+                    organization.addIdentifier().setValue(record.get("Id"));
+
                 }
 
                 // Nome dell'organizzazione
