@@ -5,14 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ObservationImporter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ObservationImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporterFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/OrganizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/OrganizationImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/PatientImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/PatientImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/ClinicalModule/AllergyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/ClinicalModule/AllergyImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/level5/DiagnosticModule/ObservationImporter.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

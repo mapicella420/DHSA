@@ -31,6 +31,15 @@ public class PatientImporter implements FhirResourceImporter {
 
             // Itera sui record del CSV
             for (CSVRecord record : records) {
+                // Verifica se il paziente esiste già
+                if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
+                    String patientId = record.get("Id");
+                    if (patientExistsByIdentifier(client, patientId)) {
+                        System.out.println("Paziente con ID " + patientId + " già esistente. Skipping.");
+                        continue;
+                    }
+                }
+
                 Patient patient = new Patient();
 
                 // ID
@@ -64,21 +73,13 @@ public class PatientImporter implements FhirResourceImporter {
                 // Data di morte
                 if (record.isMapped("DEATHDATE") && !record.get("DEATHDATE").isEmpty()) {
                     try {
-                        // Formatta la data usando il formato specifico (yyyy-MM-dd)
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                        LocalDate deathDate = LocalDate.parse(record.get("DEATHDATE"), formatter);
-
-                        // Imposta la data di morte come DateType
-                        String deathDateString = deathDate.toString(); // Formato: "YYYY-MM-DD"
-
-                        // Imposta la data di morte come DateTimeType
-                        patient.setDeceased(new DateTimeType(deathDateString));                    } catch (DateTimeParseException e) {
+                        LocalDate deathDate = LocalDate.parse(record.get("DEATHDATE"));
+                        patient.setDeceased(new DateTimeType(deathDate.toString()));
+                    } catch (DateTimeParseException e) {
                         System.err.println("Formato non valido per DEATHDATE: " + record.get("DEATHDATE"));
-                        // Se la data non è valida, imposta come boolean false
                         patient.setDeceased(new BooleanType(false));
                     }
                 } else {
-                    // Se DEATHDATE non è presente o vuoto, imposta come false
                     patient.setDeceased(new BooleanType(false));
                 }
 
@@ -111,7 +112,7 @@ public class PatientImporter implements FhirResourceImporter {
                 if (record.isMapped("COUNTY")) address.setDistrict(record.get("COUNTY"));
                 patient.addAddress(address);
 
-                // Telefono e identificativi
+                // Identificativi
                 if (record.isMapped("SSN")) {
                     patient.addIdentifier().setSystem("http://hl7.org/fhir/sid/us-ssn").setValue(record.get("SSN"));
                 }
@@ -122,13 +123,7 @@ public class PatientImporter implements FhirResourceImporter {
                     patient.addIdentifier().setSystem("http://hl7.org/fhir/sid/passport").setValue(record.get("PASSPORT"));
                 }
 
-                // Coordinate geografiche
-                if (record.isMapped("LAT") && record.isMapped("LON")) {
-                    patient.addExtension("http://hl7.org/fhir/StructureDefinition/geolocation",
-                            new CodeableConcept().setText("Lat: " + record.get("LAT") + ", Lon: " + record.get("LON")));
-                }
-
-                // Informazioni sulle spese sanitarie
+                // Telefono e spese sanitarie
                 if (record.isMapped("HEALTHCARE_EXPENSES")) {
                     patient.addExtension("http://hl7.org/fhir/StructureDefinition/healthcare-expenses",
                             new Quantity().setValue(Double.parseDouble(record.get("HEALTHCARE_EXPENSES"))));
@@ -145,9 +140,22 @@ public class PatientImporter implements FhirResourceImporter {
                 System.out.println("Paziente con ID " + patient.getId() + " caricato con successo.");
             }
         } catch (Exception e) {
-            // Gestione errori
             System.err.println("Errore durante l'importazione del CSV: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private boolean patientExistsByIdentifier(IGenericClient client, String patientIdentifier) {
+        try {
+            var bundle = client.search()
+                    .forResource("Patient")
+                    .where(Patient.IDENTIFIER.exactly().identifier(patientIdentifier))
+                    .returnBundle(Bundle.class)
+                    .execute();
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Errore durante il controllo esistenza paziente: " + e.getMessage());
+            return false;
         }
     }
 

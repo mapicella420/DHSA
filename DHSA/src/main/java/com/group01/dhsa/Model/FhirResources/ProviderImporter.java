@@ -39,6 +39,14 @@ public class ProviderImporter implements FhirResourceImporter {
 
             // Iterate over the CSV records
             for (CSVRecord record : records) {
+                String practitionerId = record.get("Id");
+
+                // Check if the Practitioner already exists
+                if (practitionerExistsByIdentifier(client, practitionerId)) {
+                    System.out.println("Practitioner with ID " + practitionerId + " already exists. Skipping.");
+                    continue;
+                }
+
                 Practitioner practitioner = new Practitioner();
                 PractitionerRole practitionerRole = new PractitionerRole();
 
@@ -52,7 +60,7 @@ public class ProviderImporter implements FhirResourceImporter {
 
                 // Set Practitioner ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    practitioner.addIdentifier().setValue(record.get("Id"));
+                    practitioner.addIdentifier().setValue(practitionerId);
                 }
 
                 // Set Practitioner name
@@ -116,7 +124,7 @@ public class ProviderImporter implements FhirResourceImporter {
                 client.create().resource(practitionerRole).execute();
 
                 // Log success
-                System.out.println("Provider created with Practitioner ID " + practitioner.getId() +
+                System.out.println("Provider created with Practitioner ID " + practitionerId +
                         " and associated Organization identifier " + organizationIdentifier);
             }
         } catch (Exception e) {
@@ -144,6 +152,28 @@ public class ProviderImporter implements FhirResourceImporter {
             return !bundle.getEntry().isEmpty();
         } catch (Exception e) {
             System.err.println("Error checking Organization by identifier: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Checks if a Practitioner exists on the FHIR server by matching the identifier.
+     *
+     * @param client The FHIR client used to connect to the server.
+     * @param practitionerIdentifier The identifier to match against Practitioner resources.
+     * @return true if a Practitioner with the given identifier exists, false otherwise.
+     */
+    private boolean practitionerExistsByIdentifier(IGenericClient client, String practitionerIdentifier) {
+        try {
+            var bundle = client.search()
+                    .forResource("Practitioner")
+                    .where(Practitioner.IDENTIFIER.exactly().identifier(practitionerIdentifier))
+                    .returnBundle(org.hl7.fhir.r5.model.Bundle.class)
+                    .execute();
+
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Error checking Practitioner by identifier: " + e.getMessage());
             return false;
         }
     }

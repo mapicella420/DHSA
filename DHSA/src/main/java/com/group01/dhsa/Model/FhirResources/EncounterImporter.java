@@ -8,7 +8,6 @@ import org.hl7.fhir.r5.model.*;
 
 import java.io.FileReader;
 import java.io.Reader;
-
 public class EncounterImporter implements FhirResourceImporter {
 
     private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
@@ -29,11 +28,19 @@ public class EncounterImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
+                String encounterId = record.get("Id");
+
+                // Check if the Encounter already exists
+                if (encounterExistsByIdentifier(client, encounterId)) {
+                    System.out.println("Encounter with ID " + encounterId + " already exists. Skipping.");
+                    continue;
+                }
+
                 Encounter encounter = new Encounter();
 
                 // Set Encounter ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    encounter.addIdentifier().setValue(record.get("Id"));
+                    encounter.addIdentifier().setValue(encounterId);
                 }
 
                 // Validate and set Patient
@@ -113,16 +120,32 @@ public class EncounterImporter implements FhirResourceImporter {
                             new Quantity().setValue(Double.parseDouble(record.get("PAYER_COVERAGE"))));
                 }
 
-
                 // Send Encounter to FHIR server
                 client.create().resource(encounter).execute();
 
                 // Log success
-                System.out.println("Encounter with ID " + encounter.getId() + " uploaded successfully.");
+                System.out.println("Encounter with ID " + encounterId + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if an Encounter exists on the FHIR server by identifier.
+     */
+    private boolean encounterExistsByIdentifier(IGenericClient client, String encounterIdentifier) {
+        try {
+            var bundle = client.search()
+                    .forResource("Encounter")
+                    .where(Encounter.IDENTIFIER.exactly().identifier(encounterIdentifier))
+                    .returnBundle(org.hl7.fhir.r5.model.Bundle.class)
+                    .execute();
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Error checking Encounter by identifier: " + e.getMessage());
+            return false;
         }
     }
 

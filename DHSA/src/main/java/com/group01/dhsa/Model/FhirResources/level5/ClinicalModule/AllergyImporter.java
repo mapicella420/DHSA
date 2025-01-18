@@ -30,11 +30,19 @@ public class AllergyImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
+                String patientIdentifier = record.get("PATIENT");
+                String allergyCode = record.get("CODE");
+
+                // Check if the AllergyIntolerance already exists
+                if (allergyExistsByPatientAndCode(client, patientIdentifier, allergyCode)) {
+                    System.out.println("Allergy with code " + allergyCode + " for patient " + patientIdentifier + " already exists. Skipping.");
+                    continue;
+                }
+
                 AllergyIntolerance allergy = new AllergyIntolerance();
 
                 // Set Patient
                 if (record.isMapped("PATIENT") && !record.get("PATIENT").isEmpty()) {
-                    String patientIdentifier = record.get("PATIENT");
                     if (patientExistsByIdentifier(client, patientIdentifier)) {
                         allergy.setPatient(new Reference("Patient?identifier=" + patientIdentifier));
                     } else {
@@ -68,10 +76,10 @@ public class AllergyImporter implements FhirResourceImporter {
 
                 // Set Allergy Code and Description
                 if (record.isMapped("CODE") && !record.get("CODE").isEmpty()) {
-                    CodeableConcept allergyCode = new CodeableConcept().addCoding(new Coding()
-                            .setCode(record.get("CODE"))
+                    CodeableConcept allergyCodeableConcept = new CodeableConcept().addCoding(new Coding()
+                            .setCode(allergyCode)
                             .setDisplay(record.get("DESCRIPTION")));
-                    allergy.setCode(allergyCode);
+                    allergy.setCode(allergyCodeableConcept);
                 }
 
                 // Set Clinical Status (default to active if not provided)
@@ -88,11 +96,29 @@ public class AllergyImporter implements FhirResourceImporter {
                 client.create().resource(allergy).execute();
 
                 // Log success
-                System.out.println("Allergy for Patient with ID " + record.get("PATIENT") + " uploaded successfully.");
+                System.out.println("Allergy for Patient with ID " + patientIdentifier + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Validates if an AllergyIntolerance exists on the FHIR server by patient and code.
+     */
+    private boolean allergyExistsByPatientAndCode(IGenericClient client, String patientIdentifier, String allergyCode) {
+        try {
+            var bundle = client.search()
+                    .forResource("AllergyIntolerance")
+                    .where(AllergyIntolerance.PATIENT.hasId("Patient?identifier=" + patientIdentifier))
+                    .and(AllergyIntolerance.CODE.exactly().code(allergyCode))
+                    .returnBundle(Bundle.class)
+                    .execute();
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Error checking AllergyIntolerance by patient and code: " + e.getMessage());
+            return false;
         }
     }
 

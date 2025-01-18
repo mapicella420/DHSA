@@ -9,7 +9,7 @@ import com.group01.dhsa.Model.FhirResources.*;
 import java.io.FileReader;
 import java.io.Reader;
 
-public class ObservationImporter implements FhirResourceImporter {
+public class ImagingStudyImporter implements FhirResourceImporter {
 
     private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
 
@@ -29,15 +29,26 @@ public class ObservationImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
-                Observation observation = new Observation();
+                ImagingStudy imagingStudy = new ImagingStudy();
+
+                // Set Identifier (Study UID)
+                if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
+                    imagingStudy.addIdentifier(new Identifier().setValue(record.get("Id")));
+                }
+
+                // Verify if ImagingStudy already exists
+                if (record.isMapped("Id") && imagingStudyExistsByIdentifier(client, record.get("Id"))) {
+                    System.out.println("ImagingStudy with identifier " + record.get("Id") + " already exists. Skipping.");
+                    continue;
+                }
 
                 // Validate and set Patient
                 if (record.isMapped("PATIENT") && !record.get("PATIENT").isEmpty()) {
                     String patientIdentifier = record.get("PATIENT");
                     if (patientExistsByIdentifier(client, patientIdentifier)) {
-                        observation.setSubject(new Reference("Patient?identifier=" + patientIdentifier));
+                        imagingStudy.setSubject(new Reference("Patient?identifier=" + patientIdentifier));
                     } else {
-                        System.out.println("Patient not found: " + patientIdentifier + ". Skipping observation.");
+                        System.out.println("Patient not found: " + patientIdentifier + ". Skipping imaging study.");
                         continue;
                     }
                 }
@@ -46,58 +57,53 @@ public class ObservationImporter implements FhirResourceImporter {
                 if (record.isMapped("ENCOUNTER") && !record.get("ENCOUNTER").isEmpty()) {
                     String encounterIdentifier = record.get("ENCOUNTER");
                     if (encounterExistsByIdentifier(client, encounterIdentifier)) {
-                        observation.setEncounter(new Reference("Encounter?identifier=" + encounterIdentifier));
+                        imagingStudy.setEncounter(new Reference("Encounter?identifier=" + encounterIdentifier));
                     } else {
-                        System.out.println("Encounter not found: " + encounterIdentifier + ". Skipping observation.");
+                        System.out.println("Encounter not found: " + encounterIdentifier + ". Skipping imaging study.");
                         continue;
                     }
                 }
 
-                // Verify if Observation already exists
-                if (record.isMapped("CODE") && record.isMapped("DATE")
-                        && observationExistsByCodeAndDate(client, record.get("CODE"), record.get("DATE"), record.get("PATIENT"))) {
-                    System.out.println("Observation with code " + record.get("CODE") + " for patient " + record.get("PATIENT") + " on date " + record.get("DATE") + " already exists. Skipping.");
-                    continue;
-                }
-
-                // Set Effective Date (Observation Date)
+                // Set Started Date
                 if (record.isMapped("DATE") && !record.get("DATE").isEmpty()) {
-                    observation.setEffective(new DateTimeType(record.get("DATE")));
+                    imagingStudy.setStartedElement(new DateTimeType(record.get("DATE")));
                 }
 
-                // Set Code and Description
-                CodeableConcept codeableConcept = new CodeableConcept();
-                if (record.isMapped("DESCRIPTION") && !record.get("DESCRIPTION").isEmpty()) {
-                    codeableConcept.setText(record.get("DESCRIPTION"));
-                }
-                if (record.isMapped("CODE") && !record.get("CODE").isEmpty()) {
-                    Coding coding = new Coding().setCode(record.get("CODE"));
-                    codeableConcept.addCoding(coding);
-                }
-                observation.setCode(codeableConcept);
-
-                // Set Value (numeric)
-                if (record.isMapped("VALUE") && !record.get("VALUE").isEmpty()) {
-                    String value = record.get("VALUE");
-                    try {
-                        double numericValue = Double.parseDouble(value);
-                        Quantity valueQuantity = new Quantity()
-                                .setValue(numericValue)
-                                .setUnit(record.get("UNITS"));
-                        observation.setValue(valueQuantity);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Non-numeric value in VALUE field: " + value);
-                    }
+                // Add BodySite
+                if (record.isMapped("BODYSITE_CODE") && !record.get("BODYSITE_CODE").isEmpty()) {
+                    ImagingStudy.ImagingStudySeriesComponent series = imagingStudy.addSeries();
+                    CodeableReference bodySiteReference = new CodeableReference(new CodeableConcept()
+                            .addCoding(new Coding()
+                                    .setCode(record.get("BODYSITE_CODE"))
+                                    .setDisplay(record.get("BODYSITE_DESCRIPTION"))));
+                    series.setBodySite(bodySiteReference);
                 }
 
-                // Set Status to "final" (default)
-                observation.setStatus(Enumerations.ObservationStatus.FINAL);
+                // Add Modality
+                if (record.isMapped("MODALITY_CODE") && !record.get("MODALITY_CODE").isEmpty()) {
+                    ImagingStudy.ImagingStudySeriesComponent series = imagingStudy.getSeries().get(0);
+                    CodeableConcept modality = new CodeableConcept().addCoding(new Coding()
+                            .setCode(record.get("MODALITY_CODE"))
+                            .setDisplay(record.get("MODALITY_DESCRIPTION")));
+                    series.setModality(modality);
+                }
 
-                // Send Observation to FHIR server
-                client.create().resource(observation).execute();
+
+                // Add SOP Instance
+                if (record.isMapped("SOP_CODE") && !record.get("SOP_CODE").isEmpty()) {
+                    ImagingStudy.ImagingStudySeriesComponent series = imagingStudy.getSeries().get(0);
+                    ImagingStudy.ImagingStudySeriesInstanceComponent instance = series.addInstance();
+                    instance.setSopClass(new Coding().setCode(record.get("SOP_CODE")).setDisplay(record.get("SOP_DESCRIPTION")));
+                }
+
+                // Set Status (default to "available")
+                imagingStudy.setStatus(ImagingStudy.ImagingStudyStatus.AVAILABLE);
+
+                // Send ImagingStudy to FHIR server
+                client.create().resource(imagingStudy).execute();
 
                 // Log success
-                System.out.println("Observation for patient " + record.get("PATIENT") + " uploaded successfully.");
+                System.out.println("ImagingStudy with ID " + record.get("Id") + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
@@ -140,22 +146,19 @@ public class ObservationImporter implements FhirResourceImporter {
     }
 
     /**
-     * Validates if an Observation exists on the FHIR server by code, date, and patient.
+     * Validates if an ImagingStudy exists on the FHIR server by identifier.
      */
-    private boolean observationExistsByCodeAndDate(IGenericClient client, String code, String date, String patientIdentifier) {
+    private boolean imagingStudyExistsByIdentifier(IGenericClient client, String studyIdentifier) {
         try {
             var bundle = client.search()
-                    .forResource("Observation")
-                    .where(Observation.CODE.exactly().code(code))
-                    .and(Observation.DATE.exactly().day(date))
-                    .and(Observation.SUBJECT.hasChainedProperty(Patient.IDENTIFIER.exactly().identifier(patientIdentifier)))
+                    .forResource("ImagingStudy")
+                    .where(ImagingStudy.IDENTIFIER.exactly().identifier(studyIdentifier))
                     .returnBundle(Bundle.class)
                     .execute();
             return !bundle.getEntry().isEmpty();
         } catch (Exception e) {
-            System.err.println("Error checking Observation by code and date: " + e.getMessage());
+            System.err.println("Error checking ImagingStudy by identifier: " + e.getMessage());
             return false;
         }
     }
-
 }

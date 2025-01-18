@@ -29,11 +29,19 @@ public class DeviceImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
+                String deviceId = record.get("Id");
+
+                // Check if the Device already exists
+                if (deviceExistsByIdentifier(client, deviceId)) {
+                    System.out.println("Device with ID " + deviceId + " already exists. Skipping.");
+                    continue;
+                }
+
                 Device device = new Device();
 
                 // Set Device ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    device.addIdentifier().setValue(record.get("Id"));;
+                    device.addIdentifier().setValue(deviceId);
                 }
 
                 // Associate with Patient using an Extension
@@ -60,7 +68,6 @@ public class DeviceImporter implements FhirResourceImporter {
                     }
                 }
 
-
                 // Set Manufacturer
                 if (record.isMapped("MANUFACTURER") && !record.get("MANUFACTURER").isEmpty()) {
                     device.setManufacturer(record.get("MANUFACTURER"));
@@ -85,11 +92,28 @@ public class DeviceImporter implements FhirResourceImporter {
                 client.create().resource(device).execute();
 
                 // Log success
-                System.out.println("Device with ID " + device.getId() + " uploaded successfully.");
+                System.out.println("Device with ID " + deviceId + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Validates if a Device exists on the FHIR server by identifier.
+     */
+    private boolean deviceExistsByIdentifier(IGenericClient client, String deviceIdentifier) {
+        try {
+            var bundle = client.search()
+                    .forResource("Device")
+                    .where(Device.IDENTIFIER.exactly().identifier(deviceIdentifier))
+                    .returnBundle(Bundle.class)
+                    .execute();
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Error checking Device by identifier: " + e.getMessage());
+            return false;
         }
     }
 

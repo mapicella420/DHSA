@@ -34,12 +34,19 @@ public class OrganizationImporter implements FhirResourceImporter {
 
             // Itera sui record del CSV
             for (CSVRecord record : records) {
+                String organizationId = record.get("Id");
+
+                // Controlla se l'Organization esiste già
+                if (organizationExistsByIdentifier(client, organizationId)) {
+                    System.out.println("Organization with ID " + organizationId + " already exists. Skipping.");
+                    continue;
+                }
+
                 Organization organization = new Organization();
 
                 // ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    organization.addIdentifier().setValue(record.get("Id"));
-
+                    organization.addIdentifier().setValue(organizationId);
                 }
 
                 // Nome dell'organizzazione
@@ -107,12 +114,34 @@ public class OrganizationImporter implements FhirResourceImporter {
                 client.create().resource(organization).execute();
 
                 // Log di conferma
-                System.out.println("Organizzazione con ID " + organization.getId() + " caricata con successo.");
+                System.out.println("Organizzazione con ID " + organizationId + " caricata con successo.");
             }
         } catch (Exception e) {
             // Gestione errori
             System.err.println("Errore durante l'importazione del CSV: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Controlla se un'Organization con il dato identifier esiste già sul server FHIR.
+     *
+     * @param client Il client FHIR utilizzato per connettersi al server.
+     * @param organizationIdentifier L'identifier dell'Organization da cercare.
+     * @return true se un'Organization con l'identifier fornito esiste, altrimenti false.
+     */
+    private boolean organizationExistsByIdentifier(IGenericClient client, String organizationIdentifier) {
+        try {
+            var bundle = client.search()
+                    .forResource("Organization")
+                    .where(Organization.IDENTIFIER.exactly().identifier(organizationIdentifier))
+                    .returnBundle(org.hl7.fhir.r5.model.Bundle.class)
+                    .execute();
+
+            return !bundle.getEntry().isEmpty();
+        } catch (Exception e) {
+            System.err.println("Errore durante il controllo dell'Organization con identifier: " + e.getMessage());
+            return false;
         }
     }
 }
