@@ -25,9 +25,12 @@
                       </Menu>
       
                       <!-- Upload CSV Menu -->
-                      <Menu styleClass="menu-bar" text="Upload CSV">
+                      <Menu styleClass="menu-bar" text="FHIR resources">
                           <items>
-                              <MenuItem onAction="#onUploadCsvMenuClick" styleClass="menu-item" text="Upload CSV File" />
+                              <MenuItem onAction="#onUploadCsvMenuClick" styleClass="menu-item" text="Import from CSV" />
+                              <MenuItem onAction="#onViewCsvMenuClick" styleClass="menu-item" text="View FHIR resources" />
+                              <MenuItem onAction="#onConvertCsvClick" styleClass="menu-item" text="Export to CSV" />
+
                           </items>
                       </Menu>
       
@@ -35,13 +38,6 @@
                       <Menu styleClass="menu-bar" text="Import DICOM Files">
                           <items>
                               <MenuItem onAction="#onImportDicomMenuClick" styleClass="menu-item" text="Import DICOM File" />
-                          </items>
-                      </Menu>
-      
-                      <!-- Convert CSV Menu -->
-                      <Menu styleClass="menu-bar" text="Convert CSV">
-                          <items>
-                              <MenuItem onAction="#onConvertCsvClick" styleClass="menu-item" text="Convert CSV to FHIR" />
                           </items>
                       </Menu>
                   </menus>
