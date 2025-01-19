@@ -1,9 +1,10 @@
 package com.group01.dhsa.Model.FhirResources;
 
-import com.group01.dhsa.Model.FhirResources.level5.ClinicalModule.*;
-import com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule.*;
-import com.group01.dhsa.Model.FhirResources.level5.MedicationsModule.ImmunizationImporterFactory;
-import com.group01.dhsa.Model.FhirResources.level5.MedicationsModule.MedicationImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.*;
+import com.group01.dhsa.Model.FhirResources.Level5.ClinicalModule.*;
+import com.group01.dhsa.Model.FhirResources.Level5.DiagnosticModule.*;
+import com.group01.dhsa.Model.FhirResources.Level5.MedicationsModule.ImmunizationImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level5.MedicationsModule.MedicationImporterFactory;
 
 public class FhirImporterFactoryManager {
     public static FhirResourceImporterFactory getFactory(String fileName) {

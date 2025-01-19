@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.FhirResources.level5.MedicationsModule;
+package com.group01.dhsa.Model.FhirResources.Level5.MedicationsModule;
 
 import com.group01.dhsa.Model.FhirResources.FhirResourceImporter;
 import com.group01.dhsa.Model.FhirResources.FhirResourceImporterFactory;

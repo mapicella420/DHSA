@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.FhirResources.level5.MedicationsModule;
+package com.group01.dhsa.Model.FhirResources.Level5.MedicationsModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;

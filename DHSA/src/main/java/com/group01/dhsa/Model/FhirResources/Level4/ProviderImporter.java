@@ -1,7 +1,8 @@
-package com.group01.dhsa.Model.FhirResources;
+package com.group01.dhsa.Model.FhirResources.Level4;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import com.group01.dhsa.Model.FhirResources.FhirResourceImporter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.hl7.fhir.r5.model.Practitioner;

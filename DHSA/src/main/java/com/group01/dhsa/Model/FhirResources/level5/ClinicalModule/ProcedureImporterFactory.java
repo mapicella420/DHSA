@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.FhirResources.level5.ClinicalModule;
+package com.group01.dhsa.Model.FhirResources.Level5.ClinicalModule;
 import com.group01.dhsa.Model.FhirResources.*;
 
 public class ProcedureImporterFactory implements FhirResourceImporterFactory {

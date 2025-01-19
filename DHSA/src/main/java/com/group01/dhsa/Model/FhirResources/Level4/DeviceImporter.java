@@ -1,8 +1,8 @@
-package com.group01.dhsa.Model.FhirResources.level5.ClinicalModule;
+package com.group01.dhsa.Model.FhirResources.Level4;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import com.group01.dhsa.Model.FhirResources.*;
+import com.group01.dhsa.Model.FhirResources.FhirResourceImporter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.hl7.fhir.r5.model.*;
@@ -10,7 +10,7 @@ import org.hl7.fhir.r5.model.*;
 import java.io.FileReader;
 import java.io.Reader;
 
-public class AllergyImporter implements FhirResourceImporter {
+public class DeviceImporter implements FhirResourceImporter {
 
     private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
 
@@ -30,73 +30,70 @@ public class AllergyImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
-                String patientIdentifier = record.get("PATIENT");
-                String allergyCode = record.get("CODE");
+                String deviceCode = record.get("CODE");
 
-                // Check if the AllergyIntolerance already exists
-                if (allergyExistsByPatientAndCode(client, patientIdentifier, allergyCode)) {
-                    System.out.println("Allergy with code " + allergyCode + " for patient " + patientIdentifier + " already exists. Skipping.");
+                // Check if the Device already exists
+                if (deviceExistsByCode(client, deviceCode)) {
+                    System.out.println("Device with CODE " + deviceCode + " already exists. Skipping.");
                     continue;
                 }
 
-                AllergyIntolerance allergy = new AllergyIntolerance();
+                Device device = new Device();
 
-                // Set Patient
+                // Set Device Identifier using CODE
+                if (record.isMapped("CODE") && !record.get("CODE").isEmpty()) {
+                    device.addIdentifier().setValue(deviceCode);
+                }
+
+                // Associate with Patient using an Extension
                 if (record.isMapped("PATIENT") && !record.get("PATIENT").isEmpty()) {
+                    String patientIdentifier = record.get("PATIENT");
                     if (patientExistsByIdentifier(client, patientIdentifier)) {
-                        allergy.setPatient(new Reference("Patient?identifier=" + patientIdentifier));
+                        device.addExtension("http://hl7.org/fhir/StructureDefinition/device-patient",
+                                new Reference("Patient?identifier=" + patientIdentifier));
                     } else {
-                        System.out.println("Patient not found: " + patientIdentifier + ". Skipping allergy.");
+                        System.out.println("Patient not found: " + patientIdentifier + ". Skipping device.");
                         continue;
                     }
                 }
 
-                // Set Encounter (if available)
+                // Validate and set Encounter as an Extension
                 if (record.isMapped("ENCOUNTER") && !record.get("ENCOUNTER").isEmpty()) {
                     String encounterIdentifier = record.get("ENCOUNTER");
                     if (encounterExistsByIdentifier(client, encounterIdentifier)) {
-                        allergy.addExtension("http://hl7.org/fhir/StructureDefinition/encounter-reference",
+                        device.addExtension("http://hl7.org/fhir/StructureDefinition/device-encounter",
                                 new Reference("Encounter?identifier=" + encounterIdentifier));
                     } else {
-                        System.out.println("Encounter not found: " + encounterIdentifier + ". Skipping allergy.");
+                        System.out.println("Encounter not found: " + encounterIdentifier + ". Skipping device.");
                         continue;
                     }
                 }
 
-                // Set Allergy Start Date
-                if (record.isMapped("START") && !record.get("START").isEmpty()) {
-                    allergy.setRecordedDateElement(new DateTimeType(record.get("START")));
+                // Set Definition (corresponds to DESCRIPTION in dataset)
+                if (record.isMapped("DESCRIPTION") && !record.get("DESCRIPTION").isEmpty()) {
+                    CodeableReference codeableReference = new CodeableReference();
+                    CodeableConcept codeableConcept = new CodeableConcept();
+                    codeableConcept.setText(record.get("DESCRIPTION")); // Imposta il testo della descrizione
+                    codeableReference.setConcept(codeableConcept); // Collega il CodeableConcept al CodeableReference
+                    device.setDefinition(codeableReference); // Imposta la definizione del dispositivo
                 }
 
-                // Set Allergy End Date (if available)
-                if (record.isMapped("STOP") && !record.get("STOP").isEmpty()) {
-                    allergy.addExtension("http://hl7.org/fhir/StructureDefinition/allergy-end-date",
-                            new DateTimeType(record.get("STOP")));
+
+                // Set UDI (Unique Device Identifier)
+                if (record.isMapped("UDI") && !record.get("UDI").isEmpty()) {
+                    Device.DeviceUdiCarrierComponent udiCarrier = new Device.DeviceUdiCarrierComponent();
+                    udiCarrier.setCarrierHRF(record.get("UDI"));
+                    device.addUdiCarrier(udiCarrier);
                 }
 
-                // Set Allergy Code and Description
-                if (record.isMapped("CODE") && !record.get("CODE").isEmpty()) {
-                    CodeableConcept allergyCodeableConcept = new CodeableConcept().addCoding(new Coding()
-                            .setCode(allergyCode)
-                            .setDisplay(record.get("DESCRIPTION")));
-                    allergy.setCode(allergyCodeableConcept);
-                }
+                // Set Status (optional, default to 'active' if not provided)
+                device.setStatus(Device.FHIRDeviceStatus.ACTIVE);
 
-                // Set Clinical Status (default to active if not provided)
-                allergy.setClinicalStatus(new CodeableConcept().addCoding(new Coding()
-                        .setSystem("http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical")
-                        .setCode("active")));
-
-                // Set Verification Status
-                allergy.setVerificationStatus(new CodeableConcept().addCoding(new Coding()
-                        .setSystem("http://terminology.hl7.org/CodeSystem/allergyintolerance-verification")
-                        .setCode("confirmed")));
-
-                // Send AllergyIntolerance to FHIR server
-                client.create().resource(allergy).execute();
+                // Send Device to FHIR server
+                client.create().resource(device).execute();
 
                 // Log success
-                System.out.println("Allergy for Patient with ID " + patientIdentifier + " uploaded successfully.");
+                System.out.println("Device with CODE " + deviceCode + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
@@ -105,19 +102,18 @@ public class AllergyImporter implements FhirResourceImporter {
     }
 
     /**
-     * Validates if an AllergyIntolerance exists on the FHIR server by patient and code.
+     * Validates if a Device exists on the FHIR server by code.
      */
-    private boolean allergyExistsByPatientAndCode(IGenericClient client, String patientIdentifier, String allergyCode) {
+    private boolean deviceExistsByCode(IGenericClient client, String deviceCode) {
         try {
             var bundle = client.search()
-                    .forResource("AllergyIntolerance")
-                    .where(AllergyIntolerance.PATIENT.hasId("Patient?identifier=" + patientIdentifier))
-                    .and(AllergyIntolerance.CODE.exactly().code(allergyCode))
+                    .forResource("Device")
+                    .where(Device.IDENTIFIER.exactly().identifier(deviceCode))
                     .returnBundle(Bundle.class)
                     .execute();
             return !bundle.getEntry().isEmpty();
         } catch (Exception e) {
-            System.err.println("Error checking AllergyIntolerance by patient and code: " + e.getMessage());
+            System.err.println("Error checking Device by code: " + e.getMessage());
             return false;
         }
     }

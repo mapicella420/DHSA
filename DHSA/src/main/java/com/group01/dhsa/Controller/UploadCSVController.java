@@ -62,9 +62,6 @@ public class UploadCSVController {
     private Button backButton;
 
     @FXML
-    private ProgressBar progressBar; // Barra di avanzamento
-
-    @FXML
     private Label fileCountLabel; // Conteggio file caricati
     @FXML
     private Label statusLabel; // Stato attuale
@@ -83,7 +80,6 @@ public class UploadCSVController {
     private void initialize() {
         level5Pane.setDisable(true);
         uploadButton.setDisable(true);
-        progressBar.setProgress(0);
         fileCountLabel.setText("0/0 files uploaded");
         statusLabel.setText("...");
     }
@@ -209,7 +205,6 @@ public class UploadCSVController {
         statusLabel.setVisible(true);
         fileCountLabel.setVisible(true);
         uploadButton.setDisable(true);
-        progressBar.setProgress(0);
         fileCountLabel.setText("0/" + selectedFiles.size() + " files uploaded");
         statusLabel.setText("Uploading...");
 
@@ -241,7 +236,6 @@ public class UploadCSVController {
             }
         };
 
-        progressBar.progressProperty().bind(uploadTask.progressProperty());
         statusLabel.textProperty().bind(uploadTask.messageProperty());
 
         uploadTask.setOnSucceeded(e -> {

@@ -3,9 +3,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.UploadCSVController" spacing="20" alignment="TOP_LEFT" style="-fx-padding: 20; -fx-pref-width: 750; -fx-pref-height: 550;">
+<VBox stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.UploadCSVController" spacing="20"
+      style="-fx-padding: 20; -fx-pref-width: 750; -fx-pref-height: 550;">
     <!-- Titolo -->
-    <Label text="Upload FHIR resources" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+    <Label text="Upload FHIR resources" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
 
     <!-- Livello 4 -->
     <GridPane hgap="40" vgap="10" style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 15;">
@@ -97,9 +98,8 @@
     </HBox>
 
     <!-- Progress Bar -->
-    <ProgressBar fx:id="progressBar" prefWidth="600" progress="0" />
     <VBox spacing="5" alignment="CENTER">
-        <Label fx:id="statusLabel" text="Idle..." style="-fx-font-size: 14px; -fx-text-fill: gray;" visible="false" />
+        <Label fx:id="statusLabel" text="..." style="-fx-font-size: 14px; -fx-text-fill: gray;" visible="false" />
         <Label fx:id="fileCountLabel" text="0/0 files uploaded" style="-fx-font-size: 14px;" visible="false" />
     </VBox>
 

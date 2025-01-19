@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule;
+package com.group01.dhsa.Model.FhirResources.Level5.DiagnosticModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;

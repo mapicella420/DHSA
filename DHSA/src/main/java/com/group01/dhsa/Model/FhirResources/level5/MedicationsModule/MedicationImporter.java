@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.FhirResources.level5.MedicationsModule;
+package com.group01.dhsa.Model.FhirResources.Level5.MedicationsModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
@@ -6,7 +6,6 @@ import com.group01.dhsa.Model.FhirResources.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.hl7.fhir.r5.model.*;
-import org.hl7.fhir.r5.model.Enumerations;
 
 import java.io.FileReader;
 import java.io.Reader;
