@@ -151,7 +151,7 @@ public class UploadCSVController {
 
     private void handleFileChooser(String key, Button button) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select CSV File");
+        fileChooser.setTitle("Select CSV File for " + key );
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
 
         Stage stage = (Stage) button.getScene().getWindow();

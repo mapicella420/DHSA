@@ -3,104 +3,161 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.UploadCSVController" spacing="20"
-      style="-fx-padding: 20; -fx-pref-width: 750; -fx-pref-height: 550;">
+<VBox spacing="20" style="-fx-padding: 20; -fx-pref-width: 750; -fx-pref-height: 550;" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.UploadCSVController">
     <!-- Titolo -->
-    <Label text="Upload FHIR resources" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+    <Label style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Upload FHIR resources" />
 
     <!-- Livello 4 -->
-    <GridPane hgap="40" vgap="10" style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 15;">
-        <Label text="Level 4" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold; -fx-font-size: 16px;" GridPane.columnSpan="6" />
+    <GridPane hgap="40" style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 15;" vgap="10">
+        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Level 4" GridPane.columnIndex="0" GridPane.columnSpan="6" GridPane.rowIndex="0" />
 
         <!-- Organization -->
         <Label text="Organization" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
-            <Button text="Upload CSV File" fx:id="organizationFileChooser" onAction="#onChooseOrganizationFile" />
-            <CheckBox text="Use existing data for Organization" fx:id="organizationCheckBox" onAction="#onCheckBoxChange" />
+            <Button fx:id="organizationFileChooser" onAction="#onChooseOrganizationFile" text="Upload CSV File" />
+            <CheckBox fx:id="organizationCheckBox" onAction="#onCheckBoxChange" text="Use existing data for Organization" />
         </VBox>
 
         <!-- Patient -->
         <Label text="Patient" GridPane.columnIndex="1" GridPane.rowIndex="1" />
         <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
-            <Button text="Upload CSV File" fx:id="patientFileChooser" onAction="#onChoosePatientFile" />
-            <CheckBox text="Use existing data for Patient" fx:id="patientCheckBox" onAction="#onCheckBoxChange" />
+            <Button fx:id="patientFileChooser" onAction="#onChoosePatientFile" text="Upload CSV File" />
+            <CheckBox fx:id="patientCheckBox" onAction="#onCheckBoxChange" text="Use existing data for Patient" />
         </VBox>
 
         <!-- Providers -->
         <Label text="Providers" GridPane.columnIndex="2" GridPane.rowIndex="1" />
         <VBox spacing="5" GridPane.columnIndex="2" GridPane.rowIndex="2">
-            <Button text="Upload CSV File" fx:id="providersFileChooser" onAction="#onChooseProvidersFile" />
-            <CheckBox text="Use existing data for Providers" fx:id="providersCheckBox" onAction="#onCheckBoxChange" />
+            <Button fx:id="providersFileChooser" onAction="#onChooseProvidersFile" text="Upload CSV File" />
+            <CheckBox fx:id="providersCheckBox" onAction="#onCheckBoxChange" text="Use existing data for Providers" />
         </VBox>
 
         <!-- Separatore tra le righe -->
-        <Separator GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="6" style="-fx-background-color: lightgray;" />
+        <Separator style="-fx-background-color: lightgray;" GridPane.columnIndex="0" GridPane.columnSpan="6" GridPane.rowIndex="3" />
 
         <!-- Encounters -->
         <Label text="Encounters" GridPane.columnIndex="0" GridPane.rowIndex="4" />
         <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="5">
-            <Button text="Upload CSV File" fx:id="encountersFileChooser" onAction="#onChooseEncountersFile" />
-            <CheckBox text="Use existing data for Encounters" fx:id="encountersCheckBox" onAction="#onCheckBoxChange" />
+            <Button fx:id="encountersFileChooser" onAction="#onChooseEncountersFile" text="Upload CSV File" />
+            <CheckBox fx:id="encountersCheckBox" onAction="#onCheckBoxChange" text="Use existing data for Encounters" />
         </VBox>
 
         <!-- Devices -->
         <Label text="Devices" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="5">
-            <Button text="Upload CSV File" fx:id="devicesFileChooser" onAction="#onChooseDevicesFile" />
+            <Button fx:id="devicesFileChooser" onAction="#onChooseDevicesFile" text="Upload CSV File" />
         </VBox>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+         <ColumnConstraints />
+         <ColumnConstraints />
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
     <!-- Livello 5 -->
-    <GridPane hgap="100" vgap="20" style="-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 20;" disable="true" fx:id="level5Pane">
-        <Label text="Level 5" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold; -fx-font-size: 16px;" GridPane.columnSpan="3" />
+    <GridPane fx:id="level5Pane" disable="true" hgap="100" style="-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 20;" vgap="20">
+        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Level 5" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="0" />
 
         <!-- Clinical Module -->
-        <GridPane style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 10;" hgap="10" vgap="10" GridPane.columnIndex="0" GridPane.rowIndex="1">
-            <Label text="Clinical Module" style="-fx-font-weight: bold; -fx-font-size: 14px;" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+        <GridPane hgap="10" prefHeight="146.0" prefWidth="179.0" styleClass="module-box" vgap="10" GridPane.columnIndex="0" GridPane.rowIndex="1">
+            <Label styleClass="module-title" text="Clinical Module" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
 
             <Label text="Allergie" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <Button text="Choose File" fx:id="allergieFileChooser" onAction="#onChooseAllergieFile" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="allergieFileChooser" onAction="#onChooseAllergieFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
             <Label text="CarePlan" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <Button text="Choose File" fx:id="carePlanFileChooser" onAction="#onChooseCarePlanFile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button fx:id="carePlanFileChooser" onAction="#onChooseCarePlanFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
             <Label text="Procedure" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-            <Button text="Choose File" fx:id="procedureFileChooser" onAction="#onChooseProcedureFile" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="procedureFileChooser" onAction="#onChooseProcedureFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
             <Label text="Conditions" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-            <Button text="Choose File" fx:id="conditionsFileChooser" onAction="#onChooseConditionsFile" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button fx:id="conditionsFileChooser" onAction="#onChooseConditionsFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         <columnConstraints>
+            <ColumnConstraints maxWidth="70.5" minWidth="57.5" prefWidth="57.5" />
+            <ColumnConstraints maxWidth="72.0" minWidth="59.0" prefWidth="72.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
         </GridPane>
 
         <!-- Diagnostic Module -->
-        <VBox style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 10;" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <Label text="Diagnostic Module" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
-            <Label text="Observation" />
-            <Button text="Choose File" fx:id="observationFileChooser" onAction="#onChooseObservationFile" />
-            <Label text="Imaging Studies" />
-            <Button text="Choose File" fx:id="imagingStudiesFileChooser" onAction="#onChooseImagingStudiesFile" />
-        </VBox>
+        <GridPane hgap="10" prefHeight="154.0" prefWidth="188.0" styleClass="module-box" vgap="10" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label styleClass="module-title" text="Diagnostic Module" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+
+            <Label text="Observation" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Button fx:id="observationFileChooser" onAction="#onChooseObservationFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Imaging Studies" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Button fx:id="imagingStudiesFileChooser" onAction="#onChooseImagingStudiesFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
 
         <!-- Medication Module -->
-        <VBox style="-fx-border-color: black; -fx-border-width: 1; -fx-padding: 10;" spacing="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
-            <Label text="Medication Module" style="-fx-font-weight: bold; -fx-font-size: 14px;" />
-            <Label text="Medications" />
-            <Button text="Choose File" fx:id="medicationsFileChooser" onAction="#onChooseMedicationsFile" />
-            <Label text="Immunizations" />
-            <Button text="Choose File" fx:id="immunizationsFileChooser" onAction="#onChooseImmunizationsFile" />
-        </VBox>
+        <GridPane hgap="10" styleClass="module-box" vgap="10" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Label styleClass="module-title" text="Medication Module" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+
+            <Label text="Medications" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Button fx:id="medicationsFileChooser" onAction="#onChooseMedicationsFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Immunizations" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Button fx:id="immunizationsFileChooser" onAction="#onChooseImmunizationsFile" text="Choose File" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <columnConstraints>
+            <ColumnConstraints maxWidth="92.0" minWidth="81.0" prefWidth="85.0" />
+            <ColumnConstraints maxWidth="70.0" minWidth="59.0" prefWidth="66.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
     <!-- Bottoni Azione -->
-    <HBox spacing="20" alignment="CENTER_LEFT">
-        <Button text="Back" fx:id="backButton" onAction="#onBack" style="-fx-padding: 10; -fx-font-size: 14px;" />
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button fx:id="backButton" onAction="#onBack" style="-fx-padding: 10; -fx-font-size: 14px;" text="Back" />
         <Pane HBox.hgrow="ALWAYS" />
-        <Button text="Upload" fx:id="uploadButton" onAction="#onUpload" disable="true" style="-fx-padding: 10; -fx-font-size: 14px; -fx-background-color: red; -fx-text-fill: white;" />
+        <Button fx:id="uploadButton" disable="true" onAction="#onUpload" style="-fx-padding: 10; -fx-font-size: 14px; -fx-background-color: red; -fx-text-fill: white;" text="Upload" />
     </HBox>
 
     <!-- Progress Bar -->
-    <VBox spacing="5" alignment="CENTER">
-        <Label fx:id="statusLabel" text="..." style="-fx-font-size: 14px; -fx-text-fill: gray;" visible="false" />
-        <Label fx:id="fileCountLabel" text="0/0 files uploaded" style="-fx-font-size: 14px;" visible="false" />
+    <VBox alignment="CENTER" spacing="5">
+        <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="..." visible="false" />
+        <Label fx:id="fileCountLabel" style="-fx-font-size: 14px;" text="0/0 files uploaded" visible="false" />
     </VBox>
 
 </VBox>
