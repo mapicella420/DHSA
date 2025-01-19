@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.Observation;
 import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.Practitioner;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,20 +13,20 @@ import java.io.File;
 public class CdaDocumentCreator {
     File tempFile;
     // Metodo principale per creare il documento CDA
-    public void createCdaDocument(String patientId) throws JAXBException {
+    public void createCdaDocument(String patientId, String authorId) throws JAXBException {
         FHIRClient client = new FHIRClient();
 
-        // Recupera paziente
         Patient fhirPatient = client.getPatientById(patientId);
 
         //CERCARE QUANTE DISCHARGE CI SONO PER IL NUMERO
         Integer idNumber = 1;
 
-        // 1. Crea un oggetto CdaDocumentBuilder per costruire il documento CDA
         CdaDocumentBuilder documentBuilder = new CdaDocumentBuilder(idNumber);
 
-        // 2. Aggiungi la sezione paziente
-//        documentBuilder.addPatientSection(fhirPatient);
+        documentBuilder.addPatientSection(fhirPatient);
+
+        Practitioner practitioner = client.getPractitionerById(authorId);
+        documentBuilder.addAuthorSection(practitioner);
 
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);

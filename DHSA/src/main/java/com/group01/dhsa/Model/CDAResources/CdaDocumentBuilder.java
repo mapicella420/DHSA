@@ -2,9 +2,9 @@ package com.group01.dhsa.Model.CDAResources;
 
 import com.group01.dhsa.Model.CDAResources.AdapterPattern.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.*;
+import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.*;
-import org.hl7.fhir.r5.model.Observation;
-import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,15 +20,20 @@ public class CdaDocumentBuilder {
         this.clinicalDocument = objectFactory.createClinicalDocument(idNumber);
     }
 
-//    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
-//        // Usa l'adapter per convertire il paziente FHIR in CDA
-//        PatientAdapter patientAdapter = new PatientAdapter();
-//        PatientCDA patientCDA = patientAdapter.toCdaObject(fhirPatient);
-//
-//        // Aggiungi la sezione paziente al ClinicalDocument
-//        clinicalDocument.setPatientSection(patientCDA);
-//        return this;
-//    }
+    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
+        PatientAdapter patientAdapter = new PatientAdapter();
+        RecordTarget recordTarget = patientAdapter.toCdaObject(fhirPatient);
+
+        clinicalDocument.setRecordTarget(recordTarget);
+        return this;
+    }
+    public CdaDocumentBuilder addAuthorSection(Practitioner fhirProvider) {
+        AuthorAdapter authorAdapter = new AuthorAdapter();
+        Author author = authorAdapter.toCdaObject(fhirProvider);
+
+        clinicalDocument.setAuthor(author);
+        return this;
+    }
 //
 //    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
 //        // Usa l'adapter per convertire l'osservazione FHIR in CDA

@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.Practitioner;
 import org.hl7.fhir.r5.model.ResourceType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,10 +38,6 @@ class FHIRClientTest {
                 .returnBundle(Bundle.class)
                 .execute();
 
-        //Patient test = (Patient) bundle.getEntryFirstRep().getResource();
-
-
-        // Estrazione del paziente dal bundle per il confronto
         Patient expectedPatient = null;
         for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
             if (entry.getResource().getResourceType() == ResourceType.Patient) {
@@ -49,7 +46,7 @@ class FHIRClientTest {
             }
         }
 
-        // Verifica che il paziente restituito sia corretto
+        assert expectedPatient != null;
         assertEquals(patient.getId(), expectedPatient.getId());
     }
 
@@ -59,5 +56,31 @@ class FHIRClientTest {
 
     @Test
     void getObservationsForPatient() {
+    }
+
+    @Test
+    void getPractitionerById() {
+        String practitionerId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846";
+
+        Practitioner practitioner = fhirClient.getPractitionerById(practitionerId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Practitioner.class)
+                .where(Practitioner.IDENTIFIER.exactly().identifier(practitionerId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        //Patient test = (Patient) bundle.getEntryFirstRep().getResource();
+
+        Practitioner expectedPractitioner = null;
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource().getResourceType() == ResourceType.Practitioner) {
+                expectedPractitioner = (Practitioner) entry.getResource();
+                break;
+            }
+        }
+
+        assert expectedPractitioner != null;
+        assertEquals(practitioner.getId(), expectedPractitioner.getId());
     }
 }

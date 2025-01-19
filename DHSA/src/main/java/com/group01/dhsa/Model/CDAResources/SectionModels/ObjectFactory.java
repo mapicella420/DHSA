@@ -99,4 +99,16 @@ public class ObjectFactory {
         return new RecordTarget();
     }
 
+    public Author createAuthor() {
+        return new Author();
+    }
+
+    public AssignedAuthor createAssignedAuthor() {
+        return new AssignedAuthor();
+    }
+
+    public AssignedPerson createAssignedPerson() {
+        return new AssignedPerson();
+    }
+
 }

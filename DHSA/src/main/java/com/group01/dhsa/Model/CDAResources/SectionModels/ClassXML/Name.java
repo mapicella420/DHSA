@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "given", "family"})
 public class Name {
 
     @XmlElement(name = "family")

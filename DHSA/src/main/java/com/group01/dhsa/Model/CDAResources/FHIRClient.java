@@ -2,10 +2,7 @@ package com.group01.dhsa.Model.CDAResources;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import org.hl7.fhir.r5.model.Bundle;
-import org.hl7.fhir.r5.model.Encounter;
-import org.hl7.fhir.r5.model.Observation;
-import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +23,15 @@ public class FHIRClient {
                 .returnBundle(Bundle.class)
                 .execute();
         return (Patient) bundle.getEntryFirstRep().getResource();
+    }
+
+    public Practitioner getPractitionerById(String practitionerId) {
+        Bundle bundle = client.search()
+                .forResource(Practitioner.class)
+                .where(Practitioner.IDENTIFIER.exactly().identifier(practitionerId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return (Practitioner) bundle.getEntryFirstRep().getResource();
     }
 
     public Bundle getEncountersForPatient(String patientId) {

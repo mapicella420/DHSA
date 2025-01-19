@@ -2,7 +2,6 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.Model.CDAResources.CodiceFiscaleCalculator;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
-import com.group01.dhsa.Model.CDAResources.SectionModels.*;
 import org.hl7.fhir.r5.model.Patient;
 
 public class PatientAdapter implements CdaSection<RecordTarget, Patient> {
@@ -72,37 +71,6 @@ public class PatientAdapter implements CdaSection<RecordTarget, Patient> {
         birthTime.setValue(fhirObject.getBirthDateElement().asStringValue());
 
         patientCDA.setBirthTime(birthTime);
-
-
-//
-//        // Nome del paziente
-//        if (fhirObject.hasName()) {
-//            fhirObject.getName().forEach(name -> {
-//                // Impostare nome e cognome
-//                patientCDA.setFirstName(name.getGivenAsSingleString());
-//                patientCDA.setLastName(name.getFamily());
-//            });
-//        }
-//
-//        // Sesso del paziente
-//        if (fhirObject.hasGender()) {
-//            patientCDA.setGender(fhirObject.getGender().toCode());
-//        }
-//
-//        // Data di nascita del paziente
-//        if (fhirObject.hasBirthDate()) {
-//            patientCDA.setBirthDate(fhirObject.getBirthDate().toString());
-//        }
-//
-//        // Codice identificativo regionale (se disponibile)
-//        if (fhirObject.hasIdentifier()) {
-//            fhirObject.getIdentifier().forEach(id -> {
-//                // Per esempio, si può cercare il codice identificativo regionale
-//                if ("[OID_ROOT_ANAGRAFE_REGIONALE]".equals(id.getSystem())) {
-//                    patientCDA.setCodiceIdentificativoRegionale(id.getValue());
-//                }
-//            });
-//        }
 
         return target;
     }
