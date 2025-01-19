@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane stylesheets="@../styles/styles.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.group01.dhsa.Controller.DoctorPanelController">
+<BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DoctorPanelController">
    <left>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
@@ -21,6 +21,7 @@
                       <Menu styleClass="menu-bar" text="File">
                           <items>
                               <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
+                        <MenuItem fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Logout" />
                           </items>
                       </Menu>
       

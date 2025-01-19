@@ -47,7 +47,12 @@ public class OrganizationImporter implements FhirResourceImporter {
 
                 // ID
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
+<<<<<<< HEAD:DHSA/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/OrganizationImporter.java
                     organization.addIdentifier().setValue(organizationId);
+=======
+                    //organization.setId(record.get("Id"));
+                    organization.addIdentifier().setValue(record.get("Id"));
+>>>>>>> CDA:DHSA/src/main/java/com/group01/dhsa/Model/FhirResources/OrganizationImporter.java
                 }
 
                 // Nome dell'organizzazione

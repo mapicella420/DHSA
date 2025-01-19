@@ -44,6 +44,10 @@ public class PatientImporter implements FhirResourceImporter {
 
                 // ID
                 if (record.isMapped("Id")) {
+<<<<<<< HEAD:DHSA/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/PatientImporter.java
+=======
+                    //patient.setId(record.get("Id"));
+>>>>>>> CDA:DHSA/src/main/java/com/group01/dhsa/Model/FhirResources/PatientImporter.java
                     patient.addIdentifier().setValue(record.get("Id"));
                 }
 
