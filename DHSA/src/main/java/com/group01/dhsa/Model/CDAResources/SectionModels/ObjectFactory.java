@@ -78,4 +78,25 @@ public class ObjectFactory {
     public ObservationCDA createObservation() {
         return new ObservationCDA();
     }
+
+    public Addr createAddr() {
+        return new Addr();
+    }
+
+    public AdministrativeGenderCode createAdministrativeGenderCode() {
+        return new AdministrativeGenderCode();
+    }
+
+    public BirthTime createBirthTime() {
+        return new BirthTime();
+    }
+
+    public Name createName() {
+        return new Name();
+    }
+
+    public RecordTarget createRecordTarget() {
+        return new RecordTarget();
+    }
+
 }
