@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,20 +24,31 @@ class CdaDocumentBuilderTest {
 
     @AfterEach
     void tearDown() {
-        tempFile.delete();
+        if (tempFile != null && tempFile.exists()) {
+            System.out.println("Deleting temporary file: " + tempFile.getAbsolutePath());
+            tempFile.delete();
+        }
     }
 
     @Test
     void build() {
         try {
             tempFile = builder.build();
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (JAXBException | IOException e) {
             throw new RuntimeException(e);
         }
+
         assertTrue(tempFile.exists());
-        System.out.println(tempFile.getAbsolutePath());
-        System.out.println(tempFile);
+
+        System.out.println("Temporary file path: " + tempFile.getAbsolutePath());
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
+            System.out.println("File content:\n" + content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(tempFile.length() > 0, "The generated file is empty.");
     }
 }

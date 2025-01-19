@@ -53,6 +53,9 @@ public class ClinicalDocument {
     @XmlElement(name = "versionNumber")
     private VersionNumber versionNumber;
 
+    public ClinicalDocument() {
+    }
+
     public ClinicalDocument(Integer idNumber) {
         this.typeId = new TypeId("POCD_HD000040", "2.16.840.1.113883.1.3");
         this.templateId = new TemplateId("2.16.840.1.113883.2.9.10.1.5","1.2");
