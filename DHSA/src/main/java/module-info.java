@@ -9,6 +9,7 @@ module com.group01.dhsa {
     requires org.hl7.fhir.r5;
     requires org.apache.commons.csv;
     requires org.hl7.fhir.utilities;
+    requires jakarta.xml.bind;
 
 
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)
@@ -27,5 +28,12 @@ module com.group01.dhsa {
     opens com.group01.dhsa.Controller to javafx.fxml;
     exports com.group01.dhsa.ObserverPattern to javafx.graphics;
     opens com.group01.dhsa.ObserverPattern to javafx.fxml;
+    exports com.group01.dhsa.Model.CDAResources to javafx.graphics;
+    opens com.group01.dhsa.Model.CDAResources to javafx.fxml;
+    exports com.group01.dhsa.Model.CDAResources.SectionModels to javafx.graphics;
+    opens com.group01.dhsa.Model.CDAResources.SectionModels to jakarta.xml.bind, javafx.fxml;
+    // Rende visibile il pacchetto ClassXML per JAXB
+    exports com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to javafx.graphics;
+    opens com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to jakarta.xml.bind;
 
 }

@@ -1,45 +1,78 @@
 package com.group01.dhsa.Model.CDAResources;
 
-import com.group01.dhsa.Model.CDAResources.AdapterPattern.ObservationAdapter;
-import com.group01.dhsa.Model.CDAResources.AdapterPattern.PatientAdapter;
-import org.hl7.fhir.r5.model.Bundle;
-import org.hl7.fhir.r5.model.Encounter;
+import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.Observation;
 import org.hl7.fhir.r5.model.Patient;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.io.File;
 
 public class CdaDocumentCreator {
-
-    public static void createCdaDocument(String patientId) {
+    File tempFile;
+    // Metodo principale per creare il documento CDA
+    public void createCdaDocument(String patientId) throws JAXBException {
         FHIRClient client = new FHIRClient();
 
         // Recupera paziente
-        Patient patient = client.getPatientById(patientId);
-        PatientAdapter patientAdapter = new PatientAdapter(patient);
+        Patient fhirPatient = client.getPatientById(patientId);
+
+        //CERCARE QUANTE DISCHARGE CI SONO PER IL NUMERO
+        Integer idNumber = 1;
+
+        // 1. Crea un oggetto CdaDocumentBuilder per costruire il documento CDA
+        CdaDocumentBuilder documentBuilder = new CdaDocumentBuilder(idNumber);
+
+        // 2. Aggiungi la sezione paziente
+//        documentBuilder.addPatientSection(fhirPatient);
 
         // Recupera osservazioni
-        List<Observation> observations = client.getObservationsForPatient("123456789");
-        List<ObservationAdapter> observationAdapters = observations.stream()
-                .map(ObservationAdapter::new)
-                .collect(Collectors.toList());
+        List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
+//        List<ObservationAdapter> observationAdapters = fhirObservations.stream()
+//                .map(ObservationAdapter::new)
+//                .collect(Collectors.toList());
 
-//        // Recupera incontri
-//        Bundle encounterBundle = client.getEncountersForPatient("123456789");
-//        Encounter encounter = (Encounter) encounterBundle.getEntryFirstRep().getResource();
-//        EncounterAdapter encounterAdapter = new EncounterAdapter(encounter);
+        // 3. Aggiungi la sezione osservazione
+//        documentBuilder.addObservationSection(fhirObservations.getFirst());
 
-        // Costruisci il documento CDA
-        CdaDocumentBuilder cdaBuilder = new CdaDocumentBuilder();
-        cdaBuilder.addPatient(patientAdapter);
-        observationAdapters.forEach(cdaBuilder::addObservation);
-//        cdaBuilder.addEncounter(encounterAdapter);
+        // 4. Costruisci e serializza il documento CDA in XML
+        // Crea il file XML temporaneo
+        try {
+            this.tempFile = documentBuilder.build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-        // Ottieni il documento CDA finale
-        String cdaDocument = cdaBuilder.build();
+    // Metodo che decide se salvare il file nel database o meno
+    public void handleFileSave() {
+        boolean shouldSaveInDb = shouldSaveToDb();
 
-        // Stampa il risultato (o salvalo in un file)
-        System.out.println(cdaDocument);
+        if (shouldSaveInDb) {
+            saveFileToDb(this.tempFile);
+        } else {
+            System.out.println("File temporaneo creato: " + this.tempFile.getAbsolutePath());
+        }
+
+        // Puoi anche decidere di eliminare il file temporaneo manualmente dopo l'uso
+        deleteTempFile(this.tempFile);
+    }
+
+    private void saveFileToDb(File tempFile) {
+        // Logica per salvare il contenuto del file nel database
+        System.out.println("Salvando il file nel database...");
+    }
+
+    private void deleteTempFile(File tempFile) {
+        if (tempFile.delete()) {
+            System.out.println("File temporaneo eliminato.");
+        } else {
+            System.out.println("Errore nell'eliminazione del file temporaneo.");
+        }
+    }
+
+    private boolean shouldSaveToDb() {
+        return true;
     }
 }

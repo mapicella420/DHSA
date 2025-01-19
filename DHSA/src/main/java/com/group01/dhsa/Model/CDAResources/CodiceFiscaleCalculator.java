@@ -75,18 +75,18 @@ public class CodiceFiscaleCalculator {
 
     private String meseCodice(String mese) {
         switch (mese.toUpperCase()) {
-            case "GENNAIO": return "A";
-            case "FEBBRAIO": return "B";
-            case "MARZO": return "C";
-            case "APRILE": return "D";
-            case "MAGGIO": return "E";
-            case "GIUGNO": return "H";
-            case "LUGLIO": return "L";
-            case "AGOSTO": return "M";
-            case "SETTEMBRE": return "P";
-            case "OTTOBRE": return "R";
-            case "NOVEMBRE": return "S";
-            case "DICEMBRE": return "T";
+            case "01": return "A";
+            case "02": return "B";
+            case "03": return "C";
+            case "04": return "D";
+            case "05": return "E";
+            case "06": return "H";
+            case "07": return "L";
+            case "08": return "M";
+            case "09": return "P";
+            case "10": return "R";
+            case "11": return "S";
+            case "12": return "T";
             default: return "X";
         }
     }
