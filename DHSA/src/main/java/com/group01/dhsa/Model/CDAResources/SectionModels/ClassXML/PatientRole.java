@@ -9,8 +9,14 @@ public class PatientRole {
     @XmlElement(name = "id")
     private Id id;
 
+    @XmlElement(name = "addr")
+    private Addr addr;
+
     @XmlElement(name = "patient")
     private PatientCDA patient;
+
+    public PatientRole() {
+    }
 
     // Getter e Setter
     public Id getId() {
@@ -27,5 +33,13 @@ public class PatientRole {
 
     public void setPatient(PatientCDA patient) {
         this.patient = patient;
+    }
+
+    public Addr getAddr() {
+        return addr;
+    }
+
+    public void setAddr(Addr addr) {
+        this.addr = addr;
     }
 }

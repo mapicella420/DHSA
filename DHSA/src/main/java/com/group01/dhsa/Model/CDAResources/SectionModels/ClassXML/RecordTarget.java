@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name = "recordTarget")
 public class RecordTarget {
 
     @XmlElement(name = "patientRole")

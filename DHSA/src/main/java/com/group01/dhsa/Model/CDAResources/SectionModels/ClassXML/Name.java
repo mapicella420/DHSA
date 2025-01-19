@@ -11,9 +11,6 @@ public class Name {
     @XmlElement(name = "given")
     private String given;
 
-    @XmlElement(name = "suffix")
-    private String suffix;
-
     // Getter e Setter
     public String getFamily() {
         return family;
@@ -31,11 +28,4 @@ public class Name {
         this.given = given;
     }
 
-    public String getSuffix() {
-        return suffix;
-    }
-
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
 }
