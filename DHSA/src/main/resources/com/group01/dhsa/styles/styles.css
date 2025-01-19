@@ -62,11 +62,11 @@
 }
 
 /* FileChooser Button */
-.filechooser-button {
+.file-chooser-button {
     -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
     -fx-text-fill: white; /* Colore del testo bianco */
     -fx-font-size: 11px; /* Dimensione del font */
-    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-font-weight: italic; /* Testo in grassetto */
     -fx-padding: 5 15; /* Spaziatura interna */
     -fx-border-color: #2a5d84; /* Bordo blu scuro */
     -fx-border-width: 2px; /* Larghezza del bordo */
@@ -76,13 +76,13 @@
 }
 
 /* Effetto Hover per il FileChooser Button */
-.filechooser-button:hover {
+.file-chooser-button:hover {
     -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu più chiaro */
     -fx-border-color: #7dbde8; /* Bordo più chiaro */
 }
 
 /* Effetto Pressed per il FileChooser Button */
-.filechooser-button:pressed {
+.file-chooser-button:pressed {
     -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente più scuro */
     -fx-border-color: #1a3c56; /* Bordo più scuro */
 }
@@ -136,4 +136,16 @@
     -fx-shape: "M 0 0 L 6 6 M 6 0 L 0 6"; /* Forma della spunta */
     -fx-stroke-width: 2px; /* Larghezza della spunta */
     -fx-stroke: #2a5d84; /* Colore della spunta */
+}
+
+.module-title {
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+}
+
+.module-box {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
 }
