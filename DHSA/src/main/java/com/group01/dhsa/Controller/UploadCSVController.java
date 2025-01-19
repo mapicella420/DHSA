@@ -1,15 +1,17 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.Model.CsvImporter;
-import com.group01.dhsa.Model.FhirResources.FhirImporterFactoryManager;
+import com.group01.dhsa.EventManager;
+import com.group01.dhsa.ObserverPattern.EventObservable;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class UploadCSVController {
@@ -17,11 +19,19 @@ public class UploadCSVController {
     @FXML
     private Button organizationFileChooser;
     @FXML
+    private CheckBox organizationCheckBox;
+    @FXML
     private Button patientFileChooser;
+    @FXML
+    private CheckBox patientCheckBox;
     @FXML
     private Button providersFileChooser;
     @FXML
+    private CheckBox providersCheckBox;
+    @FXML
     private Button encountersFileChooser;
+    @FXML
+    private CheckBox encountersCheckBox;
     @FXML
     private Button devicesFileChooser;
 
@@ -31,6 +41,8 @@ public class UploadCSVController {
     private Button carePlanFileChooser;
     @FXML
     private Button procedureFileChooser;
+    @FXML
+    private Button conditionsFileChooser;
 
     @FXML
     private Button observationFileChooser;
@@ -46,20 +58,36 @@ public class UploadCSVController {
     private GridPane level5Pane;
     @FXML
     private Button uploadButton;
+    @FXML
+    private Button backButton;
 
-    // Map to store selected files in the specified order
-    private final Map<String, File> selectedFiles = new LinkedHashMap<>();
+    @FXML
+    private ProgressBar progressBar; // Barra di avanzamento
+
+    @FXML
+    private Label fileCountLabel; // Conteggio file caricati
+    @FXML
+    private Label statusLabel; // Stato attuale
+
+    private final Map<String, File> selectedFiles = new HashMap<>();
+    private final EventObservable eventManager;
 
     /**
-     * Initializes the controller by disabling Level 5 and upload button by default.
+     * Constructor for dependency injection of the EventManager.
      */
+    public UploadCSVController() {
+        this.eventManager = EventManager.getInstance().getEventObservable();
+    }
+
     @FXML
     private void initialize() {
         level5Pane.setDisable(true);
         uploadButton.setDisable(true);
+        progressBar.setProgress(0);
+        fileCountLabel.setText("0/0 files uploaded");
+        statusLabel.setText("...");
     }
 
-    // File chooser handlers for Level 4
     @FXML
     private void onChooseOrganizationFile() {
         handleFileChooser("organization", organizationFileChooser);
@@ -85,7 +113,6 @@ public class UploadCSVController {
         handleFileChooser("devices", devicesFileChooser);
     }
 
-    // File chooser handlers for Level 5
     @FXML
     private void onChooseAllergieFile() {
         handleFileChooser("allergie", allergieFileChooser);
@@ -99,6 +126,11 @@ public class UploadCSVController {
     @FXML
     private void onChooseProcedureFile() {
         handleFileChooser("procedure", procedureFileChooser);
+    }
+
+    @FXML
+    private void onChooseConditionsFile() {
+        handleFileChooser("conditions", conditionsFileChooser);
     }
 
     @FXML
@@ -121,12 +153,6 @@ public class UploadCSVController {
         handleFileChooser("immunizations", immunizationsFileChooser);
     }
 
-    /**
-     * Handles file selection for the given key and button.
-     *
-     * @param key    The key representing the file type.
-     * @param button The button triggering the file chooser.
-     */
     private void handleFileChooser(String key, Button button) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select CSV File");
@@ -138,73 +164,102 @@ public class UploadCSVController {
         if (file != null) {
             selectedFiles.put(key, file);
             System.out.println("Selected file for " + key + ": " + file.getAbsolutePath());
+
+            button.setText(file.getName());
         }
 
-        // Check if all Level 4 files are selected to enable Level 5
-        if (areLevel4FilesSelected()) {
-            level5Pane.setDisable(false);
+        updateUploadState();
+    }
+
+
+    private void updateUploadState() {
+        boolean mandatoryFilesSelected = (organizationCheckBox.isSelected() || selectedFiles.containsKey("organization")) &&
+                (patientCheckBox.isSelected() || selectedFiles.containsKey("patient")) &&
+                (providersCheckBox.isSelected() || selectedFiles.containsKey("providers")) &&
+                (encountersCheckBox.isSelected() || selectedFiles.containsKey("encounters"));
+
+        uploadButton.setDisable(!mandatoryFilesSelected);
+        level5Pane.setDisable(!mandatoryFilesSelected);
+    }
+
+    @FXML
+    private void onCheckBoxChange(ActionEvent actionEvent) {
+        CheckBox source = (CheckBox) actionEvent.getSource();
+        String key = null;
+
+        if (source.equals(organizationCheckBox)) {
+            key = "organization";
+        } else if (source.equals(patientCheckBox)) {
+            key = "patient";
+        } else if (source.equals(providersCheckBox)) {
+            key = "providers";
+        } else if (source.equals(encountersCheckBox)) {
+            key = "encounters";
         }
 
-        // Enable upload button if at least one file is selected
-        uploadButton.setDisable(selectedFiles.isEmpty());
+        if (key != null && source.isSelected()) {
+            selectedFiles.remove(key);
+        }
+
+        updateUploadState();
     }
 
-    /**
-     * Checks if all Level 4 files are selected.
-     *
-     * @return True if all Level 4 files are selected, false otherwise.
-     */
-    private boolean areLevel4FilesSelected() {
-        return selectedFiles.containsKey("organization") &&
-                selectedFiles.containsKey("patient") &&
-                selectedFiles.containsKey("providers") &&
-                selectedFiles.containsKey("encounters") &&
-                selectedFiles.containsKey("devices");
-    }
-
-    /**
-     * Handles the upload action using FhirImporterFactoryManager.
-     */
     @FXML
     private void onUpload() {
-        System.out.println("Uploading selected files...");
+        statusLabel.setVisible(true);
+        fileCountLabel.setVisible(true);
+        uploadButton.setDisable(true);
+        progressBar.setProgress(0);
+        fileCountLabel.setText("0/" + selectedFiles.size() + " files uploaded");
+        statusLabel.setText("Uploading...");
 
-        // Upload Level 4 files in order
-        String[] level4Order = {"organization", "patient", "providers", "encounters", "devices"};
-        for (String key : level4Order) {
-            uploadFile(key);
-        }
+        Task<Void> uploadTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                int totalFiles = selectedFiles.size();
+                int[] completed = {0};
 
-        // Upload Level 5 files (if selected)
-        String[] level5Order = {"allergie", "carePlan", "procedure", "observation", "imagingStudies", "medications", "immunizations"};
-        for (String key : level5Order) {
-            if (selectedFiles.containsKey(key)) {
-                uploadFile(key);
+                for (Map.Entry<String, File> entry : selectedFiles.entrySet()) {
+                    String key = entry.getKey();
+                    File file = entry.getValue();
+
+                    if (file != null) {
+                        updateMessage("Uploading: " + key + " (" + file.getName() + ")");
+                        eventManager.notify("csv_upload", file);
+                        completed[0]++;
+                        updateProgress(completed[0], totalFiles);
+
+                        javafx.application.Platform.runLater(() -> {
+                            fileCountLabel.setText(completed[0] + "/" + totalFiles + " files uploaded");
+                        });
+
+                        Thread.sleep(500); // Simulating delay
+                    }
+                }
+
+                return null;
             }
-        }
+        };
 
-        System.out.println("Upload completed.");
+        progressBar.progressProperty().bind(uploadTask.progressProperty());
+        statusLabel.textProperty().bind(uploadTask.messageProperty());
+
+        uploadTask.setOnSucceeded(e -> {
+            statusLabel.textProperty().unbind();
+            statusLabel.setText("Upload Completed!");
+            uploadButton.setDisable(false);
+        });
+
+        Thread thread = new Thread(uploadTask);
+        thread.setDaemon(true);
+        thread.start();
     }
 
-    /**
-     * Uploads a file using FhirImporterFactoryManager.
-     *
-     * @param key The key representing the file type.
-     */
-    private void uploadFile(String key) {
-        File file = selectedFiles.get(key);
-        if (file != null) {
-            try {
-                System.out.println("Uploading " + key + ": " + file.getAbsolutePath());
-                // Use the FhirImporterFactoryManager to process the file
-                CsvImporter importer = new CsvImporter();
-                importer.importCsv(file);
-            } catch (Exception e) {
-                System.err.println("Error uploading " + key + ": " + e.getMessage());
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("No file selected for " + key + ".");
-        }
+    @FXML
+    private void onBack() {
+        System.out.println("Returning to the previous screen...");
+        Stage stage = (Stage) backButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "Doctor Dashboard");
     }
 }

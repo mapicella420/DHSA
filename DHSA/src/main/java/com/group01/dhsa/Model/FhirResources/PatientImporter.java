@@ -9,7 +9,6 @@ import org.hl7.fhir.r5.model.*;
 import java.io.FileReader;
 import java.io.Reader;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class PatientImporter implements FhirResourceImporter {
@@ -103,14 +102,50 @@ public class PatientImporter implements FhirResourceImporter {
                             new CodeableConcept().setText(record.get("ETHNICITY")));
                 }
 
-                // Indirizzo
+                // Indirizzo con geolocalizzazione
                 Address address = new Address();
-                if (record.isMapped("ADDRESS")) address.addLine(record.get("ADDRESS"));
-                if (record.isMapped("CITY")) address.setCity(record.get("CITY"));
-                if (record.isMapped("STATE")) address.setState(record.get("STATE"));
-                if (record.isMapped("ZIP")) address.setPostalCode(record.get("ZIP"));
-                if (record.isMapped("COUNTY")) address.setDistrict(record.get("COUNTY"));
+                if (record.isMapped("ADDRESS") && !record.get("ADDRESS").isEmpty()) {
+                    address.addLine(record.get("ADDRESS"));
+                }
+                if (record.isMapped("CITY") && !record.get("CITY").isEmpty()) {
+                    address.setCity(record.get("CITY"));
+                }
+                if (record.isMapped("STATE") && !record.get("STATE").isEmpty()) {
+                    address.setState(record.get("STATE"));
+                }
+                if (record.isMapped("ZIP") && !record.get("ZIP").isEmpty()) {
+                    address.setPostalCode(record.get("ZIP"));
+                }
+                if (record.isMapped("COUNTY") && !record.get("COUNTY").isEmpty()) {
+                    address.setDistrict(record.get("COUNTY"));
+                }
+                if (record.isMapped("LAT") && record.isMapped("LON") &&
+                        !record.get("LAT").isEmpty() && !record.get("LON").isEmpty()) {
+                    double latitude = Double.parseDouble(record.get("LAT"));
+                    double longitude = Double.parseDouble(record.get("LON"));
+
+                    // Estensione per latitudine
+                    Extension latExtension = new Extension();
+                    latExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat");
+                    latExtension.setValue(new DecimalType(latitude));
+
+                    // Estensione per longitudine
+                    Extension lonExtension = new Extension();
+                    lonExtension.setUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon");
+                    lonExtension.setValue(new DecimalType(longitude));
+
+                    // Aggiungi estensioni all'indirizzo
+                    address.addExtension(latExtension);
+                    address.addExtension(lonExtension);
+                }
+
                 patient.addAddress(address);
+
+                // Birthplace
+                if (record.isMapped("BIRTHPLACE") && !record.get("BIRTHPLACE").isEmpty()) {
+                    patient.addExtension("http://hl7.org/fhir/StructureDefinition/birthplace",
+                            new Address().setText(record.get("BIRTHPLACE")));
+                }
 
                 // Identificativi
                 if (record.isMapped("SSN")) {
@@ -124,11 +159,11 @@ public class PatientImporter implements FhirResourceImporter {
                 }
 
                 // Telefono e spese sanitarie
-                if (record.isMapped("HEALTHCARE_EXPENSES")) {
+                if (record.isMapped("HEALTHCARE_EXPENSES") && !record.get("HEALTHCARE_EXPENSES").isEmpty()) {
                     patient.addExtension("http://hl7.org/fhir/StructureDefinition/healthcare-expenses",
                             new Quantity().setValue(Double.parseDouble(record.get("HEALTHCARE_EXPENSES"))));
                 }
-                if (record.isMapped("HEALTHCARE_COVERAGE")) {
+                if (record.isMapped("HEALTHCARE_COVERAGE") && !record.get("HEALTHCARE_COVERAGE").isEmpty()) {
                     patient.addExtension("http://hl7.org/fhir/StructureDefinition/healthcare-coverage",
                             new Quantity().setValue(Double.parseDouble(record.get("HEALTHCARE_COVERAGE"))));
                 }

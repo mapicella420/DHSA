@@ -29,19 +29,19 @@ public class DeviceImporter implements FhirResourceImporter {
 
             // Iterate over CSV records
             for (CSVRecord record : records) {
-                String deviceId = record.get("Id");
+                String deviceCode = record.get("CODE");
 
                 // Check if the Device already exists
-                if (deviceExistsByIdentifier(client, deviceId)) {
-                    System.out.println("Device with ID " + deviceId + " already exists. Skipping.");
+                if (deviceExistsByCode(client, deviceCode)) {
+                    System.out.println("Device with CODE " + deviceCode + " already exists. Skipping.");
                     continue;
                 }
 
                 Device device = new Device();
 
-                // Set Device ID
-                if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
-                    device.addIdentifier().setValue(deviceId);
+                // Set Device Identifier using CODE
+                if (record.isMapped("CODE") && !record.get("CODE").isEmpty()) {
+                    device.addIdentifier().setValue(deviceCode);
                 }
 
                 // Associate with Patient using an Extension
@@ -68,31 +68,31 @@ public class DeviceImporter implements FhirResourceImporter {
                     }
                 }
 
-                // Set Manufacturer
-                if (record.isMapped("MANUFACTURER") && !record.get("MANUFACTURER").isEmpty()) {
-                    device.setManufacturer(record.get("MANUFACTURER"));
+                // Set Definition (corresponds to DESCRIPTION in dataset)
+                if (record.isMapped("DESCRIPTION") && !record.get("DESCRIPTION").isEmpty()) {
+                    CodeableReference codeableReference = new CodeableReference();
+                    CodeableConcept codeableConcept = new CodeableConcept();
+                    codeableConcept.setText(record.get("DESCRIPTION")); // Imposta il testo della descrizione
+                    codeableReference.setConcept(codeableConcept); // Collega il CodeableConcept al CodeableReference
+                    device.setDefinition(codeableReference); // Imposta la definizione del dispositivo
                 }
 
-                // Set Model
-                if (record.isMapped("MODEL") && !record.get("MODEL").isEmpty()) {
-                    device.setModelNumber(record.get("MODEL"));
+
+                // Set UDI (Unique Device Identifier)
+                if (record.isMapped("UDI") && !record.get("UDI").isEmpty()) {
+                    Device.DeviceUdiCarrierComponent udiCarrier = new Device.DeviceUdiCarrierComponent();
+                    udiCarrier.setCarrierHRF(record.get("UDI"));
+                    device.addUdiCarrier(udiCarrier);
                 }
 
-                // Set Serial Number
-                if (record.isMapped("SERIAL") && !record.get("SERIAL").isEmpty()) {
-                    device.setSerialNumber(record.get("SERIAL"));
-                }
-
-                // Set Device Status
-                if (record.isMapped("STATUS") && !record.get("STATUS").isEmpty()) {
-                    device.setStatus(Device.FHIRDeviceStatus.fromCode(record.get("STATUS").toLowerCase()));
-                }
+                // Set Status (optional, default to 'active' if not provided)
+                device.setStatus(Device.FHIRDeviceStatus.ACTIVE);
 
                 // Send Device to FHIR server
                 client.create().resource(device).execute();
 
                 // Log success
-                System.out.println("Device with ID " + deviceId + " uploaded successfully.");
+                System.out.println("Device with CODE " + deviceCode + " uploaded successfully.");
             }
         } catch (Exception e) {
             System.err.println("Error during CSV import: " + e.getMessage());
@@ -101,18 +101,18 @@ public class DeviceImporter implements FhirResourceImporter {
     }
 
     /**
-     * Validates if a Device exists on the FHIR server by identifier.
+     * Validates if a Device exists on the FHIR server by code.
      */
-    private boolean deviceExistsByIdentifier(IGenericClient client, String deviceIdentifier) {
+    private boolean deviceExistsByCode(IGenericClient client, String deviceCode) {
         try {
             var bundle = client.search()
                     .forResource("Device")
-                    .where(Device.IDENTIFIER.exactly().identifier(deviceIdentifier))
+                    .where(Device.IDENTIFIER.exactly().identifier(deviceCode))
                     .returnBundle(Bundle.class)
                     .execute();
             return !bundle.getEntry().isEmpty();
         } catch (Exception e) {
-            System.err.println("Error checking Device by identifier: " + e.getMessage());
+            System.err.println("Error checking Device by code: " + e.getMessage());
             return false;
         }
     }

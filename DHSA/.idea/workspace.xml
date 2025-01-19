@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCsvController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCSVController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCSVController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/UploadCSVController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/DeviceImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/EncounterImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/OrganizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/OrganizationImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/PatientImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/PatientImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/ProviderImporter.java" afterDir="false" />
@@ -98,9 +99,10 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
+      <option name="PROGRAM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML=ALL-UNNAMED" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
