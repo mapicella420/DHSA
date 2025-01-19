@@ -133,9 +133,10 @@ public class DischargePanelController {
         int i = 1;
         for(Bundle.BundleEntryComponent c:response.getEntry()) {
 
-            Patient p = (Patient)c.getResource();
+            Patient p = (Patient) c.getResource();
 
-            if (!p.hasDeceased()) {
+            if (!p.hasDeceasedBooleanType()) {
+
                 MenuItem item = new MenuItem(p.getIdentifier().get(0).getValue());
                 item.setId("item"+i);
                 i = i + 1;

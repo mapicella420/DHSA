@@ -40,16 +40,13 @@ public class DoctorPanelController {
      */
     @FXML
     private void onDischargePatientClick() {
-<<<<<<< HEAD
-        System.out.println("Discharge Patient button clicked!");
-=======
+
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml",currentStage,"Discharge Patient");
 
         //System.out.println("Discharge Patient button clicked!");
         // Logica per dimettere il paziente
->>>>>>> CDA
         if (eventManager == null) {
             System.err.println("EventManager is not set!");
             return;
