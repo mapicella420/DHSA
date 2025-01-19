@@ -62,7 +62,7 @@
 }
 
 /* FileChooser Button */
-.file-chooser-button {
+.filechooser-button {
     -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
     -fx-text-fill: white; /* Colore del testo bianco */
     -fx-font-size: 11px; /* Dimensione del font */
@@ -76,13 +76,13 @@
 }
 
 /* Effetto Hover per il FileChooser Button */
-.file-chooser-button:hover {
+.filechooser-button:hover {
     -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu più chiaro */
     -fx-border-color: #7dbde8; /* Bordo più chiaro */
 }
 
 /* Effetto Pressed per il FileChooser Button */
-.file-chooser-button:pressed {
+.filechooser-button:pressed {
     -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente più scuro */
     -fx-border-color: #1a3c56; /* Bordo più scuro */
 }
