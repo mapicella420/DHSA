@@ -173,8 +173,12 @@ public class UploadCSVController {
                 (patientCheckBox.isSelected() || selectedFiles.containsKey("patient")) &&
                 (providersCheckBox.isSelected() || selectedFiles.containsKey("providers")) &&
                 (encountersCheckBox.isSelected() || selectedFiles.containsKey("encounters"));
+        boolean mandatoryFilesSelected2 = (organizationCheckBox.isSelected() || selectedFiles.containsKey("organization")) ||
+                (patientCheckBox.isSelected() || selectedFiles.containsKey("patient")) ||
+                (providersCheckBox.isSelected() || selectedFiles.containsKey("providers")) ||
+                (encountersCheckBox.isSelected() || selectedFiles.containsKey("encounters"));
 
-        uploadButton.setDisable(!mandatoryFilesSelected);
+        uploadButton.setDisable(!mandatoryFilesSelected2);
         level5Pane.setDisable(!mandatoryFilesSelected);
     }
 
