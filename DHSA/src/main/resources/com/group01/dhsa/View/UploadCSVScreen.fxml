@@ -149,9 +149,9 @@
 
     <!-- Bottoni Azione -->
     <HBox alignment="CENTER_LEFT" spacing="20">
-        <Button fx:id="backButton" onAction="#onBack" style="-fx-padding: 10; -fx-font-size: 14px;" text="Back" />
+        <Button fx:id="backButton" onAction="#onBack" styleClass="button-blue" text="Back" />
         <Pane HBox.hgrow="ALWAYS" />
-        <Button fx:id="uploadButton" disable="true" onAction="#onUpload" style="-fx-padding: 10; -fx-font-size: 14px; -fx-background-color: red; -fx-text-fill: white;" text="Upload" />
+        <Button fx:id="uploadButton" disable="true" onAction="#onUpload" styleClass="button-red" text="Upload" />
     </HBox>
 
     <!-- Progress Bar -->

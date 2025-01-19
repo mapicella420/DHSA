@@ -28,6 +28,13 @@
     -fx-font-weight: bold;
 }
 
+/* Bottone rosso */
+.button-blue {
+    -fx-background-color: blue;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
 /* Etichette principali */
 .label-title {
     -fx-font-size: 24;
