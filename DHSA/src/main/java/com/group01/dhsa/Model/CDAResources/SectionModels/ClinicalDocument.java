@@ -10,7 +10,7 @@ import java.util.List;
 public class ClinicalDocument {
 
     // Attributo namespace
-    @XmlAttribute(name = "xsi:schemaLocation", namespace = "http://www.w3.org/2001/XMLSchema-instance")
+    @XmlAttribute(name = "xsi:schemaLocation")
     private String schemaLocation = "urn:hl7-org:v3 CDA.xsd";
 
     @XmlAttribute(name = "xmlns")
@@ -53,6 +53,13 @@ public class ClinicalDocument {
     @XmlElement(name = "versionNumber")
     private VersionNumber versionNumber;
 
+    @XmlElement(name = "recordTarget")
+    private RecordTarget recordTarget;
+
+    @XmlElement(name = "author")
+    private Author author;
+
+
     public ClinicalDocument() {
     }
 
@@ -70,11 +77,6 @@ public class ClinicalDocument {
         this.versionNumber = new VersionNumber(1);
     }
 
-//    @XmlElement(name = "recordTarget")
-//    private RecordTarget recordTarget;
-
-//    @XmlElement(name = "author")
-//    private String author;
 
     //Getter e Setter
     public String getSchemaLocation() {
@@ -188,62 +190,20 @@ public class ClinicalDocument {
     public void setVersionNumber(VersionNumber versionNumber) {
         this.versionNumber = versionNumber;
     }
-}
 
-//@XmlAccessorType(XmlAccessType.FIELD)
-//@XmlRootElement(name = "ClinicalDocument")
-//public class ClinicalDocument {
-//
-//    @XmlElement
-//    private String templateId;
-//
-//    @XmlElement
-//    private String title;
-//
-//    @XmlElement
-//    private PatientCDA patientSection;  // Singolo oggetto, non lista
-//
-//    @XmlElement
-//    private ObservationCDA observationSection;
-//
-//    // Costruttore, getter e setter
-//
-//    public ClinicalDocument() {}
-//
-//    public ClinicalDocument(String templateId, String title) {
-//        this.templateId = templateId;
-//        this.title = title;
-//    }
-//
-//    public String getTemplateId() {
-//        return templateId;
-//    }
-//
-//    public void setTemplateId(String templateId) {
-//        this.templateId = templateId;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public PatientCDA getPatientSection() {
-//        return patientSection;
-//    }
-//
-//    public void setPatientSection(PatientCDA patientSection) {
-//        this.patientSection = patientSection;
-//    }
-//
-//    public ObservationCDA getObservationSection() {
-//        return observationSection;
-//    }
-//
-//    public void setObservationSection(ObservationCDA observationSection) {
-//        this.observationSection = observationSection;
-//    }
-//}
+    public RecordTarget getRecordTarget() {
+        return recordTarget;
+    }
+
+    public void setRecordTarget(RecordTarget recordTarget) {
+        this.recordTarget = recordTarget;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+}

@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_TEST_SOURCES" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="" />
+    <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Addr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Addr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Name.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Name.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/PatientRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/PatientRole.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/SetId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/SetId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TemplateId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TemplateId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TypeId.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TypeId.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/PatientCDA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/PatientCDA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,6 +38,7 @@
       <list>
         <option value="FxmlFile" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -22,6 +46,11 @@
     <option name="NEW_BASE" value="main" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -41,7 +70,7 @@
   &quot;isMigrated&quot;: true
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -59,10 +88,17 @@
     "Application.MyApp.executor": "Run",
     "Application.MyHL7CdaConverter.executor": "Run",
     "Application.Unnamed.executor": "Run",
+    "JUnit.AuthorAdapterTest.executor": "Run",
+    "JUnit.CdaDocumentBuilderTest (1).executor": "Run",
+    "JUnit.CdaDocumentBuilderTest.executor": "Run",
+    "JUnit.PatientAdapterTest.executor": "Run",
+    "JUnit.PatientAdapterTest.toCdaObject.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "CDA",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/mapic/Desktop/PW/DHSA/project/DHSA/DHSA/src/main/resources/com/group01/dhsa/View/LoginUserScreen.fxml",
@@ -71,7 +107,11 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "File.Encoding",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -80,21 +120,91 @@
       <recent name="C:\Users\sasyb\IdeaProjects\DHSA\DHSA\src\main\resources\com\group01\dhsa" />
       <recent name="C:\Users\sasyb\IdeaProjects\DHSA\DHSA\src\main\resources\com\group01\dhsa\styles" />
     </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="com.group01.dhsa.Model.FhirResources.Level4" />
       <recent name="com.group01.dhsa.Model.FhirResources" />
       <recent name="com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule" />
     </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.group01.dhsa.Model.CDAResources" />
+      <recent name="com.group01.dhsa.Model.CDAResources.AdapterPattern" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.CdaDocumentBuilderTest">
     <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
-      <option name="PROGRAM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML=ALL-UNNAMED" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="AuthorAdapterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DHSA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.AuthorAdapterTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CdaDocumentBuilderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DHSA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.CdaDocumentBuilderTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PatientAdapterTest" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="DHSA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.PatientAdapterTest" />
+      <option name="METHOD_NAME" value="toCdaObject" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels=ALL-UNNAMED  " />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.MyHL7CdaConverter" />
+      <item itemvalue="JUnit.AuthorAdapterTest" />
+      <item itemvalue="JUnit.CdaDocumentBuilderTest" />
+      <item itemvalue="JUnit.PatientAdapterTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.CdaDocumentBuilderTest" />
+        <item itemvalue="JUnit.AuthorAdapterTest" />
+        <item itemvalue="JUnit.PatientAdapterTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

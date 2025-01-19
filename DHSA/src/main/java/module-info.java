@@ -34,6 +34,6 @@ module com.group01.dhsa {
     opens com.group01.dhsa.Model.CDAResources.SectionModels to jakarta.xml.bind, javafx.fxml;
     // Rende visibile il pacchetto ClassXML per JAXB
     exports com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to javafx.graphics;
-    opens com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to jakarta.xml.bind;
+    opens com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to jakarta.xml.bind, javafx.fxml;
 
 }

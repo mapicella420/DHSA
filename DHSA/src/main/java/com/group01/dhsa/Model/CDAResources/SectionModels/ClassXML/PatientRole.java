@@ -1,6 +1,5 @@
 package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 
-import com.group01.dhsa.Model.CDAResources.SectionModels.PatientCDA;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
