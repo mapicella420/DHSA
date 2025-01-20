@@ -1,5 +1,6 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -96,6 +97,9 @@ public class LoginUserController{
                 if (user != null) {
                     String storedHash = user.getString("passwordHash");
                     if (BCrypt.checkpw(password, storedHash)) {
+                        LoggedUser userLog = LoggedUser.getInstance();
+                        userLog.setFhirId(user.getString("fhirID"));
+                        System.out.println(userLog.getFhirId());
                         return user.getString("role");
                     }
 
@@ -111,6 +115,9 @@ public class LoginUserController{
                 if (user != null) {
                     String storedHash = user.getString("passwordHash");
                     if (BCrypt.checkpw(password, storedHash)) {
+
+                        LoggedUser userLog = LoggedUser.getInstance();
+                        userLog.setFhirId(user.getString("fhirID"));
                         return user.getString("role");
                     }
 

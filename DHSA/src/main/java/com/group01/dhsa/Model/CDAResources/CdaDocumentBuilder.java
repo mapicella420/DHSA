@@ -20,23 +20,21 @@ public class CdaDocumentBuilder {
         this.clinicalDocument = objectFactory.createClinicalDocument(idNumber);
     }
 
-    public CdaDocumentBuilder addPatientSection(Patient fhirPatient) {
+    public void addPatientSection(Patient fhirPatient) {
         PatientAdapter patientAdapter = new PatientAdapter();
         RecordTarget recordTarget = patientAdapter.toCdaObject(fhirPatient);
 
         clinicalDocument.setRecordTarget(recordTarget);
-        return this;
     }
 
-    public CdaDocumentBuilder addAuthorSection(Practitioner fhirProvider) {
+    public void addAuthorSection(Practitioner fhirProvider) {
         AuthorAdapter authorAdapter = new AuthorAdapter();
         Author author = authorAdapter.toCdaObject(fhirProvider);
 
         clinicalDocument.setAuthor(author);
-        return this;
     }
 
-    public CdaDocumentBuilder addCustodianSection() {
+    public void addCustodianSection() {
         Custodian custodian = new Custodian();
         AssignedCustodian assignedCustodian = new AssignedCustodian();
         RepresentedCustodianOrganization representedCustodian = new RepresentedCustodianOrganization();
@@ -51,7 +49,14 @@ public class CdaDocumentBuilder {
         representedCustodian.setAddr(addr);
 
         clinicalDocument.setCustodian(custodian);
-        return this;
+    }
+
+    public void addLegalAuthenticatorSection(Encounter encounter) {
+        LegalAuthenticatorAdapter legalAuthenticatorAdapter = new LegalAuthenticatorAdapter();
+
+        LegalAuthenticator legalAuthenticator = legalAuthenticatorAdapter.toCdaObject(encounter);
+
+        clinicalDocument.setLegalAuthenticator(legalAuthenticator);
     }
 //
 //    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {

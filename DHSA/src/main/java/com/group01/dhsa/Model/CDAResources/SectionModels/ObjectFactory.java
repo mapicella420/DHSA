@@ -119,4 +119,14 @@ public class ObjectFactory {
 
     public RepresentedCustodianOrganization createRepresentedCustodianOrganization() { return new RepresentedCustodianOrganization(); }
 
+    public AssignedEntity createAssignedEntity() { return new AssignedEntity(); }
+
+    public LegalAuthenticator createLegalAuthenticator() { return new LegalAuthenticator(); }
+
+    public RepresentedOrganization createRepresentedOrganization() { return new RepresentedOrganization(); }
+
+    public Telecom createTelecom() {return new Telecom(); }
+
+    public SignatureCode createSignatureCode() { return new SignatureCode(); }
+
 }

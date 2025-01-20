@@ -1,6 +1,7 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,6 +31,9 @@ public class DoctorPanelController {
 
     @FXML
     void logout() {
+        LoggedUser userLog = LoggedUser.getInstance();
+        userLog.logout();
+
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/LoginUserScreen.fxml",currentStage,"Login Screen");

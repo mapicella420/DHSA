@@ -12,8 +12,14 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
+
 public class AuthorAdapter implements CdaSection<Author, Practitioner>{
 
+    /**
+     *
+     * @param fhirObject
+     * @return
+     */
     @Override
     public Author toCdaObject(Practitioner fhirObject) {
         Author author = new Author();

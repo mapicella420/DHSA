@@ -25,7 +25,7 @@ class PatientAdapterTest {
         patientAdapter = new PatientAdapter();
 
         // Crea un client FHIR e recupera un paziente
-        FHIRClient fhirClient = new FHIRClient();
+        FHIRClient fhirClient = FHIRClient.getInstance();
         String patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846"; // esempio di ID del paziente
 
         // Recupera il paziente tramite il FHIRClient

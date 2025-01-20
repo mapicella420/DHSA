@@ -23,7 +23,7 @@ class CdaDocumentBuilderTest {
     @BeforeEach
     void setUp() {
         builder = new CdaDocumentBuilder(1);
-        FHIRClient fhirClient = new FHIRClient();
+        FHIRClient fhirClient = FHIRClient.getInstance();
         String patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846";
 
         patient = fhirClient.getPatientById(patientId);

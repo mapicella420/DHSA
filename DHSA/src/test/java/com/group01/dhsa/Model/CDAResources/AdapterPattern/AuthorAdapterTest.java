@@ -33,7 +33,7 @@ class AuthorAdapterTest {
         // Inizializza l'adapter
         authorAdapter = new AuthorAdapter();
 
-        FHIRClient fhirClient = new FHIRClient();
+        FHIRClient fhirClient = FHIRClient.getInstance();
         String practitionerId = "7a0d9463-9b7b-3c24-b14f-928d19dd5a32";
 
         practitioner = fhirClient.getPractitionerById(practitionerId);

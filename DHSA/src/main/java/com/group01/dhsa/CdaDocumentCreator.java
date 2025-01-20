@@ -1,22 +1,23 @@
-package com.group01.dhsa.Model.CDAResources;
+package com.group01.dhsa;
 
+import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
+import com.group01.dhsa.Model.CDAResources.FHIRClient;
+import com.group01.dhsa.Model.LoggedUser;
 import jakarta.xml.bind.JAXBException;
-import org.hl7.fhir.r5.model.Observation;
-import org.hl7.fhir.r5.model.Patient;
-import org.hl7.fhir.r5.model.Practitioner;
+import org.hl7.fhir.r5.model.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.io.File;
 
 public class CdaDocumentCreator {
     File tempFile;
     // Metodo principale per creare il documento CDA
-    public void createCdaDocument(String patientId, String authorId) throws JAXBException {
-        FHIRClient client = new FHIRClient();
+    public void createCdaDocument(String patientId, String encounterId) throws JAXBException {
+        FHIRClient client = FHIRClient.getInstance();
+
 
         Patient fhirPatient = client.getPatientById(patientId);
 
@@ -27,10 +28,19 @@ public class CdaDocumentCreator {
 
         documentBuilder.addPatientSection(fhirPatient);
 
-        Practitioner practitioner = client.getPractitionerById(authorId);
+        LoggedUser loggedUser = LoggedUser.getInstance();
+        System.out.println(loggedUser.getFhirId());
+        Practitioner practitioner = client.getPractitionerById(loggedUser.getFhirId());
+
         documentBuilder.addAuthorSection(practitioner);
 
         documentBuilder.addCustodianSection();
+
+//        Encounter encounter = client.getEncounterFromPractitionerAndPatient(practitioner.getIdentifierFirstRep().getValue(), fhirPatient.getIdentifierFirstRep().getValue());
+        Encounter encounter = client.getEncounterById(encounterId);
+
+        //Lemuel paziente di questo id
+        documentBuilder.addLegalAuthenticatorSection(encounter);
 
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);

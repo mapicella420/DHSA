@@ -64,6 +64,8 @@ public class ProviderImporter implements FhirResourceImporter {
                     practitioner.addIdentifier().setValue(practitionerId);
                 }
 
+                practitionerRole.setPractitioner(new org.hl7.fhir.r5.model.Reference("Practitioner?identifier=" + practitionerId));
+
                 // Set Practitioner name
                 if (record.isMapped("NAME") && !record.get("NAME").isEmpty()) {
                     String[] nameParts = record.get("NAME").split(" ");

@@ -62,6 +62,9 @@ public class ClinicalDocument {
     @XmlElement(name = "custodian")
     private Custodian custodian;
 
+    @XmlElement(name = "legalAuthenticator")
+    private LegalAuthenticator legalAuthenticator;
+
 
     public ClinicalDocument() {
     }
@@ -216,5 +219,13 @@ public class ClinicalDocument {
 
     public void setCustodian(Custodian custodian) {
         this.custodian = custodian;
+    }
+
+    public LegalAuthenticator getLegalAuthenticator() {
+        return legalAuthenticator;
+    }
+
+    public void setLegalAuthenticator(LegalAuthenticator legalAuthenticator) {
+        this.legalAuthenticator = legalAuthenticator;
     }
 }
