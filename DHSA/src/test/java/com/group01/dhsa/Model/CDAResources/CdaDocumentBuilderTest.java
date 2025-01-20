@@ -108,4 +108,35 @@ class CdaDocumentBuilderTest {
 
         assertTrue(tempFile.length() > 0, "The generated file is empty.");
     }
+
+    @Test
+    void buildWithCustodian() {
+        try {
+
+            builder.addPatientSection(patient);
+            builder.addAuthorSection(practitioner);
+            builder.addCustodianSection();
+            tempFile = builder.build();
+        } catch (JAXBException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        assertTrue(tempFile.exists(), "Il file generato non esiste.");
+
+
+        System.out.println("Percorso del file temporaneo: " + tempFile.getAbsolutePath());
+
+        try {
+
+            String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
+            System.out.println("Contenuto del file:\n" + content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        assertTrue(tempFile.length() > 0, "Il file generato è vuoto.");
+    }
+
 }
