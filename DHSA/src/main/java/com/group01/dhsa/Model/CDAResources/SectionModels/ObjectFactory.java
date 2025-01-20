@@ -111,4 +111,12 @@ public class ObjectFactory {
         return new AssignedPerson();
     }
 
+    public Custodian createCustodian() {
+        return new Custodian();
+    }
+
+    public AssignedCustodian createAssignedCustodian() { return new AssignedCustodian(); }
+
+    public RepresentedCustodianOrganization createRepresentedCustodianOrganization() { return new RepresentedCustodianOrganization(); }
+
 }
