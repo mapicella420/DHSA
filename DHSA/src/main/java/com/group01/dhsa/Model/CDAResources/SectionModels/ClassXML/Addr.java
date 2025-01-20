@@ -73,6 +73,17 @@ public class Addr {
     @XmlElement(name = "streetAddressLine")
     private String streetAddressLine;
 
+    public Addr() {
+    }
+
+    public Addr(String use, String streetAddressLine, String country, String state, String city) {
+        this.use = use;
+        this.streetAddressLine = streetAddressLine;
+        this.country = country;
+        this.state = state;
+        this.city = city;
+    }
+
     // Getters and Setters
 
     /**

@@ -12,6 +12,11 @@ public class Name {
     @XmlElement(name = "given")
     private String given;
 
+    public Name() {
+    }
+
+    public Name(String given, String family) {}
+
     // Getter e Setter
     public String getFamily() {
         return family;

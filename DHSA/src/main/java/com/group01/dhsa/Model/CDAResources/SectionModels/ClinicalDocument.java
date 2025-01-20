@@ -59,6 +59,9 @@ public class ClinicalDocument {
     @XmlElement(name = "author")
     private Author author;
 
+    @XmlElement(name = "custodian")
+    private Custodian custodian;
+
 
     public ClinicalDocument() {
     }
@@ -205,5 +208,13 @@ public class ClinicalDocument {
 
     public void setAuthor(Author author) {
         this.author = author;
+    }
+
+    public Custodian getCustodian() {
+        return custodian;
+    }
+
+    public void setCustodian(Custodian custodian) {
+        this.custodian = custodian;
     }
 }

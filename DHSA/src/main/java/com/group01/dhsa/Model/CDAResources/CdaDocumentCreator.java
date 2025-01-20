@@ -6,6 +6,8 @@ import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.File;
@@ -28,6 +30,8 @@ public class CdaDocumentCreator {
         Practitioner practitioner = client.getPractitionerById(authorId);
         documentBuilder.addAuthorSection(practitioner);
 
+        documentBuilder.addCustodianSection();
+
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
 //        List<ObservationAdapter> observationAdapters = fhirObservations.stream()
@@ -43,6 +47,13 @@ public class CdaDocumentCreator {
             this.tempFile = documentBuilder.build();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
+            System.out.println("File content:\n" + content);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

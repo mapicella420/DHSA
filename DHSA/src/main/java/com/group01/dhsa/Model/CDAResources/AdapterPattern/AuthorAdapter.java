@@ -24,14 +24,21 @@ public class AuthorAdapter implements CdaSection<Author, Practitioner>{
 
         AssignedAuthor assignedAuthor = new AssignedAuthor();
 
-        // Define the date range (1st Jan 1955 to 31st Dec 1955)
-        LocalDate startDate = LocalDate.of(1955, 1, 1);
-        LocalDate endDate = LocalDate.of(1955, 12, 31);
-        // Calculate the number of days between start and end date
+        // Reference year (2025)
+        int currentYear = 2025;
+        // Calculate the minimum and maximum birth years (75 years old in 2025, 27 years old in 2025)
+        int minBirthYear = currentYear - 75;  // 75 years old in 2025
+        int maxBirthYear = currentYear - 27;  // 27 years old in 2025
+
+        // Generate a random year between minBirthYear and maxBirthYear
+        int randomYear = ThreadLocalRandom.current().nextInt(minBirthYear, maxBirthYear + 1);
+        // Calculate the start date (January 1st of the random year) and the end date (December 31st of the random year)
+        LocalDate startDate = LocalDate.of(randomYear, 1, 1);
+        LocalDate endDate = LocalDate.of(randomYear, 12, 31);
         long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         // Generate a random number of days to add to the start date
         long randomDays = ThreadLocalRandom.current().nextLong(daysBetween);
-        // Generate the random date by adding the random number of days to the start date
+        // Generate the random birthdate by adding the random number of days to the start date
         LocalDate randomBirthDate = startDate.plusDays(randomDays);
         int giorno = randomBirthDate.getDayOfMonth();
         String mese = String.valueOf(randomBirthDate.getMonthValue());

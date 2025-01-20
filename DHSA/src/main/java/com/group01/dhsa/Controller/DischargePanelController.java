@@ -3,10 +3,14 @@ package com.group01.dhsa.Controller;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.Model.CDAResources.CdaDocumentCreator;
 import com.group01.dhsa.ObserverPattern.EventObservable;
+import jakarta.xml.bind.JAXBException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.hl7.fhir.r5.model.Bundle;
@@ -59,6 +63,21 @@ public class DischargePanelController {
     }
 
     @FXML
+    private void initialize() {
+        // Aggiunge un listener all'intero layout per gestire "Invio"
+        firstNameField.setOnKeyPressed(this::handleEnterPressed);
+        lastNameField.setOnKeyPressed(this::handleEnterPressed);
+    }
+
+    @FXML
+    private void handleEnterPressed(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            searchButton.fire(); // Simula il clic del pulsante login
+        }
+    }
+
+
+    @FXML
     void backToHome() {
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
@@ -76,6 +95,12 @@ public class DischargePanelController {
         stackPaneDischarge.setVisible(false);
         stackPaneCDA.setVisible(true);
 
+        CdaDocumentCreator cda = new CdaDocumentCreator();
+        try {
+            cda.createCdaDocument(patientIDMenu.getText(),"7a0d9463-9b7b-3c24-b14f-928d19dd5a32");
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
