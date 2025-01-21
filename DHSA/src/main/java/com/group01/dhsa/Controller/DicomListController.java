@@ -71,24 +71,27 @@ public class DicomListController {
 
     @FXML
     public void initialize() {
-        // Configura le colonne della tabella
-        dicomIdColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(dicomFiles.indexOf(data.getValue()) + 1)));
-        fileNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "fileName")));
-        patientIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientId")));
-        studyIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyID")));
+        selectColumn.setPrefWidth(45);
+        selectColumn.setResizable(false);
+        dicomIdColumn.setPrefWidth(35);
+        dicomIdColumn.setResizable(false);
+        fileNameColumn.setPrefWidth(200);
 
-        // Formattazione della data nella tabella
-        studyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(formatDate(getFieldValue(data.getValue(), "studyDate"))));
+        // Configura il comportamento di adattamento automatico per le altre colonne
+        patientIdColumn.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        studyIdColumn.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        studyDateColumn.setPrefWidth(Control.USE_COMPUTED_SIZE);
+        studyTimeColumn.setPrefWidth(Control.USE_COMPUTED_SIZE);
 
-        studyTimeColumn.setCellValueFactory(data -> new SimpleStringProperty(formatTime(getFieldValue(data.getValue(), "studyTime"))));
+        // Configura il ridimensionamento automatico della tabella
+        dicomTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Configura la colonna di selezione con un RadioButton personalizzato
+        // Configura la colonna di selezione con RadioButton personalizzati
         selectColumn.setCellFactory(column -> new TableCell<>() {
             private final RadioButton radioButton = new RadioButton();
 
             {
                 radioButton.setToggleGroup(toggleGroup);
-                radioButton.getStyleClass().add("checkbox"); // Aggiungi la classe di stile
                 radioButton.setOnAction(event -> handleSelection(getIndex()));
             }
 
@@ -104,17 +107,26 @@ public class DicomListController {
             }
         });
 
+        // Configura i dati delle altre colonne
+        dicomIdColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(dicomFiles.indexOf(data.getValue()) + 1)));
+        fileNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "fileName")));
+        patientIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientId")));
+        studyIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyID")));
+        studyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(formatDate(getFieldValue(data.getValue(), "studyDate"))));
+        studyTimeColumn.setCellValueFactory(data -> new SimpleStringProperty(formatTime(getFieldValue(data.getValue(), "studyTime"))));
+
+        // Carica i file DICOM
         loadDicomFiles();
 
-        // Configura il filtro della lista
+        // Configura il filtro
         filteredList = new FilteredList<>(dicomFiles, p -> true);
         dicomTable.setItems(filteredList);
 
-        // Configura il ComboBox per selezionare i campi
+        // Configura la selezione del campo per la ricerca
         searchFieldSelector.setItems(FXCollections.observableArrayList("Patient Name", "Patient ID", "Study ID", "File Name", "Study Date"));
-        searchFieldSelector.setValue("Patient Name"); // Imposta il valore predefinito
+        searchFieldSelector.setValue("Patient Name");
 
-        // Aggiungi il listener per il campo di ricerca
+        // Aggiungi un listener per il campo di ricerca
         searchField.textProperty().addListener((obs, oldValue, newValue) -> {
             filteredList.setPredicate(document -> {
                 if (newValue == null || newValue.isEmpty()) {
@@ -124,18 +136,19 @@ public class DicomListController {
                 String lowerCaseFilter = newValue.toLowerCase();
                 String fieldValue = getFieldValue(document, selectedField);
                 if ("studyDate".equals(selectedField)) {
-                    // Formatta la data per la ricerca
                     fieldValue = formatDate(fieldValue).toLowerCase();
                 }
                 return fieldValue.contains(lowerCaseFilter);
             });
         });
 
-        // Disabilita il pulsante View DICOM inizialmente
+        // Disabilita inizialmente il pulsante View DICOM
         viewImageButton.setDisable(true);
 
         System.out.println("[DEBUG] Initialization completed!");
     }
+
+
 
     private String mapField(String selectedField) {
         switch (selectedField) {
@@ -243,6 +256,6 @@ public class DicomListController {
         System.out.println("Navigating to Upload CSV screen...");
         Stage currentStage = (Stage) refreshButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DicomImportScreen.fxml", currentStage, "Upload CSV");
+        screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", currentStage, "Upload CSV");
     }
 }
