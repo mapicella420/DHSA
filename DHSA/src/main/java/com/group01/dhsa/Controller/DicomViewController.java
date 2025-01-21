@@ -263,7 +263,7 @@ public class DicomViewController {
     }
 
     private void startPlayback() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(250), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.millis(150), event -> {
             double currentValue = frameScrollBar.getValue();
             if (currentValue < frameScrollBar.getMax()) {
                 frameScrollBar.setValue(currentValue + 1); // Passa al frame successivo
