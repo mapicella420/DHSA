@@ -151,3 +151,14 @@
     -fx-stroke-width: 2px; /* Larghezza della spunta */
     -fx-stroke: #2a5d84; /* Colore della spunta */
 }
+
+/* Stile per la sezione metadati */
+.metadata-box {
+    -fx-background-color: white; /* Sfondo bianco */
+    -fx-border-color: #5ba4d7; /* Bordo azzurro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 10px; /* Angoli arrotondati */
+    -fx-padding: 15px; /* Spaziatura interna */
+    -fx-effect: dropshadow(gaussian, rgba(90, 164, 215, 0.5), 10, 0, 2, 2); /* Ombra per l'effetto card */
+    -fx-spacing: 10px;
+}

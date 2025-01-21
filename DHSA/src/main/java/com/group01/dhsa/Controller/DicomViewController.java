@@ -1,5 +1,6 @@
 package com.group01.dhsa.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
@@ -177,11 +178,21 @@ public class DicomViewController {
         frameScrollBar.valueProperty().addListener((obs, oldValue, newValue) -> {
             int frameIndex = newValue.intValue();
             System.out.println("[DEBUG] Scrolling to frame: " + (frameIndex + 1));
-            loadFrame(frameIndex);
+
+            if (frameIndex >= totalFrames-1) {
+                frameScrollBar.setValue(0); // Torna al primo frame
+                loadFrame(0);
+            } else if (frameIndex < 0) {
+                frameScrollBar.setValue(totalFrames - 1); // Torna all'ultimo frame
+                loadFrame(totalFrames - 1);
+            } else {
+                loadFrame(frameIndex);
+            }
         });
 
         System.out.println("[DEBUG] ScrollBar setup complete. Total frames: " + totalFrames);
     }
+
 
     private void setupMouseScrollListener() {
         rootVBox.setOnScroll(event -> {
@@ -206,19 +217,11 @@ public class DicomViewController {
         screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", stage, "DICOM Files");
     }
 
-    public void closeResources() {
-        try {
-            if (dicomInputStream != null) {
-                dicomInputStream.close();
-                System.out.println("[DEBUG] DICOM input stream closed.");
-            }
+    public void onCloseButtonClick(ActionEvent actionEvent) {
+        System.out.println("[DEBUG] Returning to the DICOM List screen.");
+        Stage stage = (Stage) dicomImageView.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "DICOM Files");
 
-            if (dicomReader != null) {
-                dicomReader.dispose();
-                System.out.println("[DEBUG] DICOM reader disposed.");
-            }
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error closing resources: " + e.getMessage());
-        }
     }
 }
