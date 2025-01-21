@@ -13,6 +13,13 @@
             <!-- Title -->
             <Label text="DICOM Files" styleClass="label-title" alignment="CENTER" />
 
+            <!-- Search Bar -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Search by:" styleClass="label" />
+                <ComboBox fx:id="searchFieldSelector" promptText="Select Field" styleClass="combo-box" />
+                <TextField fx:id="searchField" promptText="Enter search term..." styleClass="text-field" />
+            </HBox>
+
             <!-- Table View -->
             <TableView fx:id="dicomTable" prefHeight="400.0" prefWidth="780.0" styleClass="table-view">
                 <columns>
@@ -29,6 +36,7 @@
             <!-- Buttons -->
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
+                <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
                 <Button fx:id="viewImageButton" text="View DICOM Image" onAction="#onViewImageClick" disable="true" styleClass="button-blue" />
             </HBox>
         </VBox>

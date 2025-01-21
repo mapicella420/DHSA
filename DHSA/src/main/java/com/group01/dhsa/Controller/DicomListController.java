@@ -7,15 +7,15 @@ import com.mongodb.client.MongoDatabase;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.bson.Document;
 
-import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class DicomListController {
 
@@ -49,8 +49,19 @@ public class DicomListController {
     @FXML
     private Button viewImageButton;
 
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private ComboBox<String> searchFieldSelector;
+
+    @FXML
+    private Button refreshButton;
+
     private final ObservableList<Document> dicomFiles = FXCollections.observableArrayList();
     private final ToggleGroup toggleGroup = new ToggleGroup(); // Gruppo per consentire una sola selezione alla volta
+
+    private FilteredList<Document> filteredList;
 
     private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
@@ -65,10 +76,12 @@ public class DicomListController {
         fileNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "fileName")));
         patientIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientId")));
         studyIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyID")));
-        studyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyDate")));
-        studyTimeColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyTime")));
 
-        // Configura la colonna di selezione con un RadioButton
+        // Formattazione della data nella tabella
+        studyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(formatDate(getFieldValue(data.getValue(), "studyDate"))));
+
+        studyTimeColumn.setCellValueFactory(data -> new SimpleStringProperty(formatTime(getFieldValue(data.getValue(), "studyTime"))));
+
         // Configura la colonna di selezione con un RadioButton personalizzato
         selectColumn.setCellFactory(column -> new TableCell<>() {
             private final RadioButton radioButton = new RadioButton();
@@ -91,15 +104,70 @@ public class DicomListController {
             }
         });
 
-
         loadDicomFiles();
-        dicomTable.setItems(dicomFiles);
+
+        // Configura il filtro della lista
+        filteredList = new FilteredList<>(dicomFiles, p -> true);
+        dicomTable.setItems(filteredList);
+
+        // Configura il ComboBox per selezionare i campi
+        searchFieldSelector.setItems(FXCollections.observableArrayList("Patient Name", "Patient ID", "Study ID", "File Name", "Study Date"));
+        searchFieldSelector.setValue("Patient Name"); // Imposta il valore predefinito
+
+        // Aggiungi il listener per il campo di ricerca
+        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
+            filteredList.setPredicate(document -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String selectedField = mapField(searchFieldSelector.getValue());
+                String lowerCaseFilter = newValue.toLowerCase();
+                String fieldValue = getFieldValue(document, selectedField);
+                if ("studyDate".equals(selectedField)) {
+                    // Formatta la data per la ricerca
+                    fieldValue = formatDate(fieldValue).toLowerCase();
+                }
+                return fieldValue.contains(lowerCaseFilter);
+            });
+        });
 
         // Disabilita il pulsante View DICOM inizialmente
         viewImageButton.setDisable(true);
 
         System.out.println("[DEBUG] Initialization completed!");
     }
+
+    private String mapField(String selectedField) {
+        switch (selectedField) {
+            case "Patient Name":
+                return "patientName";
+            case "Patient ID":
+                return "patientId";
+            case "Study ID":
+                return "studyID";
+            case "File Name":
+                return "fileName";
+            case "Study Date":
+                return "studyDate";
+            default:
+                return "patientName";
+        }
+    }
+
+    private String formatTime(String time) {
+        try {
+            if (time == null || time.length() != 6) {
+                return "Invalid Time";
+            }
+            String hours = time.substring(0, 2);
+            String minutes = time.substring(2, 4);
+            String seconds = time.substring(4, 6);
+            return hours + ":" + minutes + ":" + seconds;
+        } catch (Exception e) {
+            return "Invalid Time";
+        }
+    }
+
 
     private void loadDicomFiles() {
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
@@ -118,6 +186,16 @@ public class DicomListController {
         return document.containsKey(fieldName) && document.get(fieldName) != null
                 ? document.get(fieldName).toString()
                 : "N/A";
+    }
+
+    private String formatDate(String date) {
+        try {
+            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(date, inputFormatter).format(outputFormatter);
+        } catch (Exception e) {
+            return "Invalid Date";
+        }
     }
 
     private void handleSelection(int index) {
@@ -161,6 +239,10 @@ public class DicomListController {
         }
     }
 
-
-
+    public void onRefreshButtonClick() {
+        System.out.println("Navigating to Upload CSV screen...");
+        Stage currentStage = (Stage) refreshButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DicomImportScreen.fxml", currentStage, "Upload CSV");
+    }
 }

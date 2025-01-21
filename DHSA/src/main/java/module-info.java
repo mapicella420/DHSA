@@ -14,7 +14,7 @@ module com.group01.dhsa {
     requires dcm4che.imageio;
     requires dcm4che.iod;
     requires javafx.swing;
-
+    requires fontawesomefx;
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)
     exports com.group01.dhsa;
 

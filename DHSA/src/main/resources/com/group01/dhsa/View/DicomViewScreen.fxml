@@ -13,17 +13,25 @@
     <!-- Image View with ScrollBar -->
     <HBox alignment="CENTER" spacing="10">
         <ImageView fx:id="dicomImageView" fitHeight="400.0" fitWidth="600.0" styleClass="image-view">
-         <HBox.margin>
-            <Insets top="0" />
-         </HBox.margin></ImageView>
+            <HBox.margin>
+                <Insets top="0" />
+            </HBox.margin>
+        </ImageView>
         <ScrollBar fx:id="frameScrollBar" maxHeight="400.0" orientation="VERTICAL" prefWidth="30.0" styleClass="scroll-bar" />
-      <VBox.margin>
-         <Insets top="20.0" />
-      </VBox.margin>
+        <VBox.margin>
+            <Insets top="20.0" />
+        </VBox.margin>
     </HBox>
 
-    <!-- Frame Label -->
-    <Label fx:id="frameLabel" alignment="CENTER" styleClass="label-title" text="Frame 0/0" />
+    <!-- Frame Label with Play/Pause Button -->
+    <HBox alignment="CENTER" spacing="15">
+        <Label fx:id="frameLabel" alignment="CENTER" styleClass="label-title" text="Frame 0/0" />
+        <Button fx:id="playPauseButton" onAction="#onPlayPauseButtonClick" styleClass="icon-button">
+            <graphic>
+                <ImageView fx:id="playPauseIcon" fitHeight="20" fitWidth="20" />
+            </graphic>
+        </Button>
+    </HBox>
 
     <!-- Metadata Section -->
     <VBox alignment="CENTER" spacing="15" styleClass="metadata-box">
@@ -46,12 +54,12 @@
         <Label fx:id="accessionNumberLabel" styleClass="label-pane" text="Accession Number: " />
     </VBox>
 
-    <!-- Back Button -->
+    <!-- Navigation Buttons -->
     <HBox alignment="CENTER" spacing="50">
         <Button onAction="#onBackButtonClick" styleClass="button-blue" text="Back" />
         <Button onAction="#onCloseButtonClick" styleClass="button-blue" text="Back to home" />
-      <VBox.margin>
-         <Insets bottom="15.0" />
-      </VBox.margin>
+        <VBox.margin>
+            <Insets bottom="15.0" />
+        </VBox.margin>
     </HBox>
 </VBox>

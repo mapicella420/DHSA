@@ -1,13 +1,17 @@
 package com.group01.dhsa.Controller;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.bson.Document;
 import org.dcm4che2.imageio.plugins.dcm.DicomImageReadParam;
 
@@ -59,10 +63,24 @@ public class DicomViewController {
     @FXML
     private Label accessionNumberLabel;
 
+    @FXML
+    private Button playPauseButton;
+
+    @FXML
+    private ImageView playPauseIcon;
+
     private Document dicomFile;
     private int totalFrames = 1;
     private ImageReader dicomReader;
     private ImageInputStream dicomInputStream;
+
+    private Timeline timeline;
+    private boolean isPlaying = false;
+
+    private final Image playIcon = new Image(getClass().getResourceAsStream("/com/group01/dhsa/icons/play.png"));
+    private final Image pauseIcon = new Image(getClass().getResourceAsStream("/com/group01/dhsa/icons/pause.png"));
+
+
 
     @FXML
     public void initialize() {
@@ -77,6 +95,7 @@ public class DicomViewController {
         }
 
         setupMouseScrollListener();
+        updatePlayPauseIcon(); // Imposta l'icona iniziale
     }
 
     public void setDicomFile(Document dicomFile) {
@@ -155,18 +174,45 @@ public class DicomViewController {
 
             patientNameLabel.setText("Patient Name: " + dicomFile.getString("patientName"));
             patientIdLabel.setText("Patient ID: " + dicomFile.getString("patientId"));
-            patientBirthDateLabel.setText("Birth Date: " + dicomFile.getString("patientBirthDate"));
+            patientBirthDateLabel.setText("Birth Date: " + formatDate(dicomFile.getString("patientBirthDate")));
             patientSexLabel.setText("Sex: " + dicomFile.getString("patientSex"));
             studyInstanceUIDLabel.setText("Study UID: " + dicomFile.getString("studyInstanceUID"));
             modalityLabel.setText("Modality: " + dicomFile.getString("modality"));
-            studyDateLabel.setText("Study Date: " + dicomFile.getString("studyDate"));
-            studyTimeLabel.setText("Study Time: " + dicomFile.getString("studyTime"));
+            studyDateLabel.setText("Study Date: " + formatDate(dicomFile.getString("studyDate")));
+            studyTimeLabel.setText("Study Time: " + formatTime(dicomFile.getString("studyTime")));
             accessionNumberLabel.setText("Accession Number: " + dicomFile.getString("accessionNumber"));
 
             System.out.println("[DEBUG] Metadata loaded successfully.");
         } catch (Exception e) {
             System.err.println("[ERROR] Error loading metadata: " + e.getMessage());
-            e.printStackTrace();
+        }
+    }
+
+    private String formatTime(String time) {
+        try {
+            if (time == null || time.length() != 6) {
+                return "Invalid Time";
+            }
+            String hours = time.substring(0, 2);
+            String minutes = time.substring(2, 4);
+            String seconds = time.substring(4, 6);
+            return hours + ":" + minutes + ":" + seconds;
+        } catch (Exception e) {
+            return "Invalid Time";
+        }
+    }
+
+    private String formatDate(String date) {
+        try {
+            if (date == null || date.length() != 8) {
+                return "Invalid Date";
+            }
+            String year = date.substring(0, 4);
+            String month = date.substring(4, 6);
+            String day = date.substring(6, 8);
+            return day + "/" + month + "/" + year;
+        } catch (Exception e) {
+            return "Invalid Date";
         }
     }
 
@@ -179,12 +225,9 @@ public class DicomViewController {
             int frameIndex = newValue.intValue();
             System.out.println("[DEBUG] Scrolling to frame: " + (frameIndex + 1));
 
-            if (frameIndex >= totalFrames-1) {
-                frameScrollBar.setValue(0); // Torna al primo frame
+            if (frameIndex >= totalFrames - 1) {
+                frameScrollBar.setValue(0); // Riparti dal primo frame
                 loadFrame(0);
-            } else if (frameIndex < 0) {
-                frameScrollBar.setValue(totalFrames - 1); // Torna all'ultimo frame
-                loadFrame(totalFrames - 1);
             } else {
                 loadFrame(frameIndex);
             }
@@ -192,7 +235,6 @@ public class DicomViewController {
 
         System.out.println("[DEBUG] ScrollBar setup complete. Total frames: " + totalFrames);
     }
-
 
     private void setupMouseScrollListener() {
         rootVBox.setOnScroll(event -> {
@@ -210,7 +252,46 @@ public class DicomViewController {
     }
 
     @FXML
+    private void onPlayPauseButtonClick() {
+        if (isPlaying) {
+            stopPlayback();
+        } else {
+            startPlayback();
+        }
+        isPlaying = !isPlaying;
+        updatePlayPauseIcon();
+    }
+
+    private void startPlayback() {
+        timeline = new Timeline(new KeyFrame(Duration.millis(250), event -> {
+            double currentValue = frameScrollBar.getValue();
+            if (currentValue < frameScrollBar.getMax()) {
+                frameScrollBar.setValue(currentValue + 1); // Passa al frame successivo
+            } else {
+                frameScrollBar.setValue(0); // Riparti dal primo frame
+            }
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+
+    private void stopPlayback() {
+        if (timeline != null) {
+            timeline.stop();
+        }
+    }
+
+    private void updatePlayPauseIcon() {
+        if (isPlaying) {
+            playPauseIcon.setImage(pauseIcon);
+        } else {
+            playPauseIcon.setImage(playIcon);
+        }
+    }
+
+    @FXML
     private void onBackButtonClick() {
+        stopPlayback();
         System.out.println("[DEBUG] Returning to the DICOM List screen.");
         Stage stage = (Stage) dicomImageView.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
@@ -218,10 +299,10 @@ public class DicomViewController {
     }
 
     public void onCloseButtonClick(ActionEvent actionEvent) {
+        stopPlayback();
         System.out.println("[DEBUG] Returning to the DICOM List screen.");
         Stage stage = (Stage) dicomImageView.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "DICOM Files");
-
+        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "Doctor Dashboard");
     }
 }
