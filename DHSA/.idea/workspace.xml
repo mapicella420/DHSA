@@ -8,26 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/LegalAuthenticatorAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/LegalAuthenticatorAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EffectiveTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EffectiveTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/LoggedUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoggedUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocumentTest.java" beforeDir="false" />
-    </list>
+    <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -273,7 +254,7 @@
       <workItem from="1733924259663" duration="5656000" />
       <workItem from="1737362609596" duration="43435000" />
       <workItem from="1737416556397" duration="35000" />
-      <workItem from="1737451678217" duration="13235000" />
+      <workItem from="1737451678217" duration="14059000" />
     </task>
     <servers />
   </component>
