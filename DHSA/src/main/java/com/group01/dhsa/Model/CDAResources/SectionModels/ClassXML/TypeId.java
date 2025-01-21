@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "root", "extension"})
 public class TypeId {
 
     @XmlAttribute(name = "extension")

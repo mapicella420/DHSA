@@ -142,13 +142,34 @@ public class LoginUserController {
             MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
             Document user = usersCollection.find(eq("username", username)).first();
 
-            if (user != null) {
-                String storedHash = user.getString("passwordHash");
-                if (BCrypt.checkpw(password, storedHash)) {
-                    return user.getString("role");
+            if (organization.equals("My Hospital")) {
+
+                if (user != null) {
+                    String storedHash = user.getString("passwordHash");
+                    if (BCrypt.checkpw(password, storedHash)) {
+                        LoggedUser userLog = LoggedUser.getInstance();
+                        userLog.setFhirId(user.getString("fhirID"));
+                        System.out.println(userLog.getFhirId());
+                        return user.getString("role");
+                    }
+
+                }
+
+            } else {
+                if (user != null) {
+                    String storedHash = user.getString("passwordHash");
+                    if (BCrypt.checkpw(password, storedHash)) {
+
+                        LoggedUser userLog = LoggedUser.getInstance();
+                        userLog.setFhirId(user.getString("fhirID"));
+                        return user.getString("role");
+                    }
+
+
                 }
             }
+                return null;
+            }
         }
-        return null;
-    }
+
 }

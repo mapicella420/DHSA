@@ -3,21 +3,20 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public class PatientRole {
+public class RepresentedCustodianOrganization {
 
     @XmlElement(name = "id")
     private Id id;
 
+    @XmlElement(name = "name")
+    private String name;
+
     @XmlElement(name = "addr")
     private Addr addr;
 
-    @XmlElement(name = "patient")
-    private PatientCDA patient;
-
-    public PatientRole() {
+    public RepresentedCustodianOrganization() {
     }
 
-    // Getter e Setter
     public Id getId() {
         return id;
     }
@@ -26,12 +25,12 @@ public class PatientRole {
         this.id = id;
     }
 
-    public PatientCDA getPatient() {
-        return patient;
+    public String getName() {
+        return name;
     }
 
-    public void setPatient(PatientCDA patient) {
-        this.patient = patient;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Addr getAddr() {

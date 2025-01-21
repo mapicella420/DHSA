@@ -1,8 +1,8 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
-import com.group01.dhsa.Model.CDAResources.FHIRClient;
+import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
-import com.group01.dhsa.Model.CDAResources.SectionModels.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -26,7 +26,7 @@ class PatientAdapterTest {
         patientAdapter = new PatientAdapter();
 
         // Crea un client FHIR e recupera un paziente
-        FHIRClient fhirClient = new FHIRClient();
+        FHIRClient fhirClient = FHIRClient.getInstance();
         String patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846"; // esempio di ID del paziente
 
         // Recupera il paziente tramite il FHIRClient
@@ -64,12 +64,47 @@ class PatientAdapterTest {
         String xmlOutput = stringWriter.toString();
         System.out.println(xmlOutput);
 
-        // Verifica che l'XML contenga i dati corretti
-        assertTrue(xmlOutput.contains("<id extension=\"2.16.840.1.113883.2.9.4.3.2\"/>")); // Assicurati che l'ID sia presente
-        assertTrue(xmlOutput.contains("<given>" + patient.getNameFirstRep().getGivenAsSingleString() + "</given>"));
-        assertTrue(xmlOutput.contains("<family>" + patient.getNameFirstRep().getFamily() + "</family>"));
-        assertTrue(xmlOutput.contains("<administrativeGenderCode code=\"" + patient.getGender().toCode() + "\"/>"));
+        // Estrai i dati dal paziente
+        String nome = patient.getNameFirstRep().getGivenAsSingleString();
+        String cognome = patient.getNameFirstRep().getFamily();
+        String sesso = patient.getGender().toString();
 
-        // Puoi anche aggiungere altre asserzioni per verificare il contenuto completo dell'XML
+        // Calcola il codice fiscale
+        int giorno = patient.getBirthDateElement().getDay();
+        String mese = patient.getBirthDateElement().getMonth().toString();
+        int anno = patient.getBirthDateElement().getYear();
+        CodiceFiscaleCalculator cf = new CodiceFiscaleCalculator(nome, cognome, giorno, mese, anno, sesso, "STATI UNITI", true);
+
+        // Verifica che l'XML contenga i dati corretti
+        assertTrue(xmlOutput.contains("<id root=\"2.16.840.1.113883.2.9.4.3.2\" extension=\"" + cf.calcolaCodiceFiscale() +
+                "\" assigningAuthorityName=\"Ministero Economia e Finanze\"/>"));
+        assertTrue(xmlOutput.contains("<given>" + nome + "</given>"));
+        assertTrue(xmlOutput.contains("<family>" + cognome + "</family>"));
+
+        // Verifica che l'indirizzo sia presente
+        assertTrue(xmlOutput.contains("<addr use=\"HP\">"));
+        assertTrue(xmlOutput.contains("<country>536</country>"));  // Codice ISTAT US
+        assertTrue(xmlOutput.contains("<state>" + patient.getAddressFirstRep().getState() + "</state>"));
+        assertTrue(xmlOutput.contains("<city>" + patient.getAddressFirstRep().getCity() + "</city>"));
+        assertTrue(xmlOutput.contains("<streetAddressLine>" + patient.getAddressFirstRep().getLine().getFirst() + "</streetAddressLine>"));
+
+        // Verifica che la data di nascita sia presente
+        assertTrue(xmlOutput.contains("<birthTime value=\"" + patient.getBirthDateElement().asStringValue() + "\"/>"));
+
+        // Verifica che il codice del genere sia corretto
+        String genderDisplay = "Sconosciuto";
+        if ("male".equalsIgnoreCase(sesso)) {
+            genderDisplay = "Maschio";
+        } else if ("female".equalsIgnoreCase(sesso)) {
+            genderDisplay = "Femmina";
+        } else if ("other".equalsIgnoreCase(sesso)) {
+            genderDisplay = "Altro";
+        }
+
+        assertTrue(xmlOutput.contains("<administrativeGenderCode code=\"" +
+                patient.getGender().toString().toLowerCase() +
+                "\" codeSystem=\"2.16.840.1.113883.4.642.4.2\" codeSystemName=\"HL7 AdministrativeGender\" displayName=\""
+                + genderDisplay + "\""));
+
     }
 }

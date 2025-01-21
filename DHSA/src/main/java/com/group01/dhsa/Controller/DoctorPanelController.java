@@ -30,6 +30,9 @@ public class DoctorPanelController {
 
     @FXML
     void logout() {
+        LoggedUser userLog = LoggedUser.getInstance();
+        userLog.logout();
+
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/LoginUserScreen.fxml",currentStage,"Login Screen");

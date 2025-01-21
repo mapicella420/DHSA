@@ -99,4 +99,56 @@ public class ObjectFactory {
         return new RecordTarget();
     }
 
+    public Author createAuthor() {
+        return new Author();
+    }
+
+    public AssignedAuthor createAssignedAuthor() {
+        return new AssignedAuthor();
+    }
+
+    public AssignedPerson createAssignedPerson() {
+        return new AssignedPerson();
+    }
+
+    public Custodian createCustodian() {
+        return new Custodian();
+    }
+
+    public AssignedCustodian createAssignedCustodian() { return new AssignedCustodian(); }
+
+    public RepresentedCustodianOrganization createRepresentedCustodianOrganization() { return new RepresentedCustodianOrganization(); }
+
+    public AssignedEntity createAssignedEntity() { return new AssignedEntity(); }
+
+    public LegalAuthenticator createLegalAuthenticator() { return new LegalAuthenticator(); }
+
+    public RepresentedOrganization createRepresentedOrganization() { return new RepresentedOrganization(); }
+
+    public Telecom createTelecom() {return new Telecom(); }
+
+    public SignatureCode createSignatureCode() { return new SignatureCode(); }
+
+    public AsOrganizationPartOf createAsOrganizationPartOf() { return new AsOrganizationPartOf(); }
+
+    public ComponentOf createComponentOf() { return new ComponentOf(); }
+
+    public EncompassingEncounter createEncompassingEncounter() { return new EncompassingEncounter(); }
+
+    public HealthCareFacility createHealthCareFacility() { return new HealthCareFacility(); }
+
+    public High createHigh() {return new High(); }
+
+    public Location createLocation() {return new Location(); }
+
+    public LocationHealth createLocationHealth() { return new LocationHealth(); }
+
+    public Low createLow() {return new Low(); }
+
+    public ResponsibleParty createResponsibleParty() { return new ResponsibleParty(); }
+
+    public ServiceProviderOrganization createServiceProviderOrganization() { return new ServiceProviderOrganization(); }
+
+
+
 }

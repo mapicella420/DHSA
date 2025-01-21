@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = { "root", "extension", "assigningAuthorityName" })
 public class Id {
 
     @XmlAttribute(name = "extension")
@@ -20,6 +21,11 @@ public class Id {
         this.extension = extension;
         this.root = root;
         this.assigningAuthorityName = assigningAuthorityName;
+    }
+
+    public Id(String extension, String root) {
+        this.extension = extension;
+        this.root = root;
     }
 
     public String getExtension() {
