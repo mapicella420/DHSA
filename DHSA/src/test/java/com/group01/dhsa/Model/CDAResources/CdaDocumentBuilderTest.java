@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model.CDAResources;
 
+import com.group01.dhsa.FHIRClient;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.Patient;

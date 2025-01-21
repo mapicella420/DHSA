@@ -65,6 +65,9 @@ public class ClinicalDocument {
     @XmlElement(name = "legalAuthenticator")
     private LegalAuthenticator legalAuthenticator;
 
+    @XmlElement(name = "componentOf")
+    private ComponentOf componentOf;
+
 
     public ClinicalDocument() {
     }
@@ -227,5 +230,13 @@ public class ClinicalDocument {
 
     public void setLegalAuthenticator(LegalAuthenticator legalAuthenticator) {
         this.legalAuthenticator = legalAuthenticator;
+    }
+
+    public ComponentOf getComponentOf() {
+        return componentOf;
+    }
+
+    public void setComponentOf(ComponentOf componentOf) {
+        this.componentOf = componentOf;
     }
 }

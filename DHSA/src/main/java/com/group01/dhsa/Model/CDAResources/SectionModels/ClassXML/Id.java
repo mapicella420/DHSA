@@ -23,6 +23,11 @@ public class Id {
         this.assigningAuthorityName = assigningAuthorityName;
     }
 
+    public Id(String extension, String root) {
+        this.extension = extension;
+        this.root = root;
+    }
+
     public String getExtension() {
         return extension;
     }

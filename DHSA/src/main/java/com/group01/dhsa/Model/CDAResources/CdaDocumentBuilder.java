@@ -4,7 +4,9 @@ import com.group01.dhsa.Model.CDAResources.AdapterPattern.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.*;
-import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.r5.model.Encounter;
+import org.hl7.fhir.r5.model.Patient;
+import org.hl7.fhir.r5.model.Practitioner;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +59,14 @@ public class CdaDocumentBuilder {
         LegalAuthenticator legalAuthenticator = legalAuthenticatorAdapter.toCdaObject(encounter);
 
         clinicalDocument.setLegalAuthenticator(legalAuthenticator);
+    }
+
+    public void addComponentOfSection(Encounter encounter) {
+        ComponentOfAdapter componentOfAdapter = new ComponentOfAdapter();
+
+        ComponentOf componentOf = componentOfAdapter.toCdaObject(encounter);
+
+        clinicalDocument.setComponentOf(componentOf);
     }
 //
 //    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {

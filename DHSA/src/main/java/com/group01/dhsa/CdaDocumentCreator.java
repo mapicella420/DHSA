@@ -1,8 +1,7 @@
 package com.group01.dhsa;
 
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
-import com.group01.dhsa.Model.CDAResources.FHIRClient;
-import com.group01.dhsa.Model.LoggedUser;
+import com.group01.dhsa.Controller.LoggedUser;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.*;
 
@@ -41,6 +40,8 @@ public class CdaDocumentCreator {
 
         //Lemuel paziente di questo id
         documentBuilder.addLegalAuthenticatorSection(encounter);
+
+        documentBuilder.addComponentOfSection(encounter);
 
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);

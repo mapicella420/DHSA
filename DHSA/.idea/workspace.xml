@@ -9,27 +9,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/LegalAuthenticatorAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/LegalAuthenticatorAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Author.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Author.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Name.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Name.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EffectiveTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EffectiveTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Id.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/ProviderImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/MongoInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/MongoInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/LoggedUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoggedUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocumentTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,8 +37,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="FxmlFile" />
-        <option value="JUnit5 Test Class" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -86,46 +83,46 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MyApp.executor": "Run",
-    "Application.MyHL7CdaConverter.executor": "Run",
-    "Application.Unnamed.executor": "Run",
-    "JUnit.AuthorAdapterTest.executor": "Run",
-    "JUnit.CdaDocumentBuilderTest (1).executor": "Run",
-    "JUnit.CdaDocumentBuilderTest.executor": "Run",
-    "JUnit.FHIRClientTest.getEncounterFromPractitioner.executor": "Run",
-    "JUnit.FHIRClientTest.getEncounterFromPractitionerAndPatient.executor": "Run",
-    "JUnit.FHIRClientTest.getOrganizationFromId.executor": "Run",
-    "JUnit.FHIRClientTest.getOrganizationFromPractitionerAndPatient.executor": "Run",
-    "JUnit.FHIRClientTest.getPatientFromId.executor": "Run",
-    "JUnit.FHIRClientTest.getPractitionerFromEncounter.executor": "Run",
-    "JUnit.FHIRClientTest.getPractitionerFromId.executor": "Debug",
-    "JUnit.PatientAdapterTest.executor": "Run",
-    "JUnit.PatientAdapterTest.toCdaObject.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "CDA",
-    "grid.search.filter.rows": "true",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/emanu/AppData/Local/SceneBuilder/SceneBuilder.exe",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "SDKs",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "editor.preferences.smartKeys",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.MyApp.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MyHL7CdaConverter.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Unnamed.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.AuthorAdapterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CdaDocumentBuilderTest (1).executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CdaDocumentBuilderTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getEncounterFromPractitioner.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getEncounterFromPractitionerAndPatient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getOrganizationFromId.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getOrganizationFromPractitionerAndPatient.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getPatientFromId.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getPractitionerFromEncounter.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FHIRClientTest.getPractitionerFromId.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.PatientAdapterTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.PatientAdapterTest.toCdaObject.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;CDA&quot;,
+    &quot;grid.search.filter.rows&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/emanu/AppData/Local/SceneBuilder/SceneBuilder.exe&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDKs&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.smartKeys&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\sasyb\IdeaProjects\DHSA\DHSA\src\main\resources\com\group01\dhsa" />
@@ -141,15 +138,30 @@
       <recent name="com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
-      <recent name="com.group01.dhsa.Model.CDAResources" />
       <recent name="com.group01.dhsa.Model.CDAResources.AdapterPattern" />
+      <recent name="com.group01.dhsa.Model.CDAResources" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MyHL7CdaConverter">
+  <component name="RunManager" selected="JUnit.AuthorAdapterTest">
     <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
       <option name="VM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML=ALL-UNNAMED " />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="AuthorAdapterTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DHSA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.AdapterPattern.AuthorAdapterTest" />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -181,22 +193,6 @@
       <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources" />
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.FHIRClientTest" />
       <option name="METHOD_NAME" value="getOrganizationFromId" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="FHIRClientTest.getOrganizationFromPractitionerAndPatient" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DHSA" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.group01.dhsa.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources" />
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.FHIRClientTest" />
-      <option name="METHOD_NAME" value="getOrganizationFromPractitionerAndPatient" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -236,19 +232,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.MyHL7CdaConverter" />
+      <item itemvalue="JUnit.AuthorAdapterTest" />
       <item itemvalue="JUnit.FHIRClientTest.getEncounterFromPractitionerAndPatient" />
       <item itemvalue="JUnit.FHIRClientTest.getOrganizationFromId" />
-      <item itemvalue="JUnit.FHIRClientTest.getOrganizationFromPractitionerAndPatient" />
       <item itemvalue="JUnit.FHIRClientTest.getPatientFromId" />
       <item itemvalue="JUnit.FHIRClientTest.getPractitionerFromId" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.AuthorAdapterTest" />
         <item itemvalue="JUnit.FHIRClientTest.getEncounterFromPractitionerAndPatient" />
         <item itemvalue="JUnit.FHIRClientTest.getPatientFromId" />
         <item itemvalue="JUnit.FHIRClientTest.getPractitionerFromId" />
         <item itemvalue="JUnit.FHIRClientTest.getOrganizationFromId" />
-        <item itemvalue="JUnit.FHIRClientTest.getOrganizationFromPractitionerAndPatient" />
       </list>
     </recent_temporary>
   </component>
@@ -275,7 +271,9 @@
       <workItem from="1733211836858" duration="639000" />
       <workItem from="1733765346241" duration="3866000" />
       <workItem from="1733924259663" duration="5656000" />
-      <workItem from="1737362609596" duration="43234000" />
+      <workItem from="1737362609596" duration="43435000" />
+      <workItem from="1737416556397" duration="35000" />
+      <workItem from="1737451678217" duration="13235000" />
     </task>
     <servers />
   </component>

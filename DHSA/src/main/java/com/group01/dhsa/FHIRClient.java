@@ -1,10 +1,8 @@
-package com.group01.dhsa.Model.CDAResources;
+package com.group01.dhsa;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
-import ca.uhn.fhir.rest.gclient.TokenClientParam;
-import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.List;

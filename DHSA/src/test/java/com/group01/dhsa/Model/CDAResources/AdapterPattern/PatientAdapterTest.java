@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
+import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.JAXBContext;

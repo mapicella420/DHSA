@@ -129,4 +129,26 @@ public class ObjectFactory {
 
     public SignatureCode createSignatureCode() { return new SignatureCode(); }
 
+    public AsOrganizationPartOf createAsOrganizationPartOf() { return new AsOrganizationPartOf(); }
+
+    public ComponentOf createComponentOf() { return new ComponentOf(); }
+
+    public EncompassingEncounter createEncompassingEncounter() { return new EncompassingEncounter(); }
+
+    public HealthCareFacility createHealthCareFacility() { return new HealthCareFacility(); }
+
+    public High createHigh() {return new High(); }
+
+    public Location createLocation() {return new Location(); }
+
+    public LocationHealth createLocationHealth() { return new LocationHealth(); }
+
+    public Low createLow() {return new Low(); }
+
+    public ResponsibleParty createResponsibleParty() { return new ResponsibleParty(); }
+
+    public ServiceProviderOrganization createServiceProviderOrganization() { return new ServiceProviderOrganization(); }
+
+
+
 }

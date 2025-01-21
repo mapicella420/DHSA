@@ -1,11 +1,10 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.Model.CDAResources.CodiceFiscaleCalculator;
-import com.group01.dhsa.Model.CDAResources.FHIRClient;
+import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.Organization;
-import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
 import java.time.LocalDate;

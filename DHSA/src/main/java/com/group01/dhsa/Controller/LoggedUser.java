@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model;
+package com.group01.dhsa.Controller;
 
 public class LoggedUser {
     private static LoggedUser instance;

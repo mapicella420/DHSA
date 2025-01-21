@@ -4,8 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.CdaDocumentCreator;
-import com.group01.dhsa.Model.CDAResources.FHIRClient;
-import com.group01.dhsa.Model.LoggedUser;
+import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import jakarta.xml.bind.JAXBException;
 import javafx.event.ActionEvent;
@@ -17,8 +16,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.hl7.fhir.r5.model.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
