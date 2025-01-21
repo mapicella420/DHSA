@@ -9,8 +9,11 @@ module com.group01.dhsa {
     requires org.hl7.fhir.r5;
     requires org.apache.commons.csv;
     requires org.hl7.fhir.utilities;
-    requires jakarta.xml.bind;
-
+    requires jakarta.xml.bind;// Moduli DCM4CHE
+    requires dcm4che.core;
+    requires dcm4che.imageio;
+    requires dcm4che.iod;
+    requires javafx.swing;
 
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)
     exports com.group01.dhsa;

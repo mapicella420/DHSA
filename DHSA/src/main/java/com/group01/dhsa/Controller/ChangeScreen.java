@@ -23,7 +23,7 @@ public class ChangeScreen {
      * @param title the title for the new stage.
      * @return the controller of the loaded FXML, or null if an error occurs.
      */
-    public Initializable switchScreen(String path, Stage currentStage, String title) {
+    public Object switchScreen(String path, Stage currentStage, String title) {
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
@@ -41,12 +41,11 @@ public class ChangeScreen {
             newStage.show();
 
             // Return the controller of the loaded FXML
-            return loader.getController();
+            return loader.getController(); // Ritorna il controller effettivo
         } catch (IOException ex) {
-            // Show an error dialog if loading fails
+            ex.printStackTrace(); // Stampa lo stack trace per il debug
             Platform.runLater(() -> {
-                ex.printStackTrace(); // Stampa lo stack trace completo
-                DialogUtil.showDialog("Error loading the screen 1: " + path, Alert.AlertType.ERROR, "Screen Change Error");
+                DialogUtil.showDialog("Error loading the screen: " + path, Alert.AlertType.ERROR, "Screen Change Error");
             });
         }
         return null;
@@ -60,7 +59,7 @@ public class ChangeScreen {
      * @param title the title for the new stage.
      * @return the controller of the loaded FXML, or null if an error occurs.
      */
-    public Initializable switchScreenModal(String path, Stage currentStage, String title) {
+    public Object switchScreenModal(String path, Stage currentStage, String title) {
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));

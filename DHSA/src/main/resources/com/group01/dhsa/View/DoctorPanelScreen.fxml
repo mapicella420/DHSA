@@ -36,9 +36,11 @@
                       </Menu>
       
                       <!-- Import DICOM Files Menu -->
-                      <Menu styleClass="menu-bar" text="Import DICOM Files">
+                      <Menu styleClass="menu-bar" text="DICOM Files">
                           <items>
                               <MenuItem onAction="#onImportDicomMenuClick" styleClass="menu-item" text="Import DICOM File" />
+                              <MenuItem onAction="#onsearchDicomMenuClick" styleClass="menu-item" text="Search DICOM File" />
+
                           </items>
                       </Menu>
                   </menus>

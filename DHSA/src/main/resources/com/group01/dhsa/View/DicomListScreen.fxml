@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.group01.dhsa.Controller.DicomListController"
+            prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/stylesDicom.css">
+
+    <children>
+        <VBox spacing="20" layoutX="10.0" layoutY="10.0" prefWidth="780.0" prefHeight="580.0" alignment="CENTER">
+            <!-- Title -->
+            <Label text="DICOM Files" styleClass="label-title" alignment="CENTER" />
+
+            <!-- Table View -->
+            <TableView fx:id="dicomTable" prefHeight="400.0" prefWidth="780.0" styleClass="table-view">
+                <columns>
+                    <TableColumn text="Select" fx:id="selectColumn" prefWidth="50.0" styleClass="checkbox" />
+                    <TableColumn text="ID" fx:id="dicomIdColumn" prefWidth="50.0" styleClass="table-column" />
+                    <TableColumn text="File Name" fx:id="fileNameColumn" prefWidth="150.0" styleClass="table-column" />
+                    <TableColumn text="Patient ID" fx:id="patientIdColumn" prefWidth="150.0" styleClass="table-column" />
+                    <TableColumn text="Study ID" fx:id="studyIdColumn" prefWidth="150.0" styleClass="table-column" />
+                    <TableColumn text="Study Date" fx:id="studyDateColumn" prefWidth="150.0" styleClass="table-column" />
+                    <TableColumn text="Study Time" fx:id="studyTimeColumn" prefWidth="150.0" styleClass="table-column" />
+                </columns>
+            </TableView>
+
+            <!-- Buttons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
+                <Button fx:id="viewImageButton" text="View DICOM Image" onAction="#onViewImageClick" disable="true" styleClass="button-blue" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

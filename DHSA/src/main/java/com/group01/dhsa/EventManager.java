@@ -1,6 +1,7 @@
 package com.group01.dhsa;
 
 import com.group01.dhsa.Model.CsvImporter;
+import com.group01.dhsa.Model.DicomImporter;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 
 public class EventManager {
@@ -38,7 +39,9 @@ public class EventManager {
     private void initializeListeners() {
         // Registra il CsvImporter come listener
         CsvImporter csvImporter = new CsvImporter();
-
         eventObservable.subscribe("csv_upload", csvImporter);
+
+        DicomImporter dicomImporter = new DicomImporter();
+        eventObservable.subscribe("dicom_upload", dicomImporter);
     }
 }

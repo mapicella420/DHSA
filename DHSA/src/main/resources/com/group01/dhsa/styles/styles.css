@@ -53,7 +53,8 @@
 .label-pane{
     -fx-font-size: 16;
     -fx-font-weight: bold;
-    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+    -fx-text-fill: #2a5d
+     84; /* Colore del testo azzurro scuro */
 }
 
 /* Generale */

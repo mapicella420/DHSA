@@ -89,18 +89,11 @@ public class DoctorPanelController {
      */
     @FXML
     private void onImportDicomMenuClick() {
-        if (eventManager == null) {
-            System.err.println("EventManager is not set!");
-            return;
-        }
+        System.out.println("Navigating to Upload CSV screen...");
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DicomImportScreen.fxml", currentStage, "Upload CSV");
 
-        File selectedFile = openFileChooser("Select DICOM File", "DICOM Files", "*.dcm");
-        if (selectedFile != null) {
-            System.out.println("Selected DICOM file: " + selectedFile.getAbsolutePath());
-            eventManager.notify("dicom_upload", selectedFile);
-        } else {
-            System.out.println("DICOM file selection cancelled.");
-        }
     }
 
     /**
@@ -122,4 +115,12 @@ public class DoctorPanelController {
 
     public void onViewCsvMenuClick(ActionEvent actionEvent) {
     }
+
+    public void onsearchDicomMenuClick(ActionEvent actionEvent) {
+        System.out.println("Navigating to DICOM List screen...");
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", currentStage, "DICOM Files");
+    }
+
 }

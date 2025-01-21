@@ -1,0 +1,153 @@
+/* Generale */
+.root, .anchor-pane {
+    -fx-background-color: #e8f4fc; /* Colore azzurrino sfumato per lo sfondo */
+}
+
+/* Etichette */
+.label, .label-pane {
+    -fx-font-size: 14;
+    -fx-font-weight: italic;
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+}
+
+/* Etichette principali */
+.label-title {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+    -fx-alignment: center; /* Centrare il testo */
+}
+
+/* Barra di scorrimento verticale */
+.scroll-bar {
+    -fx-pref-width: 25px; /* Larghezza della scrollbar */
+    -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
+}
+
+/* Effetto hover sulla ScrollBar */
+.scroll-bar:hover {
+    -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu chiaro */
+}
+
+/* Bottone blu */
+.button-blue {
+    -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
+    -fx-text-fill: white; /* Colore del testo */
+    -fx-font-size: 14px; /* Dimensione del testo */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-padding: 8 15; /* Spaziatura interna */
+    -fx-border-radius: 5px; /* Angoli arrotondati */
+    -fx-background-radius: 5px; /* Angoli arrotondati */
+    -fx-border-color: #2a5d84; /* Bordo blu scuro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+}
+
+/* Bottone rosso */
+.button-red {
+    -fx-background-color: linear-gradient(to bottom, #d75b5b, #842a2a); /* Gradiente rosso */
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #842a2a;
+    -fx-border-width: 2px;
+}
+
+/* Effetto hover per i bottoni */
+.button-blue:hover, .button-red:hover {
+    -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente più chiaro */
+}
+
+/* Effetto quando il bottone è premuto */
+.button-blue:pressed, .button-red:pressed {
+    -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente più scuro */
+}
+
+/* Stile della TableView */
+.table-view {
+    -fx-border-color: #2a5d84; /* Bordo blu scuro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 5px; /* Angoli arrotondati */
+    -fx-background-color: #ffffff; /* Sfondo bianco */
+    -fx-padding: 5; /* Spaziatura interna */
+}
+
+/* Colonne della TableView */
+.table-column {
+    -fx-font-size: 12px; /* Dimensione del testo */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-text-fill: #2a5d84; /* Colore del testo */
+    -fx-alignment: center; /* Centrare il contenuto */
+}
+
+/* Etichette della VBox */
+.vbox .label {
+    -fx-font-size: 12px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #2a5d84;
+}
+
+/* Stile del FileChooser Button */
+.filechooser-button {
+    -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
+    -fx-text-fill: white; /* Colore del testo */
+    -fx-font-size: 12px; /* Dimensione del font */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-padding: 8 15; /* Spaziatura interna */
+    -fx-border-color: #2a5d84; /* Bordo blu scuro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 5px; /* Angoli arrotondati */
+    -fx-background-radius: 5px; /* Angoli arrotondati */
+    -fx-cursor: hand; /* Cambia il cursore quando passa sopra */
+}
+
+/* Effetto Hover per il FileChooser Button */
+.filechooser-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu più chiaro */
+    -fx-border-color: #7dbde8; /* Bordo più chiaro */
+}
+
+/* Effetto Pressed per il FileChooser Button */
+.filechooser-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente più scuro */
+    -fx-border-color: #1a3c56; /* Bordo più scuro */
+}
+
+/* Stile base per la CheckBox */
+.checkbox {
+    -fx-font-size: 10px; /* Dimensione del testo */
+    -fx-font-weight: italic; /* Testo in grassetto */
+    -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
+}
+
+/* Stile per il box della CheckBox */
+.checkbox .box {
+    -fx-background-color: linear-gradient(to bottom, #e8f4fc, #5ba4d7); /* Gradiente azzurro */
+    -fx-border-color: #2a5d84; /* Colore del bordo */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 3px; /* Angoli arrotondati */
+    -fx-padding: 3px; /* Spaziatura interna */
+    -fx-background-radius: 3px; /* Angoli arrotondati */
+}
+
+/* Effetto Hover per il box */
+.checkbox:hover .box {
+    -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu chiaro */
+    -fx-border-color: #7dbde8; /* Bordo più chiaro */
+}
+
+/* Stato selezionato */
+.checkbox:selected .box {
+    -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente blu scuro */
+    -fx-border-color: #1a3c56; /* Bordo più scuro */
+}
+
+/* Icona di spunta */
+.checkbox:selected .mark {
+    -fx-background-color: white; /* Colore della spunta */
+    -fx-shape: "M 0 0 L 6 6 M 6 0 L 0 6"; /* Forma della spunta */
+    -fx-stroke-width: 2px; /* Larghezza della spunta */
+    -fx-stroke: #2a5d84; /* Colore della spunta */
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="rootVBox" stylesheets="@../styles/stylesDicom.css" prefHeight="600.0" prefWidth="800.0" spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DicomViewController">
+
+    <!-- Image View with ScrollBar -->
+    <HBox spacing="10" alignment="CENTER">
+        <ImageView fx:id="dicomImageView" fitHeight="500.0" fitWidth="700.0" styleClass="image-view" />
+        <ScrollBar fx:id="frameScrollBar" orientation="VERTICAL" maxHeight="500.0" prefWidth="30.0" styleClass="scroll-bar" />
+    </HBox>
+
+    <!-- Frame Label -->
+    <Label fx:id="frameLabel" styleClass="label-title" text="Frame 0/0" alignment="CENTER" />
+
+    <!-- Metadata Section -->
+    <VBox alignment="CENTER" spacing="15" styleClass="metadata-box">
+        <HBox spacing="15" alignment="CENTER">
+            <Label fx:id="patientIdLabel" styleClass="label-pane" text="Patient ID: " />
+            <Label fx:id="patientNameLabel" styleClass="label-pane" text="Name: " />
+            <Label fx:id="patientBirthDateLabel" styleClass="label-pane" text="Birth Date: " />
+            <Label fx:id="patientSexLabel" styleClass="label-pane" text="Sex: " />
+        </HBox>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Label fx:id="studyInstanceUIDLabel" styleClass="label-pane" text="Study UID: " />
+            <Label fx:id="modalityLabel" styleClass="label-pane" text="Modality: " />
+        </HBox>
+
+        <HBox spacing="15" alignment="CENTER">
+            <Label fx:id="studyDateLabel" styleClass="label-pane" text="Study Date: " />
+            <Label fx:id="studyTimeLabel" styleClass="label-pane" text="Study Time: " />
+        </HBox>
+        <Label fx:id="accessionNumberLabel" styleClass="label-pane" text="Accession Number: " />
+    </VBox>
+
+    <!-- Back Button -->
+    <Button styleClass="button-blue" onAction="#onBackButtonClick" text="Back" />
+</VBox>

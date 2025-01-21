@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox stylesheets="@../styles/stylesDicom.css" prefHeight="300.0" prefWidth="600.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DicomImportController" alignment="CENTER">
+
+    <!-- Title -->
+    <Label prefHeight="40.0" prefWidth="580.0" styleClass="label-title" text="DICOM Import File" alignment="CENTER" />
+
+    <!-- Import Buttons -->
+    <HBox spacing="30" alignment="CENTER">
+        <Button fx:id="importFolderButton" styleClass="filechooser-button" onAction="#onImportFolderClick" text="Import Folder" />
+        <Button fx:id="importFileButton" styleClass="filechooser-button" onAction="#onImportFileClick" text="Import File" />
+    </HBox>
+
+    <!-- Upload Status -->
+    <VBox spacing="15" alignment="CENTER">
+        <Label fx:id="uploadingFileLabel" styleClass="label" text="Waiting for import..." visible="false" />
+        <Label fx:id="uploadProgressLabel" styleClass="label" text="0/0 files uploaded" visible="false" />
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox spacing="30" alignment="CENTER">
+        <Button fx:id="backButton" styleClass="button-blue" onAction="#onBackButtonClick" text="Back" />
+        <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
+        <Button fx:id="importButton" styleClass="button-red" onAction="#onImportButtonClick" text="Import" />
+    </HBox>
+</VBox>
