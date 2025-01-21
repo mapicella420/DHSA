@@ -7,6 +7,9 @@ import org.hl7.fhir.r5.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FHIRClientTest {
@@ -50,10 +53,98 @@ class FHIRClientTest {
 
     @Test
     void getEncountersForPatient() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+
+        List<Encounter> encounters = fhirClient.getEncountersForPatient(patientId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Encounter.class)
+                .where(new ReferenceClientParam("patient").hasId("2"))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<Encounter> expectedEncounters = bundle.getEntry().stream()
+                .map(entry -> (Encounter) entry.getResource())
+                .toList();
+
+        assertNotNull(encounters);
+        assertEquals(expectedEncounters.size(), encounters.size());
+        for (int i = 0; i < encounters.size(); i++) {
+            assertEquals(expectedEncounters.get(i).getId(), encounters.get(i).getId());
+        }
     }
+
 
     @Test
     void getObservationsForPatient() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+
+        List<Observation> observations = fhirClient.getObservationsForPatient(patientId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Observation.class)
+                .where(Observation.PATIENT.hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<Observation> expectedObservations = bundle.getEntry().stream()
+                .map(entry -> (Observation) entry.getResource())
+                .toList();
+
+        assertNotNull(observations);
+        assertEquals(expectedObservations.size(), observations.size());
+        for (int i = 0; i < observations.size(); i++) {
+            assertEquals(expectedObservations.get(i).getId(), observations.get(i).getId());
+        }
+    }
+
+
+    @Test
+    void getEncountersForPractitioner() {
+        String practitionerId = "5db62284-9e52-3c8e-bde0-53d81bd39963";
+
+        List<Encounter> encounters = fhirClient.getEncountersForPractitioner(practitionerId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Encounter.class)
+                .where(new ReferenceClientParam("practitioner").hasId("16771"))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<Encounter> expectedEncounters = bundle.getEntry().stream()
+                .map(entry -> (Encounter) entry.getResource())
+                .toList();
+
+        assertNotNull(encounters);
+        assertEquals(expectedEncounters.size(), encounters.size());
+        for (int i = 0; i < encounters.size(); i++) {
+            assertEquals(expectedEncounters.get(i).getId(), encounters.get(i).getId());
+        }
+    }
+
+
+    @Test
+    void getEncounterById(){
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+        Encounter encounter = fhirClient.getEncounterById(encounterId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Encounter.class)
+                .where(Encounter.IDENTIFIER.exactly().identifier(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Encounter expectedEncounter = null;
+        for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+            if (entry.getResource().getResourceType() == ResourceType.Encounter) {
+                expectedEncounter = (Encounter) entry.getResource();
+                break;
+            }
+        }
+
+        assertNotNull(expectedEncounter);
+        assertEquals(encounter.getId(), expectedEncounter.getId());
     }
 
     @Test

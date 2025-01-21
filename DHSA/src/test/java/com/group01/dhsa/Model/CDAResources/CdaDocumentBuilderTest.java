@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model.CDAResources;
 
 import jakarta.xml.bind.JAXBException;
+import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +20,9 @@ class CdaDocumentBuilderTest {
     CdaDocumentBuilder builder;
     Patient patient;
     Practitioner practitioner;
+    FHIRClient fhirClient = FHIRClient.getInstance();
+    Encounter encounter = fhirClient.getEncounterById("9331c45b-0beb-42aa-1a13-012a432f7c3c");
+
 
     @BeforeEach
     void setUp() {
@@ -122,21 +126,44 @@ class CdaDocumentBuilderTest {
         }
 
 
-        assertTrue(tempFile.exists(), "Il file generato non esiste.");
+        assertTrue(tempFile.exists());
 
-
-        System.out.println("Percorso del file temporaneo: " + tempFile.getAbsolutePath());
+        System.out.println("Temporary file path: " + tempFile.getAbsolutePath());
 
         try {
-
             String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
-            System.out.println("Contenuto del file:\n" + content);
+            System.out.println("File content:\n" + content);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        assertTrue(tempFile.length() > 0, "The generated file is empty.");
+    }
 
-        assertTrue(tempFile.length() > 0, "Il file generato è vuoto.");
+    @Test
+    void buildWithLegalAuthenticator() {
+        try {
+            builder.addPatientSection(patient);
+            builder.addAuthorSection(practitioner);
+            builder.addCustodianSection();
+            builder.addLegalAuthenticatorSection(encounter);
+            tempFile = builder.build();
+        } catch (JAXBException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(tempFile.exists());
+
+        System.out.println("Temporary file path: " + tempFile.getAbsolutePath());
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
+            System.out.println("File content:\n" + content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(tempFile.length() > 0, "The generated file is empty.");
+
     }
 
 }
