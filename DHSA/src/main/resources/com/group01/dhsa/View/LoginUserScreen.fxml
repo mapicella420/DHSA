@@ -19,7 +19,7 @@
             </AnchorPane>
 
             <!-- Titolo -->
-            <Label alignment="CENTER" prefHeight="66.0" prefWidth="300.0" styleClass="label-title" text="Login Screen" />
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="240.0" styleClass="label-title" text="Login Screen" />
 
             <!-- Sezione Username -->
             <VBox alignment="CENTER" spacing="5.0">
@@ -58,7 +58,10 @@
             <Label fx:id="errorMessage" />
 
             <!-- Bottone Login -->
-            <Button fx:id="loginButton" onAction="#handleLogin" prefHeight="35.0" prefWidth="100.0" styleClass="button-red" text="Login" />
+            <Button fx:id="loginButton" onAction="#handleLogin" prefHeight="35.0" prefWidth="100.0" styleClass="button-red" text="Login">
+            <VBox.margin>
+               <Insets bottom="50.0" />
+            </VBox.margin></Button>
         </VBox>
     </children>
 </AnchorPane>
