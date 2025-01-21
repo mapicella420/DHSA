@@ -37,7 +37,7 @@
             <HBox spacing="20" alignment="CENTER">
                 <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
                 <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
-                <Button fx:id="viewImageButton" text="View DICOM Image" onAction="#onViewImageClick" disable="true" styleClass="button-blue" />
+                <Button fx:id="viewImageButton" text="View DICOM Image" onAction="#onViewImageClick" disable="true" styleClass="button-red" />
             </HBox>
         </VBox>
     </children>
