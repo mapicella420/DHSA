@@ -35,6 +35,14 @@ public class Value {
         this.displayName = displayName;
     }
 
+    public Value(String type, String code, String codeSystem, String codeSystemName, String displayName) {
+        this.type = type;
+        this.code = code;
+        this.codeSystem = codeSystem;
+        this.codeSystemName = codeSystemName;
+        this.displayName = displayName;
+    }
+
     public String getCode() {
         return code;
     }

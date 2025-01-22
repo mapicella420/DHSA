@@ -6,16 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/CdaDocumentCreator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ComponentOfAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ComponentOfAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ObservationAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ObservationAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/High.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/High.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObservationCDA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ObservationCDA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentInner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentInner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredBody.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Value.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Value.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,13 +66,19 @@
   "keyToString": {
     "Application.EntryTest.executor": "Run",
     "Application.MyApp.executor": "Run",
-    "Application.MyHL7CdaConverter.executor": "Debug",
+    "Application.MyHL7CdaConverter.executor": "Run",
     "Application.Unnamed.executor": "Run",
     "JUnit.CdaDocumentBuilderTest.build.executor": "Run",
     "JUnit.CdaDocumentBuilderTest.buildWithPatient.executor": "Run",
+    "JUnit.ClinicalDocumentTest (1).executor": "Run",
+    "JUnit.ClinicalDocumentTest.executor": "Run",
+    "JUnit.ClinicalDocumentTest.testClinicalDocumentSerialization.executor": "Run",
+    "JUnit.ComponentInnerTest.executor": "Run",
+    "JUnit.ComponentTest.executor": "Run",
     "JUnit.EntryTest.executor": "Run",
     "JUnit.EntryTest.testingEntry.executor": "Run",
     "JUnit.SectionTest.executor": "Run",
+    "JUnit.StructuredBodyTest.executor": "Run",
     "JUnit.ValueTest.executor": "Run",
     "OverrideImplement.generate.javadoc": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -116,23 +117,11 @@
       <recent name="com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule" />
     </key>
     <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.group01.dhsa.Model.CDAResources.SectionModels" />
       <recent name="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.SectionTest">
-    <configuration name="EntryTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.EntryTest" />
-      <module name="DHSA" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.MyHL7CdaConverter">
     <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
@@ -141,38 +130,55 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EntryTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ClinicalDocumentTest (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DHSA" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*" />
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML" />
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.EntryTest" />
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClinicalDocumentTest" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="EntryTest.testingEntry" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ClinicalDocumentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DHSA" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*" />
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML" />
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.EntryTest" />
-      <option name="METHOD_NAME" value="testingEntry" />
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClinicalDocumentTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea --add-opens com.group01.dhsa/com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClinicalDocumentTest.testClinicalDocumentSerialization" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="DHSA" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.group01.dhsa.Model.CDAResources.SectionModels.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClinicalDocumentTest" />
+      <option name="METHOD_NAME" value="testClinicalDocumentSerialization" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SectionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="ComponentTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DHSA" />
       <extension name="coverage">
         <pattern>
@@ -181,13 +187,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML" />
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.SectionTest" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.ComponentTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ValueTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="StructuredBodyTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="DHSA" />
       <extension name="coverage">
         <pattern>
@@ -196,7 +203,8 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML" />
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.ValueTest" />
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.StructuredBodyTest" />
+      <option name="METHOD_NAME" value="" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -204,19 +212,19 @@
     </configuration>
     <list>
       <item itemvalue="Application.MyHL7CdaConverter" />
-      <item itemvalue="Application.EntryTest" />
-      <item itemvalue="JUnit.EntryTest" />
-      <item itemvalue="JUnit.EntryTest.testingEntry" />
-      <item itemvalue="JUnit.SectionTest" />
-      <item itemvalue="JUnit.ValueTest" />
+      <item itemvalue="JUnit.ClinicalDocumentTest (1)" />
+      <item itemvalue="JUnit.ClinicalDocumentTest.testClinicalDocumentSerialization" />
+      <item itemvalue="JUnit.ClinicalDocumentTest" />
+      <item itemvalue="JUnit.ComponentTest" />
+      <item itemvalue="JUnit.StructuredBodyTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.SectionTest" />
-        <item itemvalue="JUnit.EntryTest" />
-        <item itemvalue="JUnit.EntryTest.testingEntry" />
-        <item itemvalue="Application.EntryTest" />
-        <item itemvalue="JUnit.ValueTest" />
+        <item itemvalue="JUnit.ClinicalDocumentTest (1)" />
+        <item itemvalue="JUnit.ClinicalDocumentTest.testClinicalDocumentSerialization" />
+        <item itemvalue="JUnit.ClinicalDocumentTest" />
+        <item itemvalue="JUnit.ComponentTest" />
+        <item itemvalue="JUnit.StructuredBodyTest" />
       </list>
     </recent_temporary>
   </component>
@@ -245,7 +253,7 @@
       <workItem from="1733924259663" duration="5656000" />
       <workItem from="1737450114080" duration="6508000" />
       <workItem from="1737456885111" duration="3987000" />
-      <workItem from="1737533798541" duration="5519000" />
+      <workItem from="1737533798541" duration="13235000" />
     </task>
     <servers />
   </component>

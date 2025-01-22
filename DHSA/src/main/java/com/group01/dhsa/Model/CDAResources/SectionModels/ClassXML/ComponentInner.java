@@ -2,6 +2,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 
 import jakarta.xml.bind.annotation.*;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ComponentInner {
 

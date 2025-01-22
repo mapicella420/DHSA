@@ -145,5 +145,17 @@ public class FHIRClient {
                 .map(entry -> (Observation) entry.getResource())
                 .collect(Collectors.toList());
     }
+
+    public List<Condition> getConditionsForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Condition.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle.getEntry().stream()
+                .map(entry -> (Condition) entry.getResource())
+                .collect(Collectors.toList());
+    }
 }
 

@@ -2,11 +2,12 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 
 import jakarta.xml.bind.annotation.*;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StructuredBody {
 
     @XmlElement(name = "component")
-    private ComponentInner component;
+    private ComponentInner componentInner;
 
     @XmlAttribute(name = "classCode")
     private String classCode;
@@ -17,12 +18,12 @@ public class StructuredBody {
     public StructuredBody() {
     }
 
-    public ComponentInner getComponent() {
-        return component;
+    public ComponentInner getComponentInner() {
+        return componentInner;
     }
 
-    public void setComponent(ComponentInner component) {
-        this.component = component;
+    public void setComponentInner(ComponentInner componentInner) {
+        this.componentInner = componentInner;
     }
 
     public String getClassCode() {

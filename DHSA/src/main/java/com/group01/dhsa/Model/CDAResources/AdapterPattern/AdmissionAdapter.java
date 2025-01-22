@@ -20,7 +20,7 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
         component.setStructuredBody(structuredBody);
 
         ComponentInner componentInner = new ComponentInner();
-        structuredBody.setComponent(componentInner);
+        structuredBody.setComponentInner(componentInner);
 
         Section section = new Section();
         componentInner.setSection(section);
@@ -46,9 +46,15 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 patientId,
                 encounterId
         );
+        List<Condition> conditions = FHIRClient.getInstance().getConditionsForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
 
         Text text = new Text();
         List<Paragraph> paragraphs = new ArrayList<>();
+        List<StructuredList> lists = new ArrayList<>();
+
 
         Paragraph introParagraph = new Paragraph();
         StringBuilder introContent = new StringBuilder();
@@ -64,6 +70,35 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
         introParagraph.setContent(introContent.toString());
         paragraphs.add(introParagraph);
 
+
+        if (conditions != null && !conditions.isEmpty()) {
+            Paragraph conditionIntro = new Paragraph();
+            conditionIntro.setContent("The following relevant conditions were noted:");
+            paragraphs.add(conditionIntro);
+
+            StringBuilder conditionContent = new StringBuilder();
+
+            for (Condition condition : conditions) {
+                conditionContent.append("The patient has been diagnosed with ")
+                        .append(condition.getCode().getCoding().getFirst().getDisplay());
+
+                if (condition.getClinicalStatus() != null) {
+                    String clinicalStatus = condition.getClinicalStatus().getCoding().getFirst().getCode();
+                    conditionContent.append(" and is currently ").append(clinicalStatus.toLowerCase());
+                }
+
+                if (condition.getOnsetDateTimeType() != null) {
+                    String onsetDate = condition.getOnsetDateTimeType().toHumanDisplay();
+                    conditionContent.append(", which started on ").append(onsetDate).append(". ");
+                } else {
+                    conditionContent.append(". ");
+                }
+            }
+
+            Paragraph conditionParagraph = new Paragraph();
+            conditionParagraph.setContent(conditionContent.toString());
+            paragraphs.add(conditionParagraph);
+        }
 
         if (observations != null && !observations.isEmpty()) {
             Paragraph observationIntro = new Paragraph();
@@ -83,19 +118,21 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 }
                 listItems.add(new ListItem(listItemContent.toString()));
             }
+
             observationList.setItems(listItems);
-            text.setLists(List.of(observationList));
+            lists.add(observationList);
         }
 
         text.setParagraphs(paragraphs);
+        text.setLists(lists);
+
         section.setText(text);
 
-        List<Entry> entry = new ArrayList<>();
-        Entry entry1 = new Entry();
-        section.setEntry(entry);
-        entry.add(entry1);
-
         if (observations != null && !observations.isEmpty()) {
+            List<Entry> entry = new ArrayList<>();
+            Entry entry1 = new Entry();
+            section.setEntry(entry);
+            entry.add(entry1);
             List<ObservationCDA> observationCDAList = new ArrayList<>();
             for (Observation obs : observations) {
                 ObservationCDA observationCDA = new ObservationCDA("OBS", "EVN");
@@ -103,14 +140,20 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 Code code = new Code("8646-2", "2.16.840.1.113883.6.1", "LOINC",
                         "Diagnosi di Accettazione Ospedaliera");
                 observationCDA.setCode(code);
-                Value value = new Value();
-                observationCDA.setValue(value);
-                Translation translation = new Translation(obs.getCode().getCodingFirstRep().getCode(),
+                Value value = new Value("CD",
+                        obs.getCode().getCodingFirstRep().getCode(),
                         "2.16.840.1.113883.6.1",
                         "LOINC",
                         obs.getCode().getText()
                 );
-                value.setTranslation(translation);
+                observationCDA.setValue(value);
+
+//                Translation translation = new Translation(obs.getCode().getCodingFirstRep().getCode(),
+//                        "2.16.840.1.113883.6.1",
+//                        "LOINC",
+//                        obs.getCode().getText()
+//                );
+//                value.setTranslation(translation);
 
                 observationCDAList.add(observationCDA);
             }
