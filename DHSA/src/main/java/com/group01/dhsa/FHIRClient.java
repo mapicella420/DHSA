@@ -133,5 +133,17 @@ public class FHIRClient {
                 .execute();
         return (Encounter) bundle.getEntryFirstRep().getResource();
     }
+
+    public List<Observation> getObservationsForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Observation.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle.getEntry().stream()
+                .map(entry -> (Observation) entry.getResource())
+                .collect(Collectors.toList());
+    }
 }
 

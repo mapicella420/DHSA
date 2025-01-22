@@ -68,6 +68,9 @@ public class ClinicalDocument {
     @XmlElement(name = "componentOf")
     private ComponentOf componentOf;
 
+    @XmlElement(name = "component")
+    private Component component;
+
 
     public ClinicalDocument() {
     }
@@ -238,5 +241,13 @@ public class ClinicalDocument {
 
     public void setComponentOf(ComponentOf componentOf) {
         this.componentOf = componentOf;
+    }
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 }

@@ -39,13 +39,22 @@ public class ComponentOfAdapter implements CdaSection <ComponentOf, Encounter>{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssZ");
         String formattedDate = zonedDateTime.format(formatter);
 
-        zonedDateTime = fhirObject.getActualPeriod()
-                .getEnd().toInstant().atZone(ZoneId.of("UTC"));
-        String formattedEnd = zonedDateTime.format(formatter);
+        EffectiveTime effectiveTime;
+        if(fhirObject.getActualPeriod()
+                .getEnd() != null) {
+            zonedDateTime = fhirObject.getActualPeriod()
+                    .getEnd().toInstant().atZone(ZoneId.of("UTC"));
+            String formattedEnd = zonedDateTime.format(formatter);
+            effectiveTime = new EffectiveTime(
+                    new Low(formattedDate),
+                    new High(formattedEnd));
+        }else{
+            effectiveTime = new EffectiveTime(
+                    new Low(formattedDate),
+                    new High()
+            );
+        }
 
-        EffectiveTime effectiveTime = new EffectiveTime(
-                new Low(formattedDate),
-                new High(formattedEnd));
         encompassingEncounter.setEffectiveTime(effectiveTime);
 
         ResponsibleParty responsibleParty = new ResponsibleParty();

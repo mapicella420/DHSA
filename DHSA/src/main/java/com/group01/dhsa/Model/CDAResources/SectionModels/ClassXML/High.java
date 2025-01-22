@@ -13,6 +13,11 @@ public class High {
     private String value;
 
     public High() {
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssZ");
+
+        this.value = now.atOffset(ZoneOffset.ofHours(1)).format(formatter);
     }
 
     public High(String value) {

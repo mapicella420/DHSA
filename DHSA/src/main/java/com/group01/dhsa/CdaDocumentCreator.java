@@ -17,7 +17,6 @@ public class CdaDocumentCreator {
     public void createCdaDocument(String patientId, String encounterId) throws JAXBException {
         FHIRClient client = FHIRClient.getInstance();
 
-
         Patient fhirPatient = client.getPatientById(patientId);
 
         //CERCARE QUANTE DISCHARGE CI SONO PER IL NUMERO
@@ -42,6 +41,8 @@ public class CdaDocumentCreator {
         documentBuilder.addLegalAuthenticatorSection(encounter);
 
         documentBuilder.addComponentOfSection(encounter);
+
+        documentBuilder.addComponentSection(encounter);
 
         // Recupera osservazioni
         List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
