@@ -167,4 +167,30 @@ class CdaDocumentBuilderTest {
 
     }
 
+    @Test
+    void buildWithComponentOf() {
+        try {
+            builder.addPatientSection(patient);
+            builder.addAuthorSection(practitioner);
+            builder.addCustodianSection();
+            builder.addLegalAuthenticatorSection(encounter);
+            builder.addComponentOfSection(encounter);
+            tempFile = builder.build();
+        } catch (JAXBException | IOException e) {
+            throw new RuntimeException(e);
+        }
+        assertTrue(tempFile.exists());
+
+        System.out.println("Temporary file path: " + tempFile.getAbsolutePath());
+
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(tempFile.getAbsolutePath())));
+            System.out.println("File content:\n" + content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        assertTrue(tempFile.length() > 0, "The generated file is empty.");
+
+    }
 }

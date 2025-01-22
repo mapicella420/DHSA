@@ -2,7 +2,7 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 
 import org.hl7.fhir.r5.model.Observation;
-import com.group01.dhsa.Model.CDAResources.SectionModels.ObservationCDA;
+import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.ObservationCDA;
 
 public class ObservationAdapter implements CdaSection<ObservationCDA, Observation>{
 

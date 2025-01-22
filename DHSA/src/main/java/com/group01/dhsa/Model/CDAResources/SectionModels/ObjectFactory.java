@@ -149,6 +149,40 @@ public class ObjectFactory {
 
     public ServiceProviderOrganization createServiceProviderOrganization() { return new ServiceProviderOrganization(); }
 
+    public ObservationCDA createObservationCDA() { return new ObservationCDA(); }
+
+    public Component createComponent() { return new Component(); }
+
+    public ComponentInner createComponentInner() { return new ComponentInner(); }
+
+    public Entry createEntry() { return new Entry(); }
+
+    public EntryRelationship createEntryRelationship() { return new EntryRelationship(); }
+
+    public Section createSection(){ return new Section();}
+
+    public StructuredBody createStructuredBody(){ return new StructuredBody();}
+
+    public Act createAct() { return new Act(); }
+
+    public Text createText() { return new Text(); }
+
+    public Value createValue() { return new Value(); }
+
+    public Translation createTranslation() { return new Translation(); }
+
+    public Paragraph createParagraph() { return new Paragraph(); }
+
+    public StructuredList createStructuredList() { return new StructuredList(); }
+
+    public Table createTable() { return new Table(); }
+
+    public TableCell createTableCell() { return new TableCell(); }
+
+    public TableRow createTableRow() { return new TableRow(); }
+
+    public ListItem createListItem() { return new ListItem(); }
+
 
 
 }

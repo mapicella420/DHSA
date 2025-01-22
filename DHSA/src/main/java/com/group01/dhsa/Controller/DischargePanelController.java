@@ -232,6 +232,7 @@ public class DischargePanelController {
             }
 
         }
+
     }
 
     @FXML
@@ -269,11 +270,12 @@ public class DischargePanelController {
 
 
     private boolean checkEncounter(Encounter encounter){
+
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
         return patientId.equals(pId) &&
-                !encounter.getType().getFirst().getCodingFirstRep()
-                        .getDisplay().equals("Death Certification");
+                    !encounter.getType().getFirst().getCodingFirstRep()
+                            .getDisplay().equals("Death Certification");
     }
 
     @FXML

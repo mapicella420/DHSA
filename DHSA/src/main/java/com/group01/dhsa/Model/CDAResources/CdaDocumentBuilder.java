@@ -68,6 +68,14 @@ public class CdaDocumentBuilder {
 
         clinicalDocument.setComponentOf(componentOf);
     }
+
+    public void addComponentSection(Encounter encounter) {
+        AdmissionAdapter admissionAdapter = new AdmissionAdapter();
+
+        Component component = admissionAdapter.toCdaObject(encounter);
+
+        clinicalDocument.setComponent(component);
+    }
 //
 //    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
 //        // Usa l'adapter per convertire l'osservazione FHIR in CDA
@@ -86,7 +94,7 @@ public class CdaDocumentBuilder {
 
         // Crea un marshaller per serializzare in XML
         Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
         // Crea un file temporaneo
         File tempFile = File.createTempFile("clinicalDocument", ".xml");
