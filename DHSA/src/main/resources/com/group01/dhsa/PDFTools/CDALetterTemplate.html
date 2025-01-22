@@ -1,238 +1,124 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lettera di Dimissione Ospedaliera</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0 auto;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        header {
-            text-align: center;
-            padding: 10px 0;
-            border-bottom: 2px solid #ddd;
-        }
-
-        .general-info,
-        .document-details {
-            display: flex;
-            justify-content: center;
-            gap: 10px; /* Spazio tra gli elementi */
-            flex-wrap: wrap; /* Permette agli elementi di andare a capo se lo spazio è insufficiente */
-        }
-
-        .general-info p,
-        .document-details p {
-            margin: 5px 10px;
-        }
-
-        .patient-info, .patient-address, .patient-id {
-            display: flex;
-            gap: 10px; /* Spazio tra gli elementi */
-            flex-wrap: wrap; /* Consente il ritorno a capo se lo spazio è insufficiente */
-        }
-
-        .patient-info p, .patient-address p {
-            margin: 5px 10px;
-        }
-
-        .author-info {
-            display: flex;
-            gap: 10px; /* Spazio tra gli elementi */
-            flex-wrap: wrap; /* Permette agli elementi di andare a capo se necessario */
-        }
-
-        .author-info p {
-            margin: 5px 10px;
-        }
-
-        .custodian-info,
-        .authenticator-info,
-        .authenticator-address,
-        .authenticator-org {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px; /* Spazio tra gli elementi */
-        }
-
-        .custodian-address p,
-        .authenticator-address p {
-            margin: 5px 0;
-        }
-
-        .authenticator-time {
-            margin-top: 10px;
-        }
-
-        .encounter-info,
-        .encounter-timing,
-        .responsible-party-info,
-        .location-info {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .encounter-info p,
-        .encounter-timing p,
-        .responsible-party-info p,
-        .location-info p {
-            margin: 5px 0;
-        }
-
-        h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        h2 {
-            color: #555;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-            margin-top: 20px;
-        }
-        section {
-            margin-bottom: 20px;
-        }
-        p {
-            margin: 5px 0;
-        }
-        .info {
-            font-size: 14px;
-            color: #555;
-        }
-    </style>
+    <title>Hospital Discharge Letter</title>
+    <link rel="stylesheet" href="../styles/CDAStyles.css">
 </head>
 <body>
 <div class="page">
     <header>
-        <h1>Lettera di Dimissione Ospedaliera</h1>
+        <h1>Hospital Discharge Letter</h1>
         <div class="general-info">
             <p><strong>Template ID:</strong> {{templateId}}</p>
             <p><strong>Type ID:</strong> {{typeId}}</p>
-            <p><strong>ID Documento:</strong> {{documentId}}</p>
-            <p><strong>Versione:</strong> {{versionNumber}}</p>
+            <p><strong>Document ID:</strong> {{documentId}}</p>
+            <p><strong>Version:</strong> {{versionNumber}}</p>
             <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
-            <p><strong>Codice Area:</strong> {{realmCode}}</p>
-            <p><strong>Tipo Documento:</strong> {{documentType}}</p>
-            <p><strong>Codice Sistema:</strong> {{codeSystemName}}</p>
-            <p><strong>Codice Riservatezza:</strong> {{confidentialityCode}}</p>
-            <p><strong>Data Creazione:</strong> {{creationDate}}</p>
-            <p><strong>Lingua:</strong> {{languageCode}}</p>
+            <p><strong>Realm Code:</strong> {{realmCode}}</p>
+            <p><strong>Document Type:</strong> {{documentType}}</p>
+            <p><strong>System Code:</strong> {{codeSystemName}}</p>
+            <p><strong>Confidentiality Code:</strong> {{confidentialityCode}}</p>
+            <p><strong>Creation Date:</strong> {{creationDate}}</p>
+            <p><strong>Language:</strong> {{languageCode}}</p>
         </div>
     </header>
 
 
     <section>
-        <h2>Dati del Paziente</h2>
+        <h2>Patient Information</h2>
         <div class="patient-info">
-            <!-- Nome, genere e data di nascita sulla stessa linea -->
-            <p><strong>Nome:</strong> {{patientGiven}} {{patientFamily}}</p>
-            <p><strong>Genere:</strong> {{patientGender}}</p>
-            <p><strong>Data di Nascita:</strong> {{patientBirthTime}}</p>
-            <p><strong>ID Paziente:</strong> {{patientId}}</p>
-
+            <p><strong>Name:</strong> {{patientGiven}} {{patientFamily}}</p>
+            <p><strong>Gender:</strong> {{patientGender}}</p>
+            <p><strong>Date of Birth:</strong> {{patientBirthTime}}</p>
+            <p><strong>Patient ID:</strong> {{patientId}}</p>
         </div>
         <div class="patient-address">
-            <!-- Stato, nazione, città e indirizzo sulla stessa linea -->
-            <p><strong>Stato:</strong> {{patientState}}</p>
-            <p><strong>Nazione:</strong> {{patientCountry}}</p>
-            <p><strong>Città:</strong> {{patientCity}}</p>
-            <p><strong>Indirizzo:</strong> {{patientAddress}}</p>
+            <p><strong>State:</strong> {{patientState}}</p>
+            <p><strong>Country:</strong> {{patientCountry}}</p>
+            <p><strong>City:</strong> {{patientCity}}</p>
+            <p><strong>Address:</strong> {{patientAddress}}</p>
         </div>
     </section>
 
 
 
     <section>
-        <h2>Informazioni Autore</h2>
+        <h2>Author Information</h2>
         <div class="author-info">
-            <!-- Nome e Cognome -->
-            <p><strong>Nome:</strong> {{authorGiven}} {{authorFamily}}</p>
-            <!-- ID Autore -->
-            <p><strong>ID Autore:</strong> {{authorId}}</p>
-            <!-- Autorità Assegnante -->
-            <p><strong>Autorità Assegnante:</strong> {{assigningAuthorityName}}</p>
-            <!-- Timestamp -->
-            <p><strong>Data e Ora:</strong> {{authorTime}}</p>
+            <p><strong>Name:</strong> {{authorGiven}} {{authorFamily}}</p>
+            <p><strong>Author ID:</strong> {{authorId}}</p>
+            <p><strong>Assigning Authority:</strong> {{assigningAuthorityName}}</p>
+            <p><strong>Date and Time:</strong> {{authorTime}}</p>
         </div>
     </section>
 
 
     <section>
-        <h2>Custode del Documento</h2>
+        <h2>Document Custodian</h2>
         <div class="custodian-info">
-            <p><strong>Nome Organizzazione:</strong> {{custodianName}}</p>
-            <p><strong>ID Organizzazione:</strong> {{custodianId}}</p>
-            <p><strong>Autorità Assegnante:</strong> {{custodianAuthorityName}}</p>
+            <p><strong>Organization Name:</strong> {{custodianName}}</p>
+            <p><strong>Organization ID:</strong> {{custodianId}}</p>
+            <p><strong>Assigning Authority:</strong> {{custodianAuthorityName}}</p>
         </div>
         <div class="custodian-address">
-            <p><strong>Indirizzo:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
+            <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
         </div>
     </section>
 
     <section>
-        <h2>Legale Autenticatore</h2>
+        <h2>Legal Authenticator</h2>
         <div class="authenticator-info">
-            <p><strong>Codice Firma:</strong> {{authenticatorSignatureCode}}</p>
-            <p><strong>Nome:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
+            <p><strong>Signature Code:</strong> {{authenticatorSignatureCode}}</p>
+            <p><strong>Name:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
             <p><strong>ID:</strong> {{authenticatorId}}</p>
         </div>
         <div class="authenticator-address">
-            <p><strong>Indirizzo:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
+            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
         </div>
         <div class="authenticator-org">
-            <p><strong>Organizzazione Rappresentata:</strong> {{authenticatorOrgName}}</p>
-            <p><strong>Telefono:</strong> {{authenticatorOrgTelecom}}</p>
+            <p><strong>Represented Organization:</strong> {{authenticatorOrgName}}</p>
+            <p><strong>Phone:</strong> {{authenticatorOrgTelecom}}</p>
         </div>
         <div class="authenticator-time">
-            <p><strong>Data e Ora Firma:</strong> {{authenticatorTime}}</p>
+            <p><strong>Signature Date and Time:</strong> {{authenticatorTime}}</p>
         </div>
     </section>
 
     <section>
-        <h2>Informazioni sull'Incontro</h2>
+        <h2>Encounter Information</h2>
         <div class="encounter-info">
-            <p><strong>ID Incontro:</strong> {{encounterId}}</p>
-            <p><strong>Autorità Assegnante:</strong> {{encounterAuthorityName}}</p>
+            <p><strong>Encounter ID:</strong> {{encounterId}}</p>
+            <p><strong>Assigning Authority:</strong> {{encounterAuthorityName}}</p>
         </div>
         <div class="encounter-timing">
-            <p><strong>Data Inizio:</strong> {{encounterStart}}</p>
-            <p><strong>Data Fine:</strong> {{encounterEnd}}</p>
+            <p><strong>Start Date:</strong> {{encounterStart}}</p>
+            <p><strong>End Date:</strong> {{encounterEnd}}</p>
         </div>
     </section>
 
     <section>
-        <h2>Responsabile dell'Incontro</h2>
+        <h2>Responsible Party</h2>
         <div class="responsible-party-info">
-            <p><strong>Nome:</strong> {{responsibleGiven}} {{responsibleFamily}} ({{responsiblePrefix}})</p>
+            <p><strong>Name:</strong> {{responsibleGiven}} {{responsibleFamily}} ({{responsiblePrefix}})</p>
             <p><strong>ID:</strong> {{responsibleId}}</p>
-            <p><strong>Autorità Assegnante:</strong> {{responsibleAuthorityName}}</p>
+            <p><strong>Assigning Authority:</strong> {{responsibleAuthorityName}}</p>
         </div>
     </section>
 
     <section>
-        <h2>Luogo dell'Incontro</h2>
+        <h2>Encounter Location</h2>
         <div class="location-info">
-            <p><strong>Reparto:</strong> {{facilityName}}</p>
-            <p><strong>Nome Organizzazione:</strong> {{serviceProviderName}}</p>
-            <p><strong>ID Organizzazione:</strong> {{serviceProviderId}}</p>
-            <p><strong>Autorità Assegnante:</strong> {{serviceProviderAuthorityName}}</p>
+            <p><strong>Department:</strong> {{facilityName}}</p>
+            <p><strong>Organization Name:</strong> {{serviceProviderName}}</p>
+            <p><strong>Organization ID:</strong> {{serviceProviderId}}</p>
+            <p><strong>Assigning Authority:</strong> {{serviceProviderAuthorityName}}</p>
         </div>
     </section>
-
-
-
 
     <footer>
-        <p>Documento generato automaticamente. © 2025 HL7 Italia</p>
+        <p>Document automatically generated. © 2025 HL7 Italia</p>
     </footer>
 </div>
 

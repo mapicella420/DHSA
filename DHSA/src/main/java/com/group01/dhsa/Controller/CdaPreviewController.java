@@ -1,7 +1,9 @@
 package com.group01.dhsa.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -40,15 +42,23 @@ public class CdaPreviewController {
      */
     private void renderCdaAsHtml(File cdaFile) {
         try {
-            // Usa il ClassLoader per ottenere il percorso del template
+            // Usa il ClassLoader per ottenere il percorso del template e dello stile
             URL templateUrl = getClass().getResource("/com/group01/dhsa/PDFTools/CDALetterTemplate.html");
-            if (templateUrl == null) {
-                throw new IllegalArgumentException("Template CDA non trovato nel percorso specificato.");
+            URL cssUrl = getClass().getResource("/com/group01/dhsa/styles/CDAStyles.css");
+            if (templateUrl == null || cssUrl == null) {
+                throw new IllegalArgumentException("Template o CSS non trovati nel percorso specificato.");
             }
 
             // Leggi il contenuto del file template
             Path templatePath = Paths.get(templateUrl.toURI());
             String templateContent = Files.readString(templatePath);
+
+            // Leggi il contenuto del file CSS
+            Path cssPath = Paths.get(cssUrl.toURI());
+            String cssContent = Files.readString(cssPath);
+
+            // Inserisci lo stile CSS all'inizio del file HTML
+            templateContent = templateContent.replace("</head>", "<style>" + cssContent + "</style></head>");
 
             // Estrai i dati dal file CDA
             Map<String, String> cdaData = extractCdaData(cdaFile);
@@ -63,6 +73,7 @@ public class CdaPreviewController {
             webView.getEngine().loadContent("<html><body><h1>Error rendering CDA file</h1></body></html>");
         }
     }
+
 
     /**
      * Analizza il file CDA e restituisce i dati estratti.
@@ -305,5 +316,12 @@ public class CdaPreviewController {
             templateContent = templateContent.replace("{{" + entry.getKey() + "}}", entry.getValue());
         }
         return templateContent;
+    }
+
+    public void handleBackButton(ActionEvent actionEvent) {
+        System.out.println("[DEBUG] Returning to the Discharge Patient screen.");
+        Stage stage = (Stage) webView.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml", stage, "DICOM Files");
     }
 }

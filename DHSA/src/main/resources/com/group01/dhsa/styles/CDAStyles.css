@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+    background-color: #f4f7f9;
+}
+
+/* Stile dell'header */
+header {
+    background-color: #e0e6ed; /* Grigio chiaro */
+    color: #002147; /* Blu scuro per contrasto */
+    padding: 15px 20px;
+    border-bottom: 3px solid #0056b3;
+    text-align: left;
+}
+
+header h1 {
+    font-size: 22px; /* Ridotto */
+    margin-bottom: 10px;
+    color: #002147;
+}
+
+header .general-info {
+    font-size: 12px; /* Font più piccolo */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* Giustifica gli elementi */
+    gap: 10px;
+}
+
+header .general-info p {
+    margin: 5px 0;
+    flex: 1 1 calc(50% - 10px); /* Due elementi per riga */
+}
+
+/* Sezioni principali */
+section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Titoli delle sezioni */
+section h2 {
+    color: #333333;
+    font-size: 18px; /* Ridotto */
+    margin-bottom: 10px;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 5px;
+}
+
+/* Campi generali */
+p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555555;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    font-size: 12px; /* Più piccolo */
+    color: #777777; /* Grigio tenue */
+    margin-top: 20px;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+/* Riduzione dei margini */
+.general-info p,
+.section p {
+    line-height: 1.4; /* Riduce lo spazio tra le righe */
+}
