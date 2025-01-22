@@ -216,7 +216,7 @@ public class DischargePanelController {
             for (Bundle.BundleEntryComponent entry : response.getEntry()) {
                 Patient patient = (Patient) entry.getResource();
 
-                if (!patient.hasDeceasedBooleanType()) {
+                if (patient.hasDeceasedBooleanType()) {
                     MenuItem item = new MenuItem(patient.getIdentifier().getFirst().getValue());
                     item.setId("item" + i);
                     i++;
