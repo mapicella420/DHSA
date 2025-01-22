@@ -24,7 +24,6 @@ module com.group01.dhsa {
     exports com.group01.dhsa;
 
     // Rende visibile il pacchetto Model (se usato esternamente da altri moduli)
-    exports com.group01.dhsa.Model to javafx.graphics;
 
     // Permette l'accesso tramite riflessione al pacchetto Model
     opens com.group01.dhsa.Model to javafx.fxml;
@@ -44,5 +43,6 @@ module com.group01.dhsa {
     exports com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to javafx.graphics;
     opens com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML to jakarta.xml.bind, javafx.fxml, com.sun.xml.bind;
     opens com.group01.dhsa to javafx.fxml;
+    exports com.group01.dhsa.Model;
 
 }

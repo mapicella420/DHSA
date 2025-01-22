@@ -1,4 +1,4 @@
-package com.group01.dhsa;
+package com.group01.dhsa.Model;
 
 import com.group01.dhsa.ObserverPattern.EventListener;
 import com.mongodb.client.MongoClient;

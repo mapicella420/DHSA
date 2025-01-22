@@ -3,18 +3,15 @@ package com.group01.dhsa.Controller;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
-import com.group01.dhsa.CdaDocumentCreator;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.ObserverPattern.EventObservable;
-import jakarta.xml.bind.JAXBException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
+
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
+
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.hl7.fhir.r5.model.*;
@@ -66,19 +63,37 @@ public class DischargePanelController {
     private MenuButton encounterIDMenu;
 
     private EventObservable eventManager;
-    private CdaDocumentCreator cda;
     private File cdaFile;
 
     public DischargePanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
-        this.cda = new CdaDocumentCreator();
     }
 
     @FXML
     private void initialize() {
         firstNameField.setOnKeyPressed(this::handleEnterPressed);
         lastNameField.setOnKeyPressed(this::handleEnterPressed);
+
+        // Iscrizione agli eventi del modello
+        eventManager.subscribe("cda_generated", this::onCdaGenerated);
+        eventManager.subscribe("cda_generation_failed", this::onCdaGenerationFailed);
     }
+
+
+    // Metodo per gestire la generazione completata della CDA
+    private void onCdaGenerated(String eventType, File file) {
+        if (file != null) {
+            this.cdaFile = file;
+            previewButton.setDisable(false);
+            cdaStatus.setText("CDA generated successfully!");
+        }
+    }
+
+    // Metodo per gestire il fallimento nella generazione della CDA
+    private void onCdaGenerationFailed(String eventType, File file) {
+        cdaStatus.setText("Failed to generate CDA. Please try again.");
+    }
+
 
     @FXML
     private void handleEnterPressed(KeyEvent event) {
@@ -103,16 +118,14 @@ public class DischargePanelController {
 
     @FXML
     void dischargeSelectedPatient() {
+        // Disabilita i pulsanti e aggiorna lo stato dell'interfaccia
         stackPaneDischarge.setVisible(false);
         stackPaneCDA.setVisible(true);
+        previewButton.setDisable(true);
+        cdaStatus.setText("Generating CDA...");
 
-
-        try {
-            previewButton.setDisable(false);
-            this.cdaFile = cda.createCdaDocument(patientIDMenu.getText(),encounterIDMenu.getText());
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+        // Notifica al modello di generare la CDA
+        EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
     }
 
     @FXML

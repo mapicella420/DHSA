@@ -1,7 +1,6 @@
 package com.group01.dhsa;
 
-import com.group01.dhsa.Model.CsvImporter;
-import com.group01.dhsa.Model.DicomImporter;
+import com.group01.dhsa.Model.*;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 
 public class EventManager {
@@ -46,5 +45,19 @@ public class EventManager {
 
         CdaUploader cdaUploader = new CdaUploader();
         eventObservable.subscribe("cda_upload", cdaUploader);
+
+        CdaDocumentCreator cdaCreator = new CdaDocumentCreator(this.eventObservable);
+
+        eventObservable.subscribe("generate_cda", (eventType, file) -> {
+            String[] params = file.getName().replace(".xml", "").split("_");
+            cdaCreator.createAndNotify(params[0], params[1]);
+        });
+
+        eventObservable.subscribe("convert_to_html", (eventType, file) -> {
+            System.out.println("[DEBUG] Received convert_to_html event for file: " + file.getAbsolutePath());
+            new CdaToHtmlConverter().convertAndNotify(file);
+        });
+
+
     }
 }
