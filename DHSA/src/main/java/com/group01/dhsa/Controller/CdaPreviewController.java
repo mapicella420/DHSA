@@ -272,6 +272,70 @@ public class CdaPreviewController {
             data.put("serviceProviderAuthorityName", serviceProviderOrg.getElementsByTagName("id")
                     .item(0).getAttributes().getNamedItem("assigningAuthorityName").getNodeValue());
 
+
+            // Admission Diagnosis
+            Element admissionSection = (Element) doc.getElementsByTagName("section").item(0);
+
+            if (admissionSection != null) {
+                // Estrarre i dati del codice
+                Element codeElement = (Element) admissionSection.getElementsByTagName("code").item(0);
+                if (codeElement != null) {
+                    data.put("admissionCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "N/A");
+                    data.put("admissionCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "N/A");
+                    data.put("admissionCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "N/A");
+                } else {
+                    data.put("admissionCode", "N/A");
+                    data.put("admissionCodeSystem", "N/A");
+                    data.put("admissionCodeSystemName", "N/A");
+                }
+
+                // Estrarre i dettagli del testo
+                Element textElement = (Element) admissionSection.getElementsByTagName("text").item(0);
+                if (textElement != null) {
+                    StringBuilder detailsBuilder = new StringBuilder();
+                    NodeList children = textElement.getChildNodes();
+
+                    for (int i = 0; i < children.getLength(); i++) {
+                        Node node = children.item(i);
+
+                        // Gestire paragrafi
+                        if (node.getNodeName().equals("p")) {
+                            String value = node.getTextContent().trim();
+                            if (!value.isEmpty()) {
+                                detailsBuilder.append("<p>").append(value).append("</p>");
+                            }
+                        }
+
+                        // Gestire liste
+                        if (node.getNodeName().equals("list")) {
+                            Element listElement = (Element) node;
+                            NodeList items = listElement.getElementsByTagName("item");
+
+                            if (items.getLength() > 0) {
+                                detailsBuilder.append("<ul>"); // Lista non ordinata
+                                for (int j = 0; j < items.getLength(); j++) {
+                                    String itemValue = items.item(j).getTextContent().trim();
+                                    if (!itemValue.isEmpty()) {
+                                        detailsBuilder.append("<li>").append(itemValue).append("</li>");
+                                    }
+                                }
+                                detailsBuilder.append("</ul>");
+                            }
+                        }
+                    }
+
+                    // Inserire i dettagli nella mappa dati
+                    if (!detailsBuilder.isEmpty()) {
+                        data.put("admissionDetails", detailsBuilder.toString());
+                    } else {
+                        data.put("admissionDetails", "<p>No additional details available.</p>");
+                    }
+                } else {
+                    data.put("admissionDetails", "<p>No details available.</p>");
+                }
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

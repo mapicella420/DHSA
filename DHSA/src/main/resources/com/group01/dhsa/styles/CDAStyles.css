@@ -75,3 +75,54 @@ footer {
 .section p {
     line-height: 1.4; /* Riduce lo spazio tra le righe */
 }
+
+/* Stile per la sezione Admission Diagnosis */
+.admission-diagnosis {
+    padding: 15px;
+    background-color: #eef7fc; /* Sfondo azzurro chiaro */
+    border: 2px solid #0073e6; /* Bordo azzurro intenso */
+    border-radius: 8px; /* Angoli arrotondati */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra per profondità */
+    margin-bottom: 20px; /* Spaziatura sotto la sezione */
+}
+
+.admission-diagnosis p {
+    margin: 8px 0; /* Margine tra paragrafi */
+    font-size: 14px; /* Dimensione del testo */
+    color: #333; /* Testo in grigio scuro */
+}
+
+.admission-diagnosis ul {
+    padding-left: 20px; /* Spaziatura a sinistra per la lista */
+    margin-top: 10px; /* Margine sopra la lista */
+    list-style-type: disc; /* Tipo di lista non ordinata */
+}
+
+.admission-diagnosis li {
+    margin: 5px 0; /* Margine tra gli elementi della lista */
+    font-size: 13px; /* Testo più piccolo rispetto ai paragrafi */
+    color: #555; /* Testo in grigio medio */
+}
+
+/* Evidenziare i titoli delle osservazioni */
+.admission-diagnosis p strong {
+    color: #0056b3; /* Colore evidenziato per i titoli */
+    font-weight: bold; /* Grassetto per i titoli */
+}
+
+
+.admission-code-row {
+    display: flex;
+    flex-wrap: wrap; /* Disposizione flessibile su più righe se necessario */
+    gap: 12px; /* Spazio tra gli elementi */
+    align-items: center; /* Allineamento verticale centrale */
+    margin-top: 10px; /* Spazio sopra il contenitore */
+}
+
+.admission-code-row p {
+    margin: 0; /* Rimuove margini superflui */
+    font-size: 14px; /* Testo omogeneo */
+    color: #222; /* Grigio scuro per il contrasto */
+    flex: 1; /* Bilancia lo spazio tra gli elementi */
+}
+
