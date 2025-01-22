@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,7 +50,7 @@ class CdaDocumentBuilderTest {
     void build() {
         try {
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
 
@@ -72,7 +73,7 @@ class CdaDocumentBuilderTest {
         try {
             builder.addPatientSection(patient);
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
 
@@ -96,7 +97,7 @@ class CdaDocumentBuilderTest {
             builder.addPatientSection(patient);
             builder.addAuthorSection(practitioner);
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
 
@@ -122,7 +123,7 @@ class CdaDocumentBuilderTest {
             builder.addAuthorSection(practitioner);
             builder.addCustodianSection();
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
 
@@ -149,7 +150,7 @@ class CdaDocumentBuilderTest {
             builder.addCustodianSection();
             builder.addLegalAuthenticatorSection(encounter);
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
         assertTrue(tempFile.exists());
@@ -176,7 +177,7 @@ class CdaDocumentBuilderTest {
             builder.addLegalAuthenticatorSection(encounter);
             builder.addComponentOfSection(encounter);
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
         }
         assertTrue(tempFile.exists());
@@ -202,9 +203,9 @@ class CdaDocumentBuilderTest {
             builder.addCustodianSection();
             builder.addLegalAuthenticatorSection(encounter);
             builder.addComponentOfSection(encounter);
-            builder.addComponentSection(encounter);
+            builder.addAdmissionSection(encounter);
             tempFile = builder.build();
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException | IOException | TransformerException e) {
             throw new RuntimeException(e);
       }
         assertTrue(tempFile.exists());

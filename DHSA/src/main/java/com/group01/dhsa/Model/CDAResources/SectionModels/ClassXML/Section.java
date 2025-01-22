@@ -6,7 +6,7 @@ import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "code", "title", "entry", "text", "component" })
+@XmlType(propOrder = { "code", "title", "text", "entry", "component" })
 public class Section {
 
     @XmlAttribute(name = "classCode")
@@ -28,7 +28,7 @@ public class Section {
     private Text text;
 
     @XmlElement(name = "component")
-    private Component component;
+    private List<ComponentInner> component;
 
     public Section() {
     }
@@ -81,11 +81,11 @@ public class Section {
         this.text = text;
     }
 
-    public Component getComponent() {
+    public List<ComponentInner> getComponent() {
         return component;
     }
 
-    public void setComponent(Component component) {
+    public void setComponent(List<ComponentInner> component) {
         this.component = component;
     }
 }

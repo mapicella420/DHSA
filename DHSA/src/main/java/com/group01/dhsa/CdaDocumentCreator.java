@@ -4,6 +4,8 @@ import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
 import com.group01.dhsa.Controller.LoggedUser;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.*;
+
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class CdaDocumentCreator {
     File tempFile;
-    // Metodo principale per creare il documento CDA
+
     public File createCdaDocument(String patientId, String encounterId) throws JAXBException {
         FHIRClient client = FHIRClient.getInstance();
         Integer idNumber = 1;
@@ -30,39 +32,31 @@ public class CdaDocumentCreator {
 
         documentBuilder.addCustodianSection();
 
-//        Encounter encounter = client.getEncounterFromPractitionerAndPatient(practitioner.getIdentifierFirstRep().getValue(), fhirPatient.getIdentifierFirstRep().getValue());
         Encounter encounter = client.getEncounterById(encounterId);
 
-        //Lemuel paziente di questo id
         documentBuilder.addLegalAuthenticatorSection(encounter);
 
         documentBuilder.addComponentOfSection(encounter);
 
-        documentBuilder.addComponentSection(encounter);
+        documentBuilder.addAdmissionSection(encounter);
 
+        documentBuilder.addClinicalHistorySection(encounter);
 
+        documentBuilder.addHospitalCourseSection(encounter);
 
-        // Recupera osservazioni
-        List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
-//        List<ObservationAdapter> observationAdapters = fhirObservations.stream()
-//                .map(ObservationAdapter::new)
-//                .collect(Collectors.toList());
-
-        // 3. Aggiungi la sezione osservazione
-//        documentBuilder.addObservationSection(fhirObservations.getFirst());
-
-        // 4. Costruisci e serializza il documento CDA in XML
         // Crea il file XML temporaneo
         try {
             File tempFile = documentBuilder.build();
 
-            // Stampa il contenuto nel terminale
+
             printFileContent(tempFile);
 
-            // Restituisci il file temporaneo
+
             return tempFile;
         } catch (IOException e) {
             throw new RuntimeException("Failed to build CDA document: " + e.getMessage());
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         }
     }
 

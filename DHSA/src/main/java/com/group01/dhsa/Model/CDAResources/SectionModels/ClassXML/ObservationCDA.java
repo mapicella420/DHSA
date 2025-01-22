@@ -18,6 +18,12 @@ public class ObservationCDA {
     @XmlElement(name = "value")
     private Value value;
 
+    @XmlElement(name = "statusCode")
+    private StatusCode statusCode;
+
+    @XmlElement(name = "effectiveTime")
+    private EffectiveTime effectiveTime;
+
     public ObservationCDA() {
     }
 
@@ -56,5 +62,21 @@ public class ObservationCDA {
 
     public void setMoodCode(String moodCode) {
         this.moodCode = moodCode;
+    }
+
+    public StatusCode getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(StatusCode statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public EffectiveTime getEffectiveTime() {
+        return effectiveTime;
+    }
+
+    public void setEffectiveTime(EffectiveTime effectiveTime) {
+        this.effectiveTime = effectiveTime;
     }
 }

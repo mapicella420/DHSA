@@ -8,8 +8,15 @@ import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
 
 
 public class CdaDocumentBuilder {
@@ -69,38 +76,61 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponentOf(componentOf);
     }
 
-    public void addComponentSection(Encounter encounter) {
+    public void addAdmissionSection(Encounter encounter) {
         AdmissionAdapter admissionAdapter = new AdmissionAdapter();
 
         Component component = admissionAdapter.toCdaObject(encounter);
 
-        clinicalDocument.setComponent(component);
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
     }
-//
-//    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
-//        // Usa l'adapter per convertire l'osservazione FHIR in CDA
-//        ObservationAdapter observationAdapter = new ObservationAdapter();
-//        ObservationCDA observationCDA = observationAdapter.toCdaObject(fhirObservation);
-//
-//        // Aggiungi la sezione osservazione al ClinicalDocument
-//        clinicalDocument.setObservationSection(observationCDA);
-//        return this;
-//    }
 
-    // Metodo che crea il documento CDA e lo serializza in XML
-    public File  build() throws JAXBException, IOException {
-        // Crea il contesto JAXB per il marshalling del documento CDA
+    public void addClinicalHistorySection(Encounter encounter) {
+        ClinicalHistoryAdapter clinicalHistoryAdapter = new ClinicalHistoryAdapter();
+
+        Component component = clinicalHistoryAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public void addHospitalCourseSection(Encounter encounter) {
+        HospitalCourseAdapter hospitalCourseAdapter = new HospitalCourseAdapter();
+
+        Component component = hospitalCourseAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public File  build() throws JAXBException, IOException, TransformerException {
+
         JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
 
-        // Crea un marshaller per serializzare in XML
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-        // Crea un file temporaneo
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+
+
+        StringWriter stringWriter = new StringWriter();
+
+
+        marshaller.marshal(clinicalDocument, stringWriter);
+
+
         File tempFile = File.createTempFile("clinicalDocument", ".xml");
 
-        // Serializza il ClinicalDocument nel file temporaneo
-        marshaller.marshal(clinicalDocument, tempFile);
+
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+
+
+        transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(stringWriter.toString())),
+                new StreamResult(tempFile));
 
         return tempFile;
     }

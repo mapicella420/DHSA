@@ -140,20 +140,15 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 Code code = new Code("8646-2", "2.16.840.1.113883.6.1", "LOINC",
                         "Diagnosi di Accettazione Ospedaliera");
                 observationCDA.setCode(code);
-                Value value = new Value("CD",
-                        obs.getCode().getCodingFirstRep().getCode(),
+                Value value = new Value();
+                observationCDA.setValue(value);
+
+                Translation translation = new Translation(obs.getCode().getCodingFirstRep().getCode(),
                         "2.16.840.1.113883.6.1",
                         "LOINC",
                         obs.getCode().getText()
                 );
-                observationCDA.setValue(value);
-
-//                Translation translation = new Translation(obs.getCode().getCodingFirstRep().getCode(),
-//                        "2.16.840.1.113883.6.1",
-//                        "LOINC",
-//                        obs.getCode().getText()
-//                );
-//                value.setTranslation(translation);
+                value.setTranslation(translation);
 
                 observationCDAList.add(observationCDA);
             }
