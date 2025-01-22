@@ -9,18 +9,23 @@ import com.group01.dhsa.ObserverPattern.EventObservable;
 import jakarta.xml.bind.JAXBException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.hl7.fhir.r5.model.*;
 
-import java.util.LinkedHashSet;
+import java.io.File;
 import java.util.List;
 
 public class DischargePanelController {
 
+    public Button previewButton;
+    public Button uploadButton;
     @FXML
     private Button backButton;
 
@@ -61,9 +66,12 @@ public class DischargePanelController {
     private MenuButton encounterIDMenu;
 
     private EventObservable eventManager;
+    private CdaDocumentCreator cda;
+    private File cdaFile;
 
     public DischargePanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
+        this.cda = new CdaDocumentCreator();
     }
 
     @FXML
@@ -98,9 +106,10 @@ public class DischargePanelController {
         stackPaneDischarge.setVisible(false);
         stackPaneCDA.setVisible(true);
 
-        CdaDocumentCreator cda = new CdaDocumentCreator();
+
         try {
-            cda.createCdaDocument(patientIDMenu.getText(),encounterIDMenu.getText());
+            previewButton.setDisable(false);
+            this.cdaFile = cda.createCdaDocument(patientIDMenu.getText(),encounterIDMenu.getText());
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
@@ -191,83 +200,96 @@ public class DischargePanelController {
         FhirContext fhirContext = FhirContext.forR5();
         IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
-        LoggedUser loggedUser = LoggedUser.getInstance();
+        Bundle response = client.search()
+                .forResource(Patient.class)
+                .where(Patient.FAMILY.matches().value(surname))
+                .and(Patient.NAME.matches().values(name))
+                .returnBundle(Bundle.class)
+                .execute();
 
-        List<Encounter> encounterList = FHIRClient.getInstance()
-                .getEncountersForPractitioner(loggedUser.getFhirId());
+        if (response.getEntry().isEmpty()) {
+            errorLabel.setText("Patient not found");
+        } else {
+            errorLabel.setText("");
 
-        if (encounterList.isEmpty()) {
-            System.out.println("No encounters found for practitioner");
-            errorLabel.setText("No patients found");
-            return;
-        }
+            int i = 1;
+            for (Bundle.BundleEntryComponent entry : response.getEntry()) {
+                Patient patient = (Patient) entry.getResource();
 
-        LinkedHashSet<String> patientIdsFromEncounters = new LinkedHashSet<>();
-        for (Encounter encounter : encounterList) {
-            String patientRef = encounter.getSubject().getReference();
-            if (patientRef.startsWith("Patient/")) {
-                patientIdsFromEncounters.add(patientRef.split("/")[1]);
+                if (!patient.getDeceased().isEmpty()) {
+                    MenuItem item = new MenuItem(patient.getIdentifier().getFirst().getValue());
+                    item.setId("item" + i);
+                    i++;
+                    item.setOnAction(this::switchSelectedPatient);
+                    patientIDMenu.getItems().add(item);
+                }
             }
-        }
 
-        System.out.println("Patient IDs from encounters: " + patientIdsFromEncounters);
-
-        for (String patientId : patientIdsFromEncounters) {
-            Bundle response = client.search()
-                    .forResource(Patient.class)
-                    .where(Patient.FAMILY.matches().value(surname))
-                    .and(Patient.NAME.matches().values(name))
-                    .and(Patient.RES_ID.exactly().identifier(patientId))
-                    .returnBundle(Bundle.class)
-                    .execute();
-            if (response.getEntry().isEmpty()) {
-                errorLabel.setText("Patient not found");
+            if (patientIDMenu.getItems().isEmpty()) {
+                errorLabel.setText("No patients match the criteria");
             } else {
-                errorLabel.setText("");
-
-                int i = 1;
-                for (Bundle.BundleEntryComponent entry : response.getEntry()) {
-                    Patient patient = (Patient) entry.getResource();
-
-                    if (!patient.getDeceasedBooleanType().getValue()) {
-                        MenuItem item = new MenuItem(patient.getIdentifier().getFirst().getValue());
-                        item.setId("item" + i);
-                        i++;
-                        item.setOnAction(this::switchSelectedPatient);
-                        patientIDMenu.getItems().add(item);
-                    }
-                }
-
-                if (patientIDMenu.getItems().isEmpty()) {
-                    errorLabel.setText("No patients match the criteria");
-                } else {
-                    patientIDMenu.setDisable(false);
-                }
+                patientIDMenu.setDisable(false);
             }
 
         }
-
     }
 
     @FXML
     void downloadPDF(ActionEvent event) {
+        try {
+            if (cdaFile != null && cdaFile.exists()) {
+                // Ottieni la finestra corrente
+                Stage currentStage = (Stage) previewButton.getScene().getWindow();
 
+                // Cambia schermata usando ChangeScreen
+                ChangeScreen screenChanger = new ChangeScreen();
+                Object controller = screenChanger.switchScreen(
+                        "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
+                        currentStage,
+                        "Preview CDA Document"
+                );
+
+                // Imposta il file CDA nel controller della schermata di anteprima
+                if (controller instanceof CdaPreviewController) {
+                    ((CdaPreviewController) controller).setCdaFile(cdaFile);
+                    System.out.println("[DEBUG] CDA file passed to CdaPreviewController.");
+                } else {
+                    System.err.println("[ERROR] The controller is not an instance of CdaPreviewController.");
+                }
+            } else {
+                cdaStatus.setText("No CDA file available to preview.");
+            }
+        } catch (Exception e) {
+            cdaStatus.setText("Error opening CDA preview: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
+
 
     private boolean checkEncounter(Encounter encounter){
-        String practitionerId = encounter.getParticipant().getFirst().getActor().getReference().split("/")[1];
-        String prId = FHIRClient.getInstance().getPractitionerById(LoggedUser.getInstance().getFhirId()).getIdPart();
-
-        if(practitionerId.equals(prId)){
-            String patientId = encounter.getSubject().getReference().split("/")[1];
-            String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
-
-            return patientId.equals(pId) &&
-                    !encounter.getType().getFirst().getCodingFirstRep()
-                            .getDisplay().equals("Death Certification");
-        }
-
-        return false;
+        String patientId = encounter.getSubject().getReference().split("/")[1];
+        String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
+        return patientId.equals(pId) &&
+                !encounter.getType().getFirst().getCodingFirstRep()
+                        .getDisplay().equals("Death Certification");
     }
+
+    @FXML
+    void uploadCda() {
+        try {
+            // Notifica all'EventManager
+            EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
+
+            // Aggiorna lo stato
+            cdaStatus.setText("CDA uploaded successfully!");
+        } catch (Exception e) {
+            cdaStatus.setText("Error uploading CDA: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

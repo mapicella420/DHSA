@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lettera di Dimissione</title>
+    <title>Lettera di Dimissione Ospedaliera</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,116 +18,223 @@
             padding: 10px 0;
             border-bottom: 2px solid #ddd;
         }
+
+        .general-info,
+        .document-details {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Spazio tra gli elementi */
+            flex-wrap: wrap; /* Permette agli elementi di andare a capo se lo spazio è insufficiente */
+        }
+
+        .general-info p,
+        .document-details p {
+            margin: 5px 10px;
+        }
+
+        .patient-info, .patient-address, .patient-id {
+            display: flex;
+            gap: 10px; /* Spazio tra gli elementi */
+            flex-wrap: wrap; /* Consente il ritorno a capo se lo spazio è insufficiente */
+        }
+
+        .patient-info p, .patient-address p {
+            margin: 5px 10px;
+        }
+
+        .author-info {
+            display: flex;
+            gap: 10px; /* Spazio tra gli elementi */
+            flex-wrap: wrap; /* Permette agli elementi di andare a capo se necessario */
+        }
+
+        .author-info p {
+            margin: 5px 10px;
+        }
+
+        .custodian-info,
+        .authenticator-info,
+        .authenticator-address,
+        .authenticator-org {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px; /* Spazio tra gli elementi */
+        }
+
+        .custodian-address p,
+        .authenticator-address p {
+            margin: 5px 0;
+        }
+
+        .authenticator-time {
+            margin-top: 10px;
+        }
+
+        .encounter-info,
+        .encounter-timing,
+        .responsible-party-info,
+        .location-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .encounter-info p,
+        .encounter-timing p,
+        .responsible-party-info p,
+        .location-info p {
+            margin: 5px 0;
+        }
+
         h1 {
             font-size: 24px;
             color: #333;
         }
-        h2, h3 {
+        h2 {
             color: #555;
             border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
+            margin-top: 20px;
         }
         section {
             margin-bottom: 20px;
-            padding: 10px;
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+        p {
+            margin: 5px 0;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .note {
-            font-size: 0.9em;
-            color: #888;
+        .info {
+            font-size: 14px;
+            color: #555;
         }
     </style>
 </head>
 <body>
+<div class="page">
+    <header>
+        <h1>Lettera di Dimissione Ospedaliera</h1>
+        <div class="general-info">
+            <p><strong>Template ID:</strong> {{templateId}}</p>
+            <p><strong>Type ID:</strong> {{typeId}}</p>
+            <p><strong>ID Documento:</strong> {{documentId}}</p>
+            <p><strong>Versione:</strong> {{versionNumber}}</p>
+            <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
+            <p><strong>Codice Area:</strong> {{realmCode}}</p>
+            <p><strong>Tipo Documento:</strong> {{documentType}}</p>
+            <p><strong>Codice Sistema:</strong> {{codeSystemName}}</p>
+            <p><strong>Codice Riservatezza:</strong> {{confidentialityCode}}</p>
+            <p><strong>Data Creazione:</strong> {{creationDate}}</p>
+            <p><strong>Lingua:</strong> {{languageCode}}</p>
+        </div>
+    </header>
 
-<header>
-    <h1>Lettera di Dimissione Ospedaliera</h1>
-    <p class="note">Documento CDA generato automaticamente</p>
-</header>
 
-<section id="introduzione">
-    <h2>2. Introduzione</h2>
-    <p><strong>Scopo del Documento:</strong> Fornire un riepilogo completo delle informazioni cliniche del paziente durante il ricovero.</p>
-    <p><strong>Contesto di Riferimento:</strong> Basato sulle linee guida CDA di HL7 Italia.</p>
-    <p><strong>Destinatari:</strong> Medici curanti, pazienti, e altre figure sanitarie interessate.</p>
-    <p>Paziente: {{patient}}</p>
-</section>
+    <section>
+        <h2>Dati del Paziente</h2>
+        <div class="patient-info">
+            <!-- Nome, genere e data di nascita sulla stessa linea -->
+            <p><strong>Nome:</strong> {{patientGiven}} {{patientFamily}}</p>
+            <p><strong>Genere:</strong> {{patientGender}}</p>
+            <p><strong>Data di Nascita:</strong> {{patientBirthTime}}</p>
+            <p><strong>ID Paziente:</strong> {{patientId}}</p>
 
-<section id="header-cda">
-    <h2>3. Header CDA del Documento</h2>
-    <table>
-        <tr>
-            <th>Elemento</th>
-            <th>Valore</th>
-        </tr>
-        <tr>
-            <td>Root del documento</td>
-            <td>&lt;ClinicalDocument&gt;</td>
-        </tr>
-        <tr>
-            <td>Identificativo CDA2</td>
-            <td>&lt;typeId&gt;</td>
-        </tr>
-        <tr>
-            <td>Titolo del documento</td>
-            <td>Lettera di Dimissione</td>
-        </tr>
-        <tr>
-            <td>Data di creazione</td>
-            <td>2025-01-17</td>
-        </tr>
-    </table>
-</section>
+        </div>
+        <div class="patient-address">
+            <!-- Stato, nazione, città e indirizzo sulla stessa linea -->
+            <p><strong>Stato:</strong> {{patientState}}</p>
+            <p><strong>Nazione:</strong> {{patientCountry}}</p>
+            <p><strong>Città:</strong> {{patientCity}}</p>
+            <p><strong>Indirizzo:</strong> {{patientAddress}}</p>
+        </div>
+    </section>
 
-<section id="body-cda">
-    <h2>4. Body CDA del Documento</h2>
 
-    <h3>4.1 Motivo del Ricovero</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
 
-    <h3>4.2 Inquadramento Clinico Iniziale</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
+    <section>
+        <h2>Informazioni Autore</h2>
+        <div class="author-info">
+            <!-- Nome e Cognome -->
+            <p><strong>Nome:</strong> {{authorGiven}} {{authorFamily}}</p>
+            <!-- ID Autore -->
+            <p><strong>ID Autore:</strong> {{authorId}}</p>
+            <!-- Autorità Assegnante -->
+            <p><strong>Autorità Assegnante:</strong> {{assigningAuthorityName}}</p>
+            <!-- Timestamp -->
+            <p><strong>Data e Ora:</strong> {{authorTime}}</p>
+        </div>
+    </section>
 
-    <h3>4.3 Decorso Ospedaliero</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a velit quam. Nulla facilisi.</p>
-</section>
 
-<section id="sezioni-aggiuntive">
-    <h2>5. Sezioni Aggiuntive</h2>
+    <section>
+        <h2>Custode del Documento</h2>
+        <div class="custodian-info">
+            <p><strong>Nome Organizzazione:</strong> {{custodianName}}</p>
+            <p><strong>ID Organizzazione:</strong> {{custodianId}}</p>
+            <p><strong>Autorità Assegnante:</strong> {{custodianAuthorityName}}</p>
+        </div>
+        <div class="custodian-address">
+            <p><strong>Indirizzo:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
+        </div>
+    </section>
 
-    <h3>5.1 Allergie</h3>
-    <ul>
-        <li>Penicillina</li>
-        <li>Aspirina</li>
-    </ul>
+    <section>
+        <h2>Legale Autenticatore</h2>
+        <div class="authenticator-info">
+            <p><strong>Codice Firma:</strong> {{authenticatorSignatureCode}}</p>
+            <p><strong>Nome:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
+            <p><strong>ID:</strong> {{authenticatorId}}</p>
+        </div>
+        <div class="authenticator-address">
+            <p><strong>Indirizzo:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
+        </div>
+        <div class="authenticator-org">
+            <p><strong>Organizzazione Rappresentata:</strong> {{authenticatorOrgName}}</p>
+            <p><strong>Telefono:</strong> {{authenticatorOrgTelecom}}</p>
+        </div>
+        <div class="authenticator-time">
+            <p><strong>Data e Ora Firma:</strong> {{authenticatorTime}}</p>
+        </div>
+    </section>
 
-    <h3>5.2 Terapia Farmacologica</h3>
-    <ul>
-        <li>Paracetamolo 500mg - 1 compressa ogni 8 ore</li>
-        <li>Omeprazolo 20mg - 1 compressa al giorno</li>
-    </ul>
-</section>
+    <section>
+        <h2>Informazioni sull'Incontro</h2>
+        <div class="encounter-info">
+            <p><strong>ID Incontro:</strong> {{encounterId}}</p>
+            <p><strong>Autorità Assegnante:</strong> {{encounterAuthorityName}}</p>
+        </div>
+        <div class="encounter-timing">
+            <p><strong>Data Inizio:</strong> {{encounterStart}}</p>
+            <p><strong>Data Fine:</strong> {{encounterEnd}}</p>
+        </div>
+    </section>
 
-<footer>
-    <p class="note">© 2025 HL7 Italia - Documento CDA generato il 2025-01-17</p>
-</footer>
+    <section>
+        <h2>Responsabile dell'Incontro</h2>
+        <div class="responsible-party-info">
+            <p><strong>Nome:</strong> {{responsibleGiven}} {{responsibleFamily}} ({{responsiblePrefix}})</p>
+            <p><strong>ID:</strong> {{responsibleId}}</p>
+            <p><strong>Autorità Assegnante:</strong> {{responsibleAuthorityName}}</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Luogo dell'Incontro</h2>
+        <div class="location-info">
+            <p><strong>Reparto:</strong> {{facilityName}}</p>
+            <p><strong>Nome Organizzazione:</strong> {{serviceProviderName}}</p>
+            <p><strong>ID Organizzazione:</strong> {{serviceProviderId}}</p>
+            <p><strong>Autorità Assegnante:</strong> {{serviceProviderAuthorityName}}</p>
+        </div>
+    </section>
+
+
+
+
+    <footer>
+        <p>Documento generato automaticamente. © 2025 HL7 Italia</p>
+    </footer>
+</div>
 
 </body>
 </html>

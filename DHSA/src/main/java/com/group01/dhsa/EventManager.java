@@ -43,5 +43,8 @@ public class EventManager {
 
         DicomImporter dicomImporter = new DicomImporter();
         eventObservable.subscribe("dicom_upload", dicomImporter);
+
+        CdaUploader cdaUploader = new CdaUploader();
+        eventObservable.subscribe("cda_upload", cdaUploader);
     }
 }

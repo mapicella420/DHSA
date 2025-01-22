@@ -16,6 +16,8 @@ module com.group01.dhsa {
     requires javafx.swing;
     requires fontawesomefx;
     requires com.sun.xml.bind;
+    requires javafx.web; // Aggiungi questo
+
 
 
     // Rende visibile il pacchetto principale (necessario per la classe MyHL7CdaConverter)

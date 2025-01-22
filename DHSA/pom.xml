@@ -137,6 +137,12 @@
       <version>17.0.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-web</artifactId>
+      <version>17.0.13</version> <!-- Usa la versione appropriata -->
+    </dependency>
+
 
     <!-- JAI ImageIO Tools -->
     <dependency>
@@ -149,7 +155,8 @@
       <groupId>de.jensd</groupId>
       <artifactId>fontawesomefx</artifactId>
       <version>8.9</version>
-    </dependency>
+    </dependency
+    >
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
