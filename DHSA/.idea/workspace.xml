@@ -10,16 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Paragraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Paragraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Text.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapterTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +70,7 @@
     "Application.MyApp.executor": "Run",
     "Application.MyHL7CdaConverter.executor": "Debug",
     "Application.Unnamed.executor": "Run",
+    "JUnit.ClinicalHistoryAdapterTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -109,7 +105,7 @@
       <recent name="com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.ClinicalHistoryAdapterTest">
+  <component name="RunManager" selected="Application.MyHL7CdaConverter">
     <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />

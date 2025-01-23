@@ -2,6 +2,9 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
+import com.group01.dhsa.Model.DicomImporter;
+import com.mongodb.client.*;
+import org.bson.Document;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -43,7 +46,10 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
                 encounterId
         );
 
-        String stringBuilder = "The patient presented to us symptomatic for " +
+
+        Patient patient = FHIRClient.getInstance().getPatientFromId(patientId);
+        String stringBuilder = "The patient " +  patient.getNameFirstRep().getNameAsSingleString() +
+                " came to our attention for " +
                 fhirObject.getTypeFirstRep().getCodingFirstRep().getDisplay() +
                 ", during the encounter in date " +
                 fhirObject.getActualPeriod().getStartElement().toHumanDisplay() +
@@ -100,6 +106,45 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         }
 
+        List<CarePlan> carePlans = FHIRClient.getInstance().getCarePlansForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
+
+        if (carePlans != null && !carePlans.isEmpty()) {
+            Paragraph carePlanParagraph = new Paragraph(
+                    "A care plan was established for the patient, which included:"
+            );
+            textList.add(carePlanParagraph);
+
+            List<ListItem> carePlanItems = new ArrayList<>();
+            StructuredList carePlanStructuredList = new StructuredList();
+            carePlanStructuredList.setType("unordered");
+            carePlanStructuredList.setItems(carePlanItems);
+
+            for (CarePlan carePlan : carePlans) {
+                StringBuilder carePlanItemContent = new StringBuilder();
+                String carePlanDisplay = carePlan.getCategoryFirstRep().getCodingFirstRep()
+                        .getDisplay();
+                carePlanItemContent.append(carePlanDisplay);
+                if (carePlan.getAddressesFirstRep().getConcept() != null) {
+                    carePlanItemContent.append(", due to ");
+                    carePlanItemContent.append(carePlan.getAddressesFirstRep().getConcept()
+                            .getCodingFirstRep().getDisplay()
+                    );
+                }
+                if (carePlan.getPeriod().hasStart()) {
+                    carePlanItemContent.append(" (started ");
+                    carePlanItemContent.append(carePlan.getPeriod().getStartElement().toHumanDisplay());
+                    carePlanItemContent.append(")");
+                }
+                carePlanItemContent.append(";");
+                carePlanItems.add(new ListItem(carePlanItemContent.toString()));
+            }
+            textList.add(carePlanStructuredList);
+        }
+
+
         List<Procedure> procedures = FHIRClient.getInstance().getProceduresForPatientAndEncounter(
                 patientId,
                 encounterId
@@ -107,7 +152,7 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         if (procedures != null && !procedures.isEmpty()) {
             Paragraph procedureParagraph = new Paragraph(
-                    "During the encounter, the patient underwent the following procedures:");
+                    "During the hospital stay, the patient underwent the following procedures:");
 
             textList.add(procedureParagraph);
             List<ListItem> itemsProcedure = new ArrayList<>();
@@ -136,24 +181,162 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         if (immunizationList != null && !immunizationList.isEmpty()) {
             Paragraph immunizationParagraph = new Paragraph(
-                    "As part of the patient's care, the following immunizations were recorded:");
+                    "As part of the patient's care, the following immunizations were performed:");
 
             textList.add(immunizationParagraph);
 
-            for (Procedure procedure : procedures) {
-                String procedureDisplay = procedure.getCode().getCodingFirstRep().getDisplay();
-                StringBuilder procedureItemContent = new StringBuilder(procedureDisplay);
-                if (procedure.getOccurrenceDateTimeType() != null) {
-                    String onsetDate = procedure.getOccurrenceDateTimeType().toHumanDisplay();
-                    procedureItemContent.append(" (performed at ").append(onsetDate).append("); ");
-                } else {
-                    procedureItemContent.append(". ");
-                }
-                Paragraph procedureItemParagraph = new Paragraph(procedureItemContent.toString());
+            List<ListItem> itemsImmunization = new ArrayList<>();
+            StructuredList immunizationStructuredList = new StructuredList();
+            immunizationStructuredList.setType("unordered");
+            immunizationStructuredList.setItems(itemsImmunization);
 
-                textList.add(procedureItemParagraph);
+            for (Immunization immunization: immunizationList) {
+                String immunizationDisplay = immunization.getVaccineCode().getCodingFirstRep().getDisplay();
+                StringBuilder immunizationItemContent = new StringBuilder(immunizationDisplay);
+                if (immunization.getOccurrenceDateTimeType() != null) {
+                    String date = immunization.getOccurrenceDateTimeType().toHumanDisplay();
+                    immunizationItemContent.append(" (performed at ").append(date).append("); ");
+                } else {
+                    immunizationItemContent.append(". ");
+                }
+                itemsImmunization.add(new ListItem(immunizationItemContent.toString()));
             }
+            textList.add(immunizationStructuredList);
         }
+
+        List<AllergyIntolerance> allergies = FHIRClient.getInstance().getAllergiesForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
+
+        if (allergies != null && !allergies.isEmpty()) {
+            Paragraph allergyParagraph = new Paragraph("The following allergies were identified:");
+            textList.add(allergyParagraph);
+
+            List<ListItem> allergyItems = new ArrayList<>();
+            StructuredList allergyStructuredList = new StructuredList();
+            allergyStructuredList.setType("unordered");
+            allergyStructuredList.setItems(allergyItems);
+
+            for (AllergyIntolerance allergy : allergies) {
+                String allergyDisplay = allergy.getCode().getCodingFirstRep() != null
+                        ? allergy.getCode().getCodingFirstRep().getDisplay()
+                        : "Unknown allergy";
+
+                String clinicalStatus = allergy.getClinicalStatus() != null &&
+                        !allergy.getClinicalStatus().getCoding().isEmpty()
+                        ? allergy.getClinicalStatus().getCodingFirstRep().getCode()
+                        : "Unknown clinical status";
+
+                String verificationStatus = allergy.getVerificationStatus() != null &&
+                        !allergy.getVerificationStatus().getCoding().isEmpty()
+                        ? allergy.getVerificationStatus().getCodingFirstRep().getCode()
+                        : "Unknown verification status";
+
+                String recordedDate = allergy.getRecordedDate() != null
+                        ? allergy.getRecordedDateElement().toHumanDisplay()
+                        : "No recorded date available";
+
+
+                String allergyDetailBuilder = allergyDisplay +
+                        " (Clinical status: " + clinicalStatus + ", Verification status: " +
+                        verificationStatus + ", Recorded on: " + recordedDate +
+                        ").";
+
+                allergyItems.add(new ListItem(allergyDetailBuilder));
+            }
+
+            textList.add(allergyStructuredList);
+        }
+
+        List<ImagingStudy> imagingStudies = FHIRClient.getInstance().getImagingStudiesForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
+
+        if (imagingStudies != null && !imagingStudies.isEmpty()) {
+            StructuredList imagingStudyStructuredList = new StructuredList();
+            imagingStudyStructuredList.setType("unordered");
+            String introImagingStudies = "As part of the diagnostic process" +
+                    ", the following imaging studies were performed:";
+            textList.add(new Paragraph(introImagingStudies));
+
+
+            List<ListItem> imagingItems = new ArrayList<>();
+            imagingStudyStructuredList.setItems(imagingItems);
+
+            for (ImagingStudy imagingStudy : imagingStudies) {
+                StringBuilder imagingItemContent = new StringBuilder();
+
+                imagingItemContent.append("Study ID: ").append(imagingStudy.getIdPart()).append(". ");
+
+                imagingItemContent.append("Status: ").append(imagingStudy.getStatus()).append(". ");
+
+                if (imagingStudy.getStarted() != null) {
+                    imagingItemContent.append("Started on: ")
+                            .append(imagingStudy.getStartedElement().toHumanDisplay())
+                            .append(". ");
+                }
+
+                List<ImagingStudy.ImagingStudySeriesComponent> series = imagingStudy.getSeries();
+                if (series != null && !series.isEmpty()) {
+                    imagingItemContent.append("The study includes the following series: ");
+                    for (ImagingStudy.ImagingStudySeriesComponent seriesComponent : series) {
+                        String modality = seriesComponent.getModality().getCodingFirstRep().getDisplay();
+                        String bodySite = seriesComponent.getBodySite().getConcept().getCodingFirstRep().getDisplay();
+
+                        imagingItemContent.append(modality.toLowerCase())
+                                .append(" scan of the ")
+                                .append(bodySite.toLowerCase())
+                                .append(". ");
+
+
+                        List<ImagingStudy.ImagingStudySeriesInstanceComponent> instances = seriesComponent.getInstance();
+                        if (instances != null && !instances.isEmpty()) {
+                            imagingItemContent.append("Images included: ");
+                            for (ImagingStudy.ImagingStudySeriesInstanceComponent instance : instances) {
+                                String sopClass = instance.getSopClass().getDisplay();
+                                imagingItemContent.append(sopClass.toLowerCase()).append("; ");
+                            }
+                        }
+                    }
+                }
+
+                imagingItems.add(new ListItem(imagingItemContent.toString()));
+            }
+            textList.add(imagingStudyStructuredList);
+
+        }
+
+//        List<>
+
+        Practitioner practitioner = FHIRClient.getInstance().getPractitionerFromId(fhirObject
+                .getParticipantFirstRep().getActor().getReference().split("/")[1]);
+        Organization organization = FHIRClient.getInstance().getOrganizationFromId(fhirObject
+                .getServiceProvider().getReference().split("/")[1]);
+
+        if (practitioner != null) {
+            Paragraph practitionerParagraph = new Paragraph(
+                    "The primary practitioner overseeing the patient's care was Dr. "
+                            + practitioner.getNameFirstRep().getGivenAsSingleString() + " "
+                            + practitioner.getNameFirstRep().getFamily() + "."
+            );
+            textList.add(practitionerParagraph);
+        }
+
+        if (organization != null) {
+            Paragraph organizationParagraph = new Paragraph(
+                    "The encounter took place at " + organization.getName() + "."
+            );
+            textList.add(organizationParagraph);
+        }
+
+
+        Paragraph conclusionParagraph = new Paragraph(
+                "At the conclusion of the encounter, the patient was in stable condition and was advised to follow up with outpatient care. "
+                        + "Specific recommendations included adherence to prescribed medications and scheduled follow-up visits."
+        );
+        textList.add(conclusionParagraph);
 
 
         return component;

@@ -53,8 +53,8 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
         );
 
         Text text = new Text();
-        List<Paragraph> paragraphs = new ArrayList<>();
-        List<StructuredList> lists = new ArrayList<>();
+        List<Object> textList = new ArrayList<>();
+        text.setValues(textList);
 
 
         Paragraph introParagraph = new Paragraph();
@@ -69,17 +69,21 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
             introContent.append(".");
         }
         introParagraph.setContent(introContent.toString());
-        paragraphs.add(introParagraph);
+        textList.add(introParagraph);
 
 
         if (conditions != null && !conditions.isEmpty()) {
             Paragraph conditionIntro = new Paragraph();
             conditionIntro.setContent("The following relevant conditions were noted:");
-            paragraphs.add(conditionIntro);
+            textList.add(conditionIntro);
 
-            StringBuilder conditionContent = new StringBuilder();
+            StructuredList conditionStructuredList = new StructuredList();
+            List<ListItem> conditionsListItems = new ArrayList<>();
+            conditionStructuredList.setItems(conditionsListItems);
+            textList.add(conditionStructuredList);
 
             for (Condition condition : conditions) {
+                StringBuilder conditionContent = new StringBuilder();
                 conditionContent.append("The patient has been diagnosed with ")
                         .append(condition.getCode().getCoding().getFirst().getDisplay());
 
@@ -94,17 +98,14 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 } else {
                     conditionContent.append(". ");
                 }
+                conditionsListItems.add(new ListItem(conditionContent.toString()));
             }
-
-            Paragraph conditionParagraph = new Paragraph();
-            conditionParagraph.setContent(conditionContent.toString());
-            paragraphs.add(conditionParagraph);
         }
 
         if (observations != null && !observations.isEmpty()) {
             Paragraph observationIntro = new Paragraph();
             observationIntro.setContent("Relevant clinical observations include:");
-            paragraphs.add(observationIntro);
+            textList.add(observationIntro);
 
             StructuredList observationList = new StructuredList();
             observationList.setType("unordered");
@@ -121,14 +122,8 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
             }
 
             observationList.setItems(listItems);
-            lists.add(observationList);
+            textList.add(observationList);
         }
-
-        List<Object> list = new ArrayList<>();
-        list.addAll(paragraphs);
-        list.addAll(lists);
-
-        text.setValues(list);
 
         section.setText(text);
 

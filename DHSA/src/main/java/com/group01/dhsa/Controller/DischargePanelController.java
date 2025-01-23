@@ -216,7 +216,7 @@ public class DischargePanelController {
         Bundle response = client.search()
                 .forResource(Patient.class)
                 .where(Patient.FAMILY.matches().value(surname))
-                .and(Patient.NAME.matches().values(name))
+                .and(Patient.GIVEN.matches().values(name))
                 .returnBundle(Bundle.class)
                 .execute();
 
