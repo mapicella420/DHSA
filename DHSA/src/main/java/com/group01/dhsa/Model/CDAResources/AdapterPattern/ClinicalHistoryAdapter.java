@@ -70,6 +70,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
         if (conditionList != null && !conditionList.isEmpty()) {
             List<StructuredList> structuredLists = new ArrayList<>();
             StructuredList structuredList = new StructuredList();
+            structuredList.setType("unordered");
             structuredLists.add(structuredList);
             text.setLists(structuredLists);
             Paragraph conditionIntro = new Paragraph();

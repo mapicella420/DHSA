@@ -85,8 +85,10 @@ public class LegalAuthenticatorAdapter implements CdaSection <LegalAuthenticator
         assignedEntity.setRepresentedOrganization(representedOrganization);
 
         representedOrganization.setName(organization.getName());
-        representedOrganization.setTelecom(new Telecom("HP","tel:"+organization
-                .getContactFirstRep().getTelecom().getFirst().getValue().replace("-","")));
+        if (!organization.getContactFirstRep().getTelecom().isEmpty()) {
+            representedOrganization.setTelecom(new Telecom("HP","tel:"+organization
+                    .getContactFirstRep().getTelecom().getFirst().getValue().replace("-","")));
+        }
 
         Addr addrOrg = new Addr();
         addr.setUse("HP");
