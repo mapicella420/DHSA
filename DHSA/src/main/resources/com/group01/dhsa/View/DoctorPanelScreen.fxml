@@ -43,6 +43,13 @@
 
                           </items>
                       </Menu>
+                      <!-- Import DICOM Files Menu -->
+                      <Menu styleClass="menu-bar" text="CDA">
+                          <items>
+                              <MenuItem onAction="#onCdaMenuClick" styleClass="menu-item" text="View all CDA files" />
+
+                          </items>
+                      </Menu>
                   </menus>
               </MenuBar>
               <VBox alignment="CENTER" spacing="20.0" />

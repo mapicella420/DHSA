@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.group01.dhsa.Controller.CdaListController"
+            prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/styles.css">
+
+    <children>
+        <VBox spacing="20" layoutX="10.0" layoutY="10.0" prefWidth="780.0" prefHeight="580.0" alignment="CENTER">
+            <!-- Title -->
+            <Label text="CDA Documents" styleClass="label-title" alignment="CENTER" />
+
+            <!-- Search Bar -->
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="Search by:" styleClass="label" />
+                <ComboBox fx:id="searchFieldSelector" promptText="Select Field" styleClass="combo-box">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Template ID" />
+                            <String fx:value="Document ID" />
+                            <String fx:value="Patient ID" />
+                            <String fx:value="Creation Date" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <TextField fx:id="searchField" promptText="Enter search term..." styleClass="text-field" />
+            </HBox>
+
+            <!-- Table View -->
+            <TableView fx:id="cdaTable" prefHeight="400.0" prefWidth="780.0" styleClass="table-view">
+                <columns>
+                    <TableColumn text="Creation Date" fx:id="creationDateColumn" prefWidth="150.0" />
+                    <TableColumn text="Patient Name" fx:id="patientNameColumn" prefWidth="150.0" />
+                    <TableColumn text="Codice Fiscale" fx:id="patientCFColumn" prefWidth="150.0" />
+                    <TableColumn text="Date of Birth" fx:id="patientBirthColumn" prefWidth="150.0" />
+                    <TableColumn text="Author Name" fx:id="authorNameColumn" prefWidth="150.0" />
+                </columns>
+            </TableView>
+
+
+
+            <!-- Buttons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
+                <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
+                <Button fx:id="viewDetailsButton" text="View CDA Details" onAction="#onViewDetailsClick" disable="true" styleClass="button-red" />
+                <Button fx:id="exportButton" text="Export Selected" onAction="#onExportButtonClick" disable="true" styleClass="button-green" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>

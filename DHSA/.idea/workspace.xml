@@ -5,27 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaPreviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaPreviewController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoggedUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/LoggedUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/EventManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CodiceFiscaleCalculator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CodiceFiscaleCalculator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CsvImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CsvImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/DicomImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/DicomImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/MongoInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/MongoInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventObservable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventObservable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DoctorPanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DoctorPanelScreen.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/CDAStyles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/CDAStyles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/eye.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/icons/eye.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +78,7 @@
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/mapic/Desktop/PW/DHSA/project/DHSA/DHSA/src/main/java/com/group01/dhsa",
-    "last_opened_file_path": "C:/Users/mapic/Desktop/PW/DHSA/project/DHSA/DHSA/src/main/resources/com/group01/dhsa/View/LoginUserScreen.fxml",
+    "last_opened_file_path": "C:/Users/mapic/Desktop/PW/DHSA/project/DHSA/DHSA/src/main/resources/com/group01/dhsa/icons",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -99,6 +89,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mapic\Desktop\PW\DHSA\project\DHSA\DHSA\src\main\resources\com\group01\dhsa\icons" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\mapic\Desktop\PW\DHSA\project\DHSA\DHSA\src\main\resources\com\group01\dhsa\icons" />
       <recent name="C:\Users\sasyb\IdeaProjects\DHSA\DHSA\src\main\resources\com\group01\dhsa" />

@@ -6,9 +6,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CdaDataExtractor {
 
@@ -271,6 +269,206 @@ public class CdaDataExtractor {
                 }
             }
 
+            // Estrarre i dati relativi all'inquadramento clinico iniziale
+            Element clinicalOverviewSection = getSectionByCode(doc, "47039-3");
+
+            if (clinicalOverviewSection != null) {
+                // Estrarre dettagli della sezione principale
+                Element codeElement = (Element) clinicalOverviewSection.getElementsByTagName("code").item(0);
+                if (codeElement != null) {
+                    data.put("clinicalOverviewCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "N/A");
+                    data.put("clinicalOverviewCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "N/A");
+                    data.put("clinicalOverviewCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "N/A");
+                } else {
+                    data.put("clinicalOverviewCode", "N/A");
+                    data.put("clinicalOverviewCodeSystem", "N/A");
+                    data.put("clinicalOverviewCodeSystemName", "N/A");
+                }
+
+                // Estrarre dettagli testuali (paragrafi e liste)
+                Element textElement = (Element) clinicalOverviewSection.getElementsByTagName("text").item(0);
+                if (textElement != null) {
+                    StringBuilder detailsBuilder = new StringBuilder();
+                    NodeList children = textElement.getChildNodes();
+
+                    for (int i = 0; i < children.getLength(); i++) {
+                        Node node = children.item(i);
+
+                        // Gestire paragrafi
+                        if (node.getNodeName().equals("p")) {
+                            String value = node.getTextContent().trim();
+                            if (!value.isEmpty()) {
+                                detailsBuilder.append("<p>").append(value).append("</p>");
+                            }
+                        }
+
+                        // Gestire liste
+                        if (node.getNodeName().equals("list")) {
+                            Element listElement = (Element) node;
+                            NodeList items = listElement.getElementsByTagName("item");
+
+                            if (items.getLength() > 0) {
+                                detailsBuilder.append("<ul>"); // Lista non ordinata
+                                for (int j = 0; j < items.getLength(); j++) {
+                                    String itemValue = items.item(j).getTextContent().trim();
+                                    if (!itemValue.isEmpty()) {
+                                        detailsBuilder.append("<li>").append(itemValue).append("</li>");
+                                    }
+                                }
+                                detailsBuilder.append("</ul>");
+                            }
+                        }
+                    }
+
+                    // Aggiungere dettagli alla mappa
+                    data.put("clinicalOverviewDetails", detailsBuilder.toString());
+                } else {
+                    data.put("clinicalOverviewDetails", "<p>No details available.</p>");
+                }
+
+                // Estrarre "Anamnesi Generale"
+                Element anamnesisSection = getSectionByCode(doc, "11329-0");
+                if (anamnesisSection != null) {
+                    Element anamnesisText = (Element) anamnesisSection.getElementsByTagName("text").item(0);
+                    if (anamnesisText != null) {
+                        StringBuilder anamnesisDetails = new StringBuilder();
+                        NodeList anamnesisChildren = anamnesisText.getChildNodes();
+
+                        for (int i = 0; i < anamnesisChildren.getLength(); i++) {
+                            Node node = anamnesisChildren.item(i);
+
+                            if (node.getNodeName().equals("p")) {
+                                String value = node.getTextContent().trim();
+                                if (!value.isEmpty()) {
+                                    anamnesisDetails.append("<p>").append(value).append("</p>");
+                                }
+                            }
+
+                            if (node.getNodeName().equals("list")) {
+                                Element listElement = (Element) node;
+                                NodeList items = listElement.getElementsByTagName("item");
+
+                                if (items.getLength() > 0) {
+                                    anamnesisDetails.append("<ul>");
+                                    for (int j = 0; j < items.getLength(); j++) {
+                                        String itemValue = items.item(j).getTextContent().trim();
+                                        if (!itemValue.isEmpty()) {
+                                            anamnesisDetails.append("<li>").append(itemValue).append("</li>");
+                                        }
+                                    }
+                                    anamnesisDetails.append("</ul>");
+                                }
+                            }
+                        }
+
+                        data.put("anamnesisDetails", anamnesisDetails.toString());
+                    } else {
+                        data.put("anamnesisDetails", "<p>No details available.</p>");
+                    }
+                } else {
+                    data.put("anamnesisDetails", "<p>No Anamnesis details available.</p>");
+                }
+
+                // Estrarre "Terapia Farmacologica all’Ingresso"
+                Element medicationsSection = getSectionByCode(doc, "42346-7");
+                if (medicationsSection != null) {
+                    Element medicationsText = (Element) medicationsSection.getElementsByTagName("text").item(0);
+                    if (medicationsText != null) {
+                        StringBuilder medicationsDetails = new StringBuilder();
+                        NodeList medicationParagraphs = medicationsText.getChildNodes();
+
+                        for (int i = 0; i < medicationParagraphs.getLength(); i++) {
+                            Node node = medicationParagraphs.item(i);
+
+                            if (node.getNodeName().equals("p")) {
+                                String value = node.getTextContent().trim();
+                                if (!value.isEmpty()) {
+                                    medicationsDetails.append("<p>").append(value).append("</p>");
+                                }
+                            }
+                        }
+
+                        data.put("medicationsDetails", medicationsDetails.toString());
+                    } else {
+                        data.put("medicationsDetails", "<p>No medications available.</p>");
+                    }
+                } else {
+                    data.put("medicationsDetails", "<p>No medications available.</p>");
+                }
+            } else {
+                data.put("clinicalOverviewDetails", "<p>No clinical overview available.</p>");
+                data.put("anamnesisDetails", "<p>No Anamnesis details available.</p>");
+                data.put("medicationsDetails", "<p>No medications available.</p>");
+            }
+
+            // Estrarre i dati relativi al Decorso Ospedaliero
+            Element hospitalCourseSection = getSectionByCode(doc, "8648-8");
+
+            if (hospitalCourseSection != null) {
+                // Estrarre i dettagli del codice
+                Element codeElement = (Element) hospitalCourseSection.getElementsByTagName("code").item(0);
+                if (codeElement != null) {
+                    data.put("hospitalCourseCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "N/A");
+                    data.put("hospitalCourseCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "N/A");
+                    data.put("hospitalCourseCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "N/A");
+                } else {
+                    data.put("hospitalCourseCode", "N/A");
+                    data.put("hospitalCourseCodeSystem", "N/A");
+                    data.put("hospitalCourseCodeSystemName", "N/A");
+                }
+
+                // Estrarre i dettagli del testo
+                Element textElement = (Element) hospitalCourseSection.getElementsByTagName("text").item(0);
+                if (textElement != null) {
+                    StringBuilder detailsBuilder = new StringBuilder();
+                    NodeList children = textElement.getChildNodes();
+
+                    for (int i = 0; i < children.getLength(); i++) {
+                        Node node = children.item(i);
+
+                        // Gestire paragrafi
+                        if (node.getNodeName().equals("p")) {
+                            String value = node.getTextContent().trim();
+                            if (!value.isEmpty()) {
+                                detailsBuilder.append("<p>").append(value).append("</p>");
+                            }
+                        }
+
+                        // Gestire liste
+                        if (node.getNodeName().equals("list")) {
+                            Element listElement = (Element) node;
+                            NodeList items = listElement.getElementsByTagName("item");
+
+                            if (items.getLength() > 0) {
+                                detailsBuilder.append("<ul>"); // Lista non ordinata
+                                for (int j = 0; j < items.getLength(); j++) {
+                                    String itemValue = items.item(j).getTextContent().trim();
+                                    if (!itemValue.isEmpty()) {
+                                        detailsBuilder.append("<li>").append(itemValue).append("</li>");
+                                    }
+                                }
+                                detailsBuilder.append("</ul>");
+                            }
+                        }
+                    }
+
+                    // Inserire i dettagli nella mappa dati
+                    if (!detailsBuilder.isEmpty()) {
+                        data.put("hospitalCourseDetails", detailsBuilder.toString());
+                    } else {
+                        data.put("hospitalCourseDetails", "<p>No hospital course details available.</p>");
+                    }
+                } else {
+                    data.put("hospitalCourseDetails", "<p>No details available.</p>");
+                }
+            } else {
+                data.put("hospitalCourseDetails", "<p>No hospital course available.</p>");
+            }
+
+
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -307,5 +505,20 @@ public class CdaDataExtractor {
         }
         return "";
     }
+
+    private Element getSectionByCode(Document doc, String code) {
+        NodeList sections = doc.getElementsByTagName("section");
+        for (int i = 0; i < sections.getLength(); i++) {
+            Element section = (Element) sections.item(i);
+            Element codeElement = (Element) section.getElementsByTagName("code").item(0);
+            if (codeElement != null && codeElement.getAttribute("code").equals(code)) {
+                return section;
+            }
+        }
+        return null;
+    }
+
+
+
 
 }

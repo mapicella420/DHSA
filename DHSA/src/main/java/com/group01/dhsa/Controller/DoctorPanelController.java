@@ -146,4 +146,10 @@ public class DoctorPanelController {
         screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", currentStage, "DICOM Files");
     }
 
+    public void onCdaMenuClick(ActionEvent actionEvent) {
+        System.out.println("Navigating to DICOM List screen...");
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/CDAListScreen.fxml", currentStage, "CDA Files");
+    }
 }

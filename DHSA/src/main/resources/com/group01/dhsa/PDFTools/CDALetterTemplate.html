@@ -19,18 +19,19 @@
             <div class="row">
                 <p><strong>Document Type:</strong> {{documentType}}</p>
                 <p><strong>System Code:</strong> {{codeSystemName}}</p>
-                <p><strong>Confidentiality Code:</strong> {{confidentialityCode}}</p>
             </div>
             <div class="row">
                 <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
                 <p><strong>Realm Code:</strong> {{realmCode}}</p>
-                <p><strong>Creation Date:</strong> {{creationDate}}</p>
+                <p><strong>Confidentiality:</strong> {{confidentialityCode}}</p>
+            </div>
+             <div class="row">
+                <p><strong>Date:</strong> {{creationDate}}</p>
                 <p><strong>Version:</strong> {{versionNumber}}</p>
                 <p><strong>Language:</strong> {{languageCode}}</p>
             </div>
         </div>
     </header>
-
 
 
     <section>
@@ -80,7 +81,8 @@
 
         </div>
         <div class="custodian-address">
-            <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
+            <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}},
+                {{custodianCountry}}</p>
         </div>
     </section>
 
@@ -100,7 +102,8 @@
             </div>
         </div>
         <div class="authenticator-address">
-            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
+            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}},
+                {{authenticatorCountry}}</p>
         </div>
         <div class="authenticator-time">
             <p><strong>Signature Date and Time:</strong> {{authenticatorTime}}</p>
@@ -148,16 +151,10 @@
         </div>
     </section>
 
-    <footer>
-        <p>Document automatically generated. © 2025 HL7 Italia</p>
-    </footer>
-</div>
-
-<div class="page">
     <section>
         <h2>Admission Diagnosis</h2>
         <div class="admission-diagnosis">
-            <div class="admission-code-row">
+            <div class="row">
                 <p><strong>Code:</strong> {{admissionCode}}</p>
                 <p><strong>Code System:</strong> {{admissionCodeSystem}}</p>
                 <p><strong>Code System Name:</strong> {{admissionCodeSystemName}}</p>
@@ -169,6 +166,47 @@
         </div>
     </section>
 
+    <section>
+        <h2>Inquadramento Clinico Iniziale</h2>
+        <div class="clinical-overview">
+            <div class="row">
+                <p><strong>Code:</strong> {{clinicalOverviewCode}}</p>
+                <p><strong>Code System:</strong> {{clinicalOverviewCodeSystem}}</p>
+                <p><strong>Code System Name:</strong> {{clinicalOverviewCodeSystemName}}</p>
+            </div>
+            <h3>Details</h3>
+            <div class="clinical-details">
+                {{clinicalOverviewDetails}}
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Anamnesi</h2>
+        <div class="anamnesis-details">
+            {{anamnesisDetails}}
+        </div>
+    </section>
+
+    <section>
+        <h2>Terapia Farmacologica all’Ingresso</h2>
+        <div class="medications-details">
+            {{medicationsDetails}}
+        </div>
+    </section>
+
+    <!-- Nuova sezione: Decorso Ospedaliero -->
+    <section>
+        <h2>Decorso Ospedaliero</h2>
+        <div class="hospital-course">
+            <div class="hospital-course-details">
+                <p><strong>Details:</strong></p>
+                <div class="details-content">
+                    {{hospitalCourseDetails}}
+                </div>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <p>Document automatically generated. © 2025 HL7 Italia</p>

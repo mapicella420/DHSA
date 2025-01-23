@@ -4,6 +4,8 @@ import com.group01.dhsa.EventManager;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.print.PrinterJob;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
@@ -52,6 +54,30 @@ public class CdaPreviewController {
         System.out.println("[DEBUG] Returning to the Discharge Patient screen.");
         Stage stage = (Stage) webView.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml", stage, "DICOM Files");
+        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "DICOM Files");
     }
+
+    @FXML
+    private void handlePrintButton(ActionEvent event) {
+        try {
+            WebEngine engine = webView.getEngine();
+            PrinterJob printerJob = PrinterJob.createPrinterJob();
+
+            if (printerJob != null && printerJob.showPrintDialog(webView.getScene().getWindow())) {
+                // Avvia la stampa
+                engine.print(printerJob);
+
+                // Completa il lavoro di stampa
+                printerJob.endJob();
+                System.out.println("[DEBUG] Document printed successfully.");
+            } else {
+                System.err.println("[ERROR] Printing canceled or failed.");
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error while printing: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
 }

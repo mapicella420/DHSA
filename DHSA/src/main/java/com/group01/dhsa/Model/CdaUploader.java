@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,24 +44,30 @@ public class CdaUploader implements EventListener {
      */
     private void uploadCdaToMongo(File file) {
         try {
-            // Read the content of the CDA file into a string
+            // Leggi il contenuto del file CDA
             String xmlContent = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 
-            // Create a MongoDB document with the XML content
-            Document xmlDocument = new Document().append("xmlContent", xmlContent);
+            // Crea un nuovo ObjectId per il documento
+            ObjectId objectId = new ObjectId();
 
-            // Connect to MongoDB, access the specified database and collection
+            // Crea il documento MongoDB con `_id` e `xmlContent`
+            Document xmlDocument = new Document()
+                    .append("_id", objectId) // Assegna un ObjectId manualmente
+                    .append("xmlContent", xmlContent);
+
+            // Connessione a MongoDB e salvataggio del documento
             try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
                 MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
                 MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
-                // Insert the document into the collection
+                // Inserisce il documento nella collezione
                 collection.insertOne(xmlDocument);
-                System.out.println("CDA document successfully saved to MongoDB.");
+                System.out.println("CDA document successfully saved to MongoDB with ID: " + objectId);
             }
         } catch (IOException e) {
-            // Handle file reading errors
+            // Gestione degli errori di lettura
             System.err.println("Error uploading CDA to MongoDB: " + e.getMessage());
         }
     }
+
 }
