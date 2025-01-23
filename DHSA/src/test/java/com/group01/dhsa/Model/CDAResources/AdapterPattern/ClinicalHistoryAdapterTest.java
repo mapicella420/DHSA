@@ -2,7 +2,10 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
-import org.hl7.fhir.r5.model.*;
+import org.hl7.fhir.r5.model.Condition;
+import org.hl7.fhir.r5.model.Encounter;
+import org.hl7.fhir.r5.model.MedicationRequest;
+import org.hl7.fhir.r5.model.Procedure;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClinicalHistoryAdapterTest {
 
-    ClinicalHistoryAdapter clinicalHistoryAdapter;
-    FHIRClient fhirClient;
-    Encounter encounter;
-    String patientId;
+    private ClinicalHistoryAdapter clinicalHistoryAdapter;
+    private FHIRClient fhirClient;
+    private Encounter encounter;
+    private String patientId;
 
     @BeforeEach
     void setUp() {
@@ -24,99 +27,86 @@ class ClinicalHistoryAdapterTest {
 
         String encounterId = "5e371258-6ec2-3615-619a-b9bb6d4a4d9a";
         encounter = fhirClient.getEncounterById(encounterId);
-        patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846"; // Nuovo Patient ID
-
+        patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846";
     }
 
     @Test
     void toCdaObject() {
         Component component = clinicalHistoryAdapter.toCdaObject(encounter);
-        assertNotNull(component, "The Component object should not be null");
 
+        // Validazione del componente principale
+        assertNotNull(component, "The Component object should not be null");
 
         StructuredBody structuredBody = component.getStructuredBody();
         assertNotNull(structuredBody, "The StructuredBody should not be null");
 
-
         ComponentInner componentInner = structuredBody.getComponentInner();
         assertNotNull(componentInner, "The ComponentInner should not be null");
+
         Section section = componentInner.getSection();
         assertNotNull(section, "The Section should not be null");
+        assertEquals("47039-3", section.getCode().getCode(), "The Section code does not match");
+        assertEquals("Inquadramento Clinico Iniziale", section.getTitle().getTitle(), "The Section title does not match");
 
+        Text text = section.getText();
+        assertNotNull(text, "The Text should not be null");
+        assertFalse(text.getValues().isEmpty(), "The Text paragraphs should not be empty");
 
-        assertEquals("Inquadramento Clinico Iniziale", section.getTitle().getTitle(),
-                "The Section title does not match");
-        assertEquals("47039-3", section.getCode().getCode(),
-                "The Section code does not match");
+        Paragraph firstParagraph = (Paragraph) text.getValues().get(0);
+        assertTrue(firstParagraph.getContent().contains("The patient was admitted during a"),
+                "The first paragraph should mention the patient's admission");
 
-
-        List<?> paragraphs = section.getText().getValues();
-        assertNotNull(paragraphs, "The Paragraphs list should not be null");
-        assertFalse(paragraphs.isEmpty(), "The Paragraphs list should not be empty");
-
-        String introContent = paragraphs.getFirst().toString();
-        assertTrue(introContent.contains("The patient was admitted during a"),
-                "The intro content should mention the patient's admission");
-
-
-        List<?> structuredLists = section.getText().getValues();
-        if (structuredLists != null && !structuredLists.isEmpty()) {
-            StructuredList structuredList = (StructuredList) structuredLists.get(1);
-            assertEquals("unordered", structuredList.getType(), "The list type should be unordered");
-
-            List<ListItem> listItems = structuredList.getItems();
-            assertNotNull(listItems, "The ListItems should not be null");
-            assertFalse(listItems.isEmpty(), "The ListItems should not be empty");
-
-            String conditionContent = listItems.get(0).getContent();
-            assertTrue(conditionContent.contains("and is currently"),
-                    "The condition content should include the clinical status");
+        // Validazione delle condizioni del paziente
+        List<Condition> conditionList = fhirClient.getPreviousConditionsForPatient(
+                patientId,
+                encounter.getActualPeriod().getStartElement()
+        );
+        if (conditionList != null && !conditionList.isEmpty()) {
+            assertTrue(text.getValues().stream()
+                            .anyMatch(p -> p.toString().contains("The patient suffers from")),
+                    "The Text should include condition information");
         }
 
+        // Validazione delle procedure
+        List<Procedure> procedureList = fhirClient.getPreviousProceduresForPatient(
+                patientId,
+                encounter.getActualPeriod().getStartElement()
+        );
+        if (procedureList != null && !procedureList.isEmpty()) {
+            List<ComponentInner> componentInnerList = section.getComponent();
+            assertNotNull(componentInnerList, "The ComponentInner list should not be null");
+            assertFalse(componentInnerList.isEmpty(), "The ComponentInner list should not be empty");
 
-        List<ComponentInner> componentInnerList = section.getComponent();
-        if (componentInnerList != null && !componentInnerList.isEmpty()) {
-            ComponentInner componentAnamnesi = componentInnerList.get(0);
-            Section sectionAnamnesi = componentAnamnesi.getSection();
-            assertNotNull(sectionAnamnesi, "The Section for procedures should not be null");
+            ComponentInner procedureComponent = componentInnerList.get(0);
+            Section procedureSection = procedureComponent.getSection();
+            assertNotNull(procedureSection, "The Section for procedures should not be null");
 
-            Text textAnamnesi = sectionAnamnesi.getText();
-            assertNotNull(textAnamnesi, "The Text for procedures should not be null");
-//            List<Paragraph> paragraphsAnamnesi = textAnamnesi.getParagraphs();
-//            assertNotNull(paragraphsAnamnesi, "The Paragraphs for procedures should not be null");
-//            assertFalse(paragraphsAnamnesi.isEmpty(), "The Paragraphs for procedures should not be empty");
-//
-//            String procedureIntroContent = paragraphsAnamnesi.get(0).getContent();
-//            assertTrue(procedureIntroContent.contains("The patient underwent the following procedures"),
-//                    "The paragraph should introduce the procedures");
-
-
-//            StructuredList procedureStructuredList = textAnamnesi.getLists().get(0);
-//            assertNotNull(procedureStructuredList, "The StructuredList for procedures should not be null");
-//            assertEquals("unordered", procedureStructuredList.getType(), "The list type for procedures should be unordered");
-
-//            List<ListItem> procedureListItems = procedureStructuredList.getItems();
-//            assertNotNull(procedureListItems, "The ListItems for procedures should not be null");
-//            assertFalse(procedureListItems.isEmpty(), "The ListItems for procedures should not be empty");
-
-//            String procedureContent = procedureListItems.get(0).getContent();
-//            assertTrue(procedureContent.contains("performed at"), "The procedure content should include the date of the procedure");
+            Text procedureText = procedureSection.getText();
+            assertNotNull(procedureText, "The Text for procedures should not be null");
+            assertTrue(procedureText.getValues().stream()
+                            .anyMatch(p -> p.toString().contains("The patient underwent the following procedures")),
+                    "The procedures section should include the list of procedures");
         }
 
+        // Validazione della terapia farmacologica
+        List<MedicationRequest> medicationRequestList = fhirClient.getPreviousMedicationRequestsForPatient(
+                patientId,
+                encounter.getActualPeriod().getStartElement()
+        );
+        if (medicationRequestList != null && !medicationRequestList.isEmpty()) {
+            List<ComponentInner> componentInnerList = section.getComponent();
+            assertNotNull(componentInnerList, "The ComponentInner list should not be null");
+            assertFalse(componentInnerList.isEmpty(), "The ComponentInner list should not be empty");
 
-        componentInnerList = section.getComponent();
-        if (componentInnerList != null && !componentInnerList.isEmpty()) {
-            ComponentInner componentMedicationRequest = componentInnerList.get(1);
-            Section sectionMedicationRequest = componentMedicationRequest.getSection();
-            assertNotNull(sectionMedicationRequest, "The Section for medication request should not be null");
+            ComponentInner medicationComponent = componentInnerList.get(1);
+            Section medicationSection = medicationComponent.getSection();
+            assertNotNull(medicationSection, "The Section for medication requests should not be null");
 
-            Text textMedicationRequest = sectionMedicationRequest.getText();
-            assertNotNull(textMedicationRequest, "The Text for medication request should not be null");
-//            List<Paragraph> paragraphsMedicationRequest = textMedicationRequest.getParagraphs();
-//            assertNotNull(paragraphsMedicationRequest, "The Paragraphs for medication request should not be null");
-//            assertFalse(paragraphsMedicationRequest.isEmpty(), "The Paragraphs for medication request should not be empty");
-
-
+            Text medicationText = medicationSection.getText();
+            assertNotNull(medicationText, "The Text for medication requests should not be null");
+            assertTrue(medicationText.getValues().stream()
+                            .anyMatch(p -> p instanceof Paragraph),
+                    "The medication section should include paragraphs describing medications");
         }
 
         System.out.println("Clinical History CDA successfully generated: " + component);
