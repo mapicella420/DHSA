@@ -303,4 +303,142 @@ class FHIRClientTest {
         }
     }
 
+    @Test
+    void getPreviousMedicationRequestsForPatient(){
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        DateTimeType referenceDate = new DateTimeType("2023-01-01T00:00:00Z");
+
+
+        List<MedicationRequest> medicationRequests = fhirClient.getPreviousMedicationRequestsForPatient(patientId, referenceDate);
+
+
+        Bundle bundle = testClient.search()
+                .forResource(MedicationRequest.class)
+                .where(MedicationRequest.PATIENT.hasId(patientId))
+                .and(MedicationRequest.AUTHOREDON.beforeOrEquals().day(referenceDate.getValue()))
+                .returnBundle(Bundle.class)
+                .execute();
+
+
+        List<MedicationRequest> expectedRequests = bundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource())
+                .collect(Collectors.toList());
+
+
+        assertNotNull(medicationRequests, "The list of medication requests should not be null.");
+
+
+        assertEquals(expectedRequests.size(), medicationRequests.size(), "The number of medication requests does not match.");
+
+
+        for (int i = 0; i < medicationRequests.size(); i++) {
+            assertEquals(expectedRequests.get(i).getId(), medicationRequests.get(i).getId(),
+                    "The expected medication requests do not match the ones returned.");
+        }
+    }
+
+    @Test
+    void getObservationsForPatientAndEncounter() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+
+        List<Observation> observations = fhirClient.getObservationsForPatientAndEncounter(patientId, encounterId);
+
+
+        Bundle bundle = testClient.search()
+                .forResource(Observation.class)
+                .where(Observation.PATIENT.hasId(patientId))
+                .and(Observation.ENCOUNTER.hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+
+        List<Observation> expectedObservations = bundle.getEntry().stream()
+                .map(entry -> (Observation) entry.getResource())
+                .collect(Collectors.toList());
+
+
+        assertNotNull(observations, "The list of observations should not be null.");
+
+
+        assertEquals(expectedObservations.size(), observations.size(), "The number of observations does not match.");
+
+
+        for (int i = 0; i < observations.size(); i++) {
+            assertEquals(expectedObservations.get(i).getId(), observations.get(i).getId(),
+                    "The expected observations do not match the ones returned.");
+        }
+    }
+
+
+    @Test
+    void getPreviousConditionsForPatient() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        DateTimeType referenceDate = new DateTimeType("2023-01-01T00:00:00Z");
+
+
+        List<Condition> previousConditions = fhirClient.getPreviousConditionsForPatient(patientId, referenceDate);
+
+
+        Bundle bundle = testClient.search()
+                .forResource(Condition.class)
+                .where(Condition.PATIENT.hasId(patientId)) // Filter by patient
+                .and(Condition.ABATEMENT_DATE.afterOrEquals().day(referenceDate.getValue()))
+                .returnBundle(Bundle.class)
+                .execute();
+
+
+        List<Condition> expectedConditions = bundle.getEntry().stream()
+                .map(entry -> (Condition) entry.getResource())
+                .collect(Collectors.toList());
+
+
+        assertNotNull(previousConditions, "The list of previous conditions should not be null.");
+
+
+        assertEquals(expectedConditions.size(), previousConditions.size(), "The number of conditions does not match.");
+
+
+        for (int i = 0; i < previousConditions.size(); i++) {
+            assertEquals(expectedConditions.get(i).getId(), previousConditions.get(i).getId(),
+                    "The expected conditions do not match the ones returned.");
+        }
+    }
+
+    @Test
+    void getPreviousProceduresForPatient() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        DateTimeType referenceDate = new DateTimeType("2023-01-01T00:00:00Z");
+
+
+        List<Procedure> previousProcedures = fhirClient.getPreviousProceduresForPatient(patientId, referenceDate);
+
+
+        Bundle bundle = testClient.search()
+                .forResource(Procedure.class)
+                .where(Procedure.PATIENT.hasId(patientId))
+                .and(Procedure.DATE.beforeOrEquals().day(referenceDate.getValue()))
+                .returnBundle(Bundle.class)
+                .execute();
+
+
+        List<Procedure> expectedProcedures = bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource())
+                .collect(Collectors.toList());
+
+
+        assertNotNull(previousProcedures, "The list of previous procedures should not be null.");
+
+
+        assertEquals(expectedProcedures.size(), previousProcedures.size(), "The number of procedures does not match.");
+
+
+        for (int i = 0; i < previousProcedures.size(); i++) {
+            assertEquals(expectedProcedures.get(i).getId(), previousProcedures.get(i).getId(),
+                    "The expected procedures do not match the ones returned.");
+        }
+    }
+
+
 }
