@@ -1,3 +1,23 @@
+@media print {
+    body {
+        width: 210mm; /* Larghezza A4 */
+        height: 297mm; /* Altezza A4 */
+        margin: 0;
+        padding: 0;
+        background-color: white;
+    }
+
+    .page {
+        width: 100%;
+        height: 100%;
+        page-break-after: always; /* Interruzione dopo ogni pagina */
+    }
+
+    .page:last-child {
+        page-break-after: auto; /* Nessuna interruzione per l'ultima pagina */
+    }
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.5;
@@ -33,7 +53,27 @@ header .general-info {
 header .general-info p {
     margin: 5px 0;
     flex: 1 1 calc(50% - 10px); /* Due elementi per riga */
+    font-size: 12px;
 }
+
+/* Stile per le righe di elementi */
+.row {
+    display: flex; /* Usa flexbox per disporre gli elementi in linea */
+    flex-wrap: wrap; /* Permette di andare a capo se lo spazio non basta */
+    justify-content: space-between; /* Distribuisce gli elementi uniformemente */
+    gap: 5px; /* Spaziatura tra i campi */
+    margin-bottom: 5px; /* Spazio sotto ogni riga */
+}
+
+/* Stile per i paragrafi all'interno di una riga */
+.row p {
+    flex: 1; /* Ogni elemento occupa lo stesso spazio */
+    margin: 0; /* Rimuove margini aggiuntivi */
+    min-width: 200px; /* Imposta una larghezza minima per garantire leggibilità */
+    font-size: 14px; /* Dimensione del testo coerente */
+}
+
+
 
 /* Sezioni principali */
 section {
@@ -73,7 +113,7 @@ footer {
 /* Riduzione dei margini */
 .general-info p,
 .section p {
-    line-height: 1.4; /* Riduce lo spazio tra le righe */
+    line-height: 7px; /* Riduce lo spazio tra le righe */
 }
 
 /* Stile per la sezione Admission Diagnosis */

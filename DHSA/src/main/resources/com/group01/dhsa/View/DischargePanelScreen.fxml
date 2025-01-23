@@ -15,6 +15,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DischargePanelController">
 <left>
     <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -39,10 +41,18 @@
                <children>
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
                      <children>
-                        <Button fx:id="backButton" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+                        <Button fx:id="backButton" styleClass="button-blue" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
                         <MenuButton fx:id="patientIDMenu" disable="true" layoutX="92.0" layoutY="144.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID" />
                         <Label fx:id="errorLabel" layoutX="92.0" layoutY="117.0" />
-                        <Button fx:id="searchButton" layoutX="304.0" layoutY="79.0" mnemonicParsing="false" onAction="#searchPatient" text="Search" />
+                        <Button fx:id="searchButton" layoutX="304.0" layoutY="79.0" mnemonicParsing="false" onAction="#searchPatient">
+                         <graphic>
+                             <ImageView fitWidth="20" fitHeight="20">
+                                 <image>
+                                     <Image url="@../icons/search.png" />
+                                 </image>
+                             </ImageView>
+                         </graphic>
+                        </Button>
                         <TextField fx:id="lastNameField" layoutX="92.0" layoutY="78.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
                         <!-- Red Button -->
                         <Button fx:id="dischargePatientButton" disable="true" layoutX="390.0" layoutY="225.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />

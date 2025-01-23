@@ -14,7 +14,7 @@ public class CdaPreviewController {
     @FXML
     private WebView webView;
 
-    private EventObservable eventManager;
+    private final EventObservable eventManager;
 
     public CdaPreviewController() {
         this.eventManager = EventManager.getInstance().getEventObservable();

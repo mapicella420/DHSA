@@ -11,44 +11,60 @@
     <header>
         <h1>Hospital Discharge Letter</h1>
         <div class="general-info">
-            <p><strong>Template ID:</strong> {{templateId}}</p>
-            <p><strong>Type ID:</strong> {{typeId}}</p>
-            <p><strong>Document ID:</strong> {{documentId}}</p>
-            <p><strong>Version:</strong> {{versionNumber}}</p>
-            <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
-            <p><strong>Realm Code:</strong> {{realmCode}}</p>
-            <p><strong>Document Type:</strong> {{documentType}}</p>
-            <p><strong>System Code:</strong> {{codeSystemName}}</p>
-            <p><strong>Confidentiality Code:</strong> {{confidentialityCode}}</p>
-            <p><strong>Creation Date:</strong> {{creationDate}}</p>
-            <p><strong>Language:</strong> {{languageCode}}</p>
+            <div class="row">
+                <p><strong>Template ID:</strong> {{templateId}}</p>
+                <p><strong>Type ID:</strong> {{typeId}}</p>
+                <p><strong>Document ID:</strong> {{documentId}}</p>
+            </div>
+            <div class="row">
+                <p><strong>Document Type:</strong> {{documentType}}</p>
+                <p><strong>System Code:</strong> {{codeSystemName}}</p>
+                <p><strong>Confidentiality Code:</strong> {{confidentialityCode}}</p>
+            </div>
+            <div class="row">
+                <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
+                <p><strong>Realm Code:</strong> {{realmCode}}</p>
+                <p><strong>Creation Date:</strong> {{creationDate}}</p>
+                <p><strong>Version:</strong> {{versionNumber}}</p>
+                <p><strong>Language:</strong> {{languageCode}}</p>
+            </div>
         </div>
     </header>
+
 
 
     <section>
         <h2>Patient Information</h2>
         <div class="patient-info">
-            <p><strong>Name:</strong> {{patientGiven}} {{patientFamily}}</p>
-            <p><strong>Gender:</strong> {{patientGender}}</p>
-            <p><strong>Date of Birth:</strong> {{patientBirthTime}}</p>
-            <p><strong>Patient ID:</strong> {{patientId}}</p>
+            <div class="row">
+                <p><strong>Patient ID:</strong> {{patientId}}</p>
+                <p><strong>Name:</strong> {{patientGiven}} {{patientFamily}}</p>
+                <p><strong>Date of Birth:</strong> {{patientBirthTime}}</p>
+            </div>
+
+
         </div>
         <div class="patient-address">
-            <p><strong>State:</strong> {{patientState}}</p>
-            <p><strong>Country:</strong> {{patientCountry}}</p>
-            <p><strong>City:</strong> {{patientCity}}</p>
-            <p><strong>Address:</strong> {{patientAddress}}</p>
+            <div class="row">
+                <p><strong>State:</strong> {{patientState}}</p>
+                <p><strong>Country:</strong> {{patientCountry}}</p>
+                <p><strong>City:</strong> {{patientCity}}</p>
+                <p><strong>Address:</strong> {{patientAddress}}</p>
+                <p><strong>Gender:</strong> {{patientGender}}</p>
+            </div>
+
         </div>
     </section>
 
     <section>
         <h2>Author Information</h2>
         <div class="author-info">
-            <p><strong>Name:</strong> {{authorGiven}} {{authorFamily}}</p>
-            <p><strong>Author ID:</strong> {{authorId}}</p>
-            <p><strong>Assigning Authority:</strong> {{assigningAuthorityName}}</p>
-            <p><strong>Date and Time:</strong> {{authorTime}}</p>
+            <div class="row">
+                <p><strong>Author ID:</strong> {{authorId}}</p>
+                <p><strong>Name:</strong> {{authorGiven}} {{authorFamily}}</p>
+                <p><strong>Assigning Authority:</strong> {{assigningAuthorityName}}</p>
+                <p><strong>Date and Time:</strong> {{authorTime}}</p>
+            </div>
         </div>
     </section>
 
@@ -56,9 +72,12 @@
     <section>
         <h2>Document Custodian</h2>
         <div class="custodian-info">
-            <p><strong>Organization Name:</strong> {{custodianName}}</p>
-            <p><strong>Organization ID:</strong> {{custodianId}}</p>
-            <p><strong>Assigning Authority:</strong> {{custodianAuthorityName}}</p>
+            <div class="row">
+                <p><strong>Organization ID:</strong> {{custodianId}}</p>
+                <p><strong>Organization Name:</strong> {{custodianName}}</p>
+                <p><strong>Assigning Authority:</strong> {{custodianAuthorityName}}</p>
+            </div>
+
         </div>
         <div class="custodian-address">
             <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
@@ -68,16 +87,20 @@
     <section>
         <h2>Legal Authenticator</h2>
         <div class="authenticator-info">
-            <p><strong>Signature Code:</strong> {{authenticatorSignatureCode}}</p>
-            <p><strong>Name:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
-            <p><strong>ID:</strong> {{authenticatorId}}</p>
+            <div class="row">
+                <p><strong>Signature Code:</strong> {{authenticatorSignatureCode}}</p>
+                <p><strong>ID:</strong> {{authenticatorId}}</p>
+                <p><strong>Name:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
+            </div>
+        </div>
+        <div class="authenticator-org">
+            <div class="row">
+                <p><strong>Represented Organization:</strong> {{authenticatorOrgName}}</p>
+                <p><strong>Phone:</strong> {{authenticatorOrgTelecom}}</p>
+            </div>
         </div>
         <div class="authenticator-address">
             <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
-        </div>
-        <div class="authenticator-org">
-            <p><strong>Represented Organization:</strong> {{authenticatorOrgName}}</p>
-            <p><strong>Phone:</strong> {{authenticatorOrgTelecom}}</p>
         </div>
         <div class="authenticator-time">
             <p><strong>Signature Date and Time:</strong> {{authenticatorTime}}</p>
@@ -87,34 +110,50 @@
     <section>
         <h2>Encounter Information</h2>
         <div class="encounter-info">
-            <p><strong>Encounter ID:</strong> {{encounterId}}</p>
-            <p><strong>Assigning Authority:</strong> {{encounterAuthorityName}}</p>
+            <div class="row">
+                <p><strong>Encounter ID:</strong> {{encounterId}}</p>
+                <p><strong>Assigning Authority:</strong> {{encounterAuthorityName}}</p>
+            </div>
+
         </div>
         <div class="encounter-timing">
-            <p><strong>Start Date:</strong> {{encounterStart}}</p>
-            <p><strong>End Date:</strong> {{encounterEnd}}</p>
+            <div class="row">
+                <p><strong>Start Date:</strong> {{encounterStart}}</p>
+                <p><strong>End Date:</strong> {{encounterEnd}}</p>
+            </div>
         </div>
     </section>
 
     <section>
         <h2>Responsible Party</h2>
         <div class="responsible-party-info">
-            <p><strong>Name:</strong> {{responsibleGiven}} {{responsibleFamily}} ({{responsiblePrefix}})</p>
-            <p><strong>ID:</strong> {{responsibleId}}</p>
-            <p><strong>Assigning Authority:</strong> {{responsibleAuthorityName}}</p>
+            <div class="row">
+                <p><strong>ID:</strong> {{responsibleId}}</p>
+                <p><strong>Name:</strong> {{responsibleGiven}} {{responsibleFamily}} ({{responsiblePrefix}})</p>
+                <p><strong>Assigning Authority:</strong> {{responsibleAuthorityName}}</p>
+            </div>
+
         </div>
     </section>
 
     <section>
         <h2>Encounter Location</h2>
         <div class="location-info">
-            <p><strong>Department:</strong> {{facilityName}}</p>
-            <p><strong>Organization Name:</strong> {{serviceProviderName}}</p>
-            <p><strong>Organization ID:</strong> {{serviceProviderId}}</p>
+            <div class="row">
+                <p><strong>Organization ID:</strong> {{serviceProviderId}}</p>
+                <p><strong>Organization Name:</strong> {{serviceProviderName}}</p>
+                <p><strong>Department:</strong> {{facilityName}}</p>
+            </div>
             <p><strong>Assigning Authority:</strong> {{serviceProviderAuthorityName}}</p>
         </div>
     </section>
 
+    <footer>
+        <p>Document automatically generated. © 2025 HL7 Italia</p>
+    </footer>
+</div>
+
+<div class="page">
     <section>
         <h2>Admission Diagnosis</h2>
         <div class="admission-diagnosis">
@@ -128,10 +167,6 @@
                 {{admissionDetails}}
             </div>
         </div>
-    </section>
-
-
-
     </section>
 
 

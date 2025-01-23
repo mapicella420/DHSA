@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model;
 
 import org.w3c.dom.*;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
@@ -13,6 +14,7 @@ public class CdaDataExtractor {
 
     /**
      * Analizza il file CDA e restituisce i dati estratti.
+     *
      * @param cdaFile File XML del CDA.
      * @return Mappa dei dati estratti.
      */
@@ -27,46 +29,44 @@ public class CdaDataExtractor {
             // General document information
             Element clinicalDocument = doc.getDocumentElement();
 
-// Template ID
+            // Template ID
             data.put("templateId", clinicalDocument.getElementsByTagName("templateId")
                     .item(0).getAttributes().getNamedItem("extension").getNodeValue());
 
-// Type ID
+            // Type ID
             data.put("typeId", clinicalDocument.getElementsByTagName("typeId")
                     .item(0).getAttributes().getNamedItem("extension").getNodeValue());
 
-// ID Documento e Authority Name
+            // ID Documento e Authority Name
             Element idElement = (Element) clinicalDocument.getElementsByTagName("id").item(0);
             data.put("documentId", idElement.getAttribute("root"));
             data.put("assigningAuthorityName", idElement.getAttribute("assigningAuthorityName"));
 
-// Realm Code
+            // Realm Code
             data.put("realmCode", clinicalDocument.getElementsByTagName("realmCode")
                     .item(0).getAttributes().getNamedItem("code").getNodeValue());
 
-// Tipo Documento
+            // Tipo Documento
             data.put("documentType", clinicalDocument.getElementsByTagName("code")
                     .item(0).getAttributes().getNamedItem("displayName").getNodeValue());
             data.put("codeSystemName", clinicalDocument.getElementsByTagName("code")
                     .item(0).getAttributes().getNamedItem("codeSystemName").getNodeValue());
 
-// Codice Riservatezza
+            // Codice Riservatezza
             data.put("confidentialityCode", clinicalDocument.getElementsByTagName("confidentialityCode")
                     .item(0).getAttributes().getNamedItem("displayName").getNodeValue());
 
-// Data Creazione
+            // Data Creazione
             data.put("creationDate", formatDate(clinicalDocument.getElementsByTagName("effectiveTime")
                     .item(0).getAttributes().getNamedItem("value").getNodeValue()));
 
-// Lingua
+            // Lingua
             data.put("languageCode", clinicalDocument.getElementsByTagName("languageCode")
                     .item(0).getAttributes().getNamedItem("code").getNodeValue());
 
-// Versione
+            // Versione
             data.put("versionNumber", clinicalDocument.getElementsByTagName("versionNumber")
                     .item(0).getAttributes().getNamedItem("value").getNodeValue());
-
-
 
 
             // Dati del paziente
@@ -75,17 +75,17 @@ public class CdaDataExtractor {
             Element addressElement = (Element) patientRoleElement.getElementsByTagName("addr").item(0);
             Element idElementP = (Element) patientRoleElement.getElementsByTagName("id").item(0);
 
-// Nome e genere del paziente
+            // Nome e genere del paziente
             data.put("patientGiven", getTextContentByTagName(patientElement, "given"));
             data.put("patientFamily", getTextContentByTagName(patientElement, "family"));
             data.put("patientGender", patientElement.getElementsByTagName("administrativeGenderCode")
                     .item(0).getAttributes().getNamedItem("displayName").getNodeValue());
 
-// Data di nascita
+            // Data di nascita
             data.put("patientBirthTime", patientElement.getElementsByTagName("birthTime")
                     .item(0).getAttributes().getNamedItem("value").getNodeValue());
 
-// Indirizzo del paziente
+            // Indirizzo del paziente
             data.put("patientAddress", getTextContentByTagName(addressElement, "streetAddressLine"));
             data.put("patientCountry", getTextContentByTagName(addressElement, "country"));
             data.put("patientState", getTextContentByTagName(addressElement, "state"));
@@ -160,7 +160,7 @@ public class CdaDataExtractor {
             data.put("authenticatorOrgTelecom", representedOrgElement.getElementsByTagName("telecom").item(0)
                     .getAttributes().getNamedItem("value").getNodeValue());
 
-// Data e firma del legale autenticatore
+            // Data e firma del legale autenticatore
             Element legalAuthTimeElement = (Element) doc.getElementsByTagName("legalAuthenticator").item(0);
             data.put("authenticatorTime", formatDate(legalAuthTimeElement.getElementsByTagName("time")
                     .item(0).getTextContent()));
@@ -170,7 +170,7 @@ public class CdaDataExtractor {
             // Estrazione dei dati da <componentOf>
             Element encompassingEncounter = (Element) doc.getElementsByTagName("encompassingEncounter").item(0);
 
-// ID incontro e autorità assegnante
+            // ID incontro e autorità assegnante
             data.put("encounterId", encompassingEncounter.getElementsByTagName("id")
                     .item(0).getAttributes().getNamedItem("extension").getNodeValue());
             data.put("encounterAuthorityName", encompassingEncounter.getElementsByTagName("id")
@@ -299,9 +299,6 @@ public class CdaDataExtractor {
             }
         }
     }
-
-
-
 
     private String getTextContentByTagName(Element parent, String tagName) {
         NodeList nodeList = parent.getElementsByTagName(tagName);
