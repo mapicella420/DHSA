@@ -113,6 +113,12 @@
       <artifactId>jakarta.xml.bind-api</artifactId>
       <version>4.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>4.0.5</version>
+      <scope>compile</scope>
+    </dependency>
 
     <!-- DCM4CHE for DICOM Processing -->
     <dependency>

@@ -70,5 +70,10 @@ public class EventManager {
             System.out.println("[DEBUG] Received convert_to_html event for file: " + file.getAbsolutePath());
             new CdaToHtmlConverter().convertAndNotify(file);
         });
+
+
+        FhirExporter fhirExporter = new FhirExporter();
+        eventObservable.subscribe("export_request", fhirExporter);
+
     }
 }
