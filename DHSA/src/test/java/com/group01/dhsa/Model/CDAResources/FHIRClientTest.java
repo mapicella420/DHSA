@@ -66,12 +66,22 @@ class FHIRClientTest {
 
         List<Encounter> expectedEncounters = bundle.getEntry().stream()
                 .map(entry -> (Encounter) entry.getResource())
-                .toList();
+                .collect(Collectors.toList());
 
-        assertNotNull(encounters);
-        assertEquals(expectedEncounters.size(), encounters.size());
+        while (bundle.getLink(Bundle.LINK_NEXT) != null) {
+            bundle = testClient.loadPage().next(bundle).execute();
+            expectedEncounters.addAll(bundle.getEntry().stream()
+                    .map(entry -> (Encounter) entry.getResource())
+                    .collect(Collectors.toList()));
+        }
+
+        assertNotNull(encounters, "La lista degli incontri non dovrebbe essere nulla.");
+
+        assertEquals(expectedEncounters.size(), encounters.size(),
+                "Il numero di incontri non corrisponde.");
         for (int i = 0; i < encounters.size(); i++) {
-            assertEquals(expectedEncounters.get(i).getId(), encounters.get(i).getId());
+            assertEquals(expectedEncounters.get(i).getId(), encounters.get(i).getId(),
+                    "Gli ID degli incontri non corrispondono.");
         }
     }
 
