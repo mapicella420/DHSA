@@ -332,5 +332,31 @@ public class FHIRClient {
                 })
                 .toList();
     }
+
+    public List<Procedure> getProceduresForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Procedure.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueIds = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource())
+                .filter(procedure -> uniqueIds.add(procedure.getOccurrenceDateTimeType().toHumanDisplay()))
+                .toList();
+    }
+
+    public List<Immunization> getImmunizationsForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Immunization.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(Encounter.RES_ID.exactly().identifier(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle.getEntry().stream()
+                .map(entry -> (Immunization) entry.getResource())
+                .collect(Collectors.toList());
+    }
 }
 

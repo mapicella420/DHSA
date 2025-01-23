@@ -6,6 +6,7 @@ import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdmissionAdapter implements CdaSection<Component, Encounter>{
 
@@ -123,8 +124,11 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
             lists.add(observationList);
         }
 
-        text.setParagraphs(paragraphs);
-        text.setLists(lists);
+        List<Object> list = new ArrayList<>();
+        list.addAll(paragraphs);
+        list.addAll(lists);
+
+        text.setValues(list);
 
         section.setText(text);
 

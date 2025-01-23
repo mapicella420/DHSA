@@ -32,9 +32,8 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         Text text = new Text();
         section.setText(text);
-        List<Paragraph> paragraphs = new ArrayList<>();
-
-        text.setParagraphs(paragraphs);
+        List<Object> textList = new ArrayList<>();
+        text.setValues(textList);
 
         String patientId = fhirObject.getSubject().getReference().split("/")[1];
         String encounterId = fhirObject.getIdPart();
@@ -51,7 +50,8 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
                 ".";
         Paragraph paragraph = new Paragraph();
         paragraph.setContent(stringBuilder);
-        paragraphs.add(paragraph);
+
+        textList.add(paragraph);
 
         if (conditions != null && !conditions.isEmpty()) {
             Paragraph conditionParagraph = new Paragraph();
@@ -64,7 +64,8 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
                 conditionsBuilder.append(". ");
             }
             conditionParagraph.setContent(conditionsBuilder.toString());
-            paragraphs.add(conditionParagraph);
+
+            textList.add(conditionParagraph);
         }
 
         List<Observation> observations = FHIRClient.getInstance().getObservationsForPatientAndEncounter(
@@ -77,12 +78,11 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
             StructuredList structuredList = new StructuredList();
             structuredList.setType("unordered");
             structuredLists.add(structuredList);
-            text.setLists(structuredLists);
 
             Paragraph observationParagraph = new Paragraph(
                     "The following observations were recorded during the encounter:");
 
-            paragraphs.add(observationParagraph);
+            textList.add(observationParagraph);
 
             List<ListItem> items = new ArrayList<>();
             structuredList.setItems(items);
@@ -96,6 +96,63 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
                 items.add(new ListItem(listItemContent.toString()));
             }
 
+            textList.add(structuredList);
+
+        }
+
+        List<Procedure> procedures = FHIRClient.getInstance().getProceduresForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
+
+        if (procedures != null && !procedures.isEmpty()) {
+            Paragraph procedureParagraph = new Paragraph(
+                    "During the encounter, the patient underwent the following procedures:");
+
+            textList.add(procedureParagraph);
+            List<ListItem> itemsProcedure = new ArrayList<>();
+            StructuredList procedureStructuredList = new StructuredList();
+            procedureStructuredList.setType("unordered");
+            procedureStructuredList.setItems(itemsProcedure);
+
+            for (Procedure procedure : procedures) {
+                String procedureDisplay = procedure.getCode().getCodingFirstRep().getDisplay();
+                StringBuilder procedureItemContent = new StringBuilder(procedureDisplay);
+                if (procedure.getOccurrenceDateTimeType() != null) {
+                    String onsetDate = procedure.getOccurrenceDateTimeType().toHumanDisplay();
+                    procedureItemContent.append(" (performed at ").append(onsetDate).append("); ");
+                } else {
+                    procedureItemContent.append("; ");
+                }
+                itemsProcedure.add(new ListItem(procedureItemContent.toString()));
+            }
+            textList.add(procedureStructuredList);
+        }
+
+        List<Immunization> immunizationList = FHIRClient.getInstance().getImmunizationsForPatientAndEncounter(
+                patientId,
+                encounterId
+        );
+
+        if (immunizationList != null && !immunizationList.isEmpty()) {
+            Paragraph immunizationParagraph = new Paragraph(
+                    "As part of the patient's care, the following immunizations were recorded:");
+
+            textList.add(immunizationParagraph);
+
+            for (Procedure procedure : procedures) {
+                String procedureDisplay = procedure.getCode().getCodingFirstRep().getDisplay();
+                StringBuilder procedureItemContent = new StringBuilder(procedureDisplay);
+                if (procedure.getOccurrenceDateTimeType() != null) {
+                    String onsetDate = procedure.getOccurrenceDateTimeType().toHumanDisplay();
+                    procedureItemContent.append(" (performed at ").append(onsetDate).append("); ");
+                } else {
+                    procedureItemContent.append(". ");
+                }
+                Paragraph procedureItemParagraph = new Paragraph(procedureItemContent.toString());
+
+                textList.add(procedureItemParagraph);
+            }
         }
 
 

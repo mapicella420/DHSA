@@ -34,8 +34,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
 
         Text text = new Text();
         section.setText(text);
-        List<Paragraph> paragraphs = new ArrayList<>();
-        text.setParagraphs(paragraphs);
+        List<Object> textList = new ArrayList<>();
 
         String patientId = fhirObject.getSubject().getReference().split("/")[1];
         String encounterId = fhirObject.getIdPart();
@@ -46,11 +45,6 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
         String description = fhirObject.getTypeFirstRep().getCodingFirstRep().getDisplay();
         String descriptionClass = fhirObject.getClass_FirstRep().getCodingFirstRep().getCode();
         String reason = fhirObject.getReasonFirstRep().getUseFirstRep().getText();
-
-        List<Observation> observations = FHIRClient.getInstance().getObservationsForPatientAndEncounter(
-                patientId,
-                encounterId
-        );
 
         Paragraph introParagraph = new Paragraph();
         StringBuilder introContent = new StringBuilder();
@@ -65,17 +59,15 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
             introContent.append(".");
         }
         introParagraph.setContent(introContent.toString());
-        paragraphs.add(introParagraph);
+        textList.add(introParagraph);
+        text.setValues(textList);
 
         if (conditionList != null && !conditionList.isEmpty()) {
-            List<StructuredList> structuredLists = new ArrayList<>();
             StructuredList structuredList = new StructuredList();
             structuredList.setType("unordered");
-            structuredLists.add(structuredList);
-            text.setLists(structuredLists);
             Paragraph conditionIntro = new Paragraph();
             conditionIntro.setContent("The patient suffers from: ");
-            paragraphs.add(conditionIntro);
+            textList.add(conditionIntro);
 
             structuredList.setType("unordered");
             List<ListItem> listItems = new ArrayList<>();
@@ -97,6 +89,8 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 listItems.add(new ListItem(conditionContent.toString()));
 
             }
+
+            textList.add(structuredList);
         }
 
         List<Procedure> procedureList = FHIRClient.getInstance().getPreviousProceduresForPatient(
@@ -114,8 +108,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
 
             Text textAnamnesi = new Text();
             sectionAnamnesi.setText(textAnamnesi);
-            List<Paragraph> paragraphsAnamnesi = new ArrayList<>();
-            List<StructuredList> listsAnamnesi = new ArrayList<>();
+            List<Object> textAnamnesiList = new ArrayList<>();
 
             sectionAnamnesi.setCode(new Code(
                     "11329-0",
@@ -128,12 +121,13 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
             Paragraph introParagraphAnamnesi = new Paragraph();
 
             introParagraphAnamnesi.setContent("The patient underwent the following procedures:");
-            paragraphsAnamnesi.add(introParagraphAnamnesi);
+            textAnamnesiList.add(introParagraphAnamnesi);
 
             StructuredList procedureStructuredList = new StructuredList();
-            listsAnamnesi.add(procedureStructuredList);
             procedureStructuredList.setType("unordered");
             List<ListItem> listItemsProcedure = new ArrayList<>();
+
+            textAnamnesiList.add(procedureStructuredList);
 
             //Entry
             List<ObservationCDA> observationCDAList = new ArrayList<>();
@@ -188,8 +182,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
             }
 
             procedureStructuredList.setItems(listItemsProcedure);
-            textAnamnesi.setParagraphs(paragraphsAnamnesi);
-            textAnamnesi.setLists(listsAnamnesi);
+            textAnamnesi.setValues(textAnamnesiList);
 
         }else{
             componentInnerList = null;
@@ -211,8 +204,8 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
 
             Text textMedicationRequest = new Text();
             sectionMedicationRequest.setText(textMedicationRequest);
-            List<Paragraph> paragraphsMedicationRequest = new ArrayList<>();
-            textMedicationRequest.setParagraphs(paragraphsMedicationRequest);
+
+            List<Object> listMedicationRequest = new ArrayList<>();
 
             sectionMedicationRequest.setCode(new Code(
                     "42346-7",
@@ -226,8 +219,9 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 Paragraph paragraphMedicationRequest = new Paragraph();
                 paragraphMedicationRequest.setContent(medicationRequest.getMedication().getConcept()
                         .getCodingFirstRep().getDisplay());
-                paragraphsMedicationRequest.add(paragraphMedicationRequest);
+                listMedicationRequest.add(paragraphMedicationRequest);
             }
+            textMedicationRequest.setValues(listMedicationRequest);
         }else {
             componentInnerList = null;
         }

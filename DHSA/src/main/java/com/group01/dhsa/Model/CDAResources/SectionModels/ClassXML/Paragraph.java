@@ -2,7 +2,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 
 import jakarta.xml.bind.annotation.*;
 
-@XmlRootElement
+@XmlRootElement(name = "p")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Paragraph {
 

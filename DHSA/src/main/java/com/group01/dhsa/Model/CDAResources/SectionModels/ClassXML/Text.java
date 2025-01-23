@@ -7,39 +7,22 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Text {
 
-    @XmlElement(name = "p")
-    private List<Paragraph> paragraphs;
-
-    @XmlElement(name = "list")
-    private List<StructuredList> lists;
-
-    @XmlElement(name = "table")
-    private List<Table> tables;
+    @XmlElements({
+            @XmlElement(name = "p", type = Paragraph.class),
+            @XmlElement(name = "list", type = StructuredList.class),
+            @XmlElement(name = "table", type = Table.class)
+    })
+    private List<?> values;
 
     public Text() {
     }
 
-    public List<Paragraph> getParagraphs() {
-        return paragraphs;
+    public List<?> getValues() {
+        return values;
     }
 
-    public void setParagraphs(List<Paragraph> paragraphs) {
-        this.paragraphs = paragraphs;
+    public void setValues(List<?> values) {
+        this.values = values;
     }
 
-    public List<StructuredList> getLists() {
-        return lists;
-    }
-
-    public void setLists(List<StructuredList> lists) {
-        this.lists = lists;
-    }
-
-    public List<Table> getTables() {
-        return tables;
-    }
-
-    public void setTables(List<Table> tables) {
-        this.tables = tables;
-    }
 }
