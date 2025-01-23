@@ -265,6 +265,14 @@ public class FHIRClient {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Fetches a list of Conditions associated with a given Patient and preceding the given date
+     *
+     * @param patientId The identifier of the Patient.
+     * @param date The date to compare
+     *
+     * @return A list of Condition resources.
+     */
     public List<Condition> getPreviousConditionsForPatient(String patientId, DateTimeType date) {
         Bundle bundle = client.search()
                 .forResource(Condition.class)
@@ -415,6 +423,23 @@ public class FHIRClient {
                 .execute();
         return bundle.getEntry().stream()
                 .map(entry -> (ImagingStudy) entry.getResource())
+                .toList();
+    }
+
+    public List<MedicationRequest> getMedicationRequestForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(MedicationRequest.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueMedicationRequests = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource())
+                .filter(medicationRequest ->
+                        uniqueMedicationRequests.add(medicationRequest
+                                        .getMedication().getConcept().getCodingFirstRep()
+                                        .getDisplay()))
                 .toList();
     }
 

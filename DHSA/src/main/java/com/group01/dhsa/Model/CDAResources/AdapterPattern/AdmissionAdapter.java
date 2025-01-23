@@ -108,7 +108,6 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
             textList.add(observationIntro);
 
             StructuredList observationList = new StructuredList();
-            observationList.setType("unordered");
             List<ListItem> listItems = new ArrayList<>();
 
             for (Observation obs : observations) {

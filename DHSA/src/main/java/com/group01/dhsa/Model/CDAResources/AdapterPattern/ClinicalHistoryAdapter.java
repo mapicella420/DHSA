@@ -64,12 +64,10 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
 
         if (conditionList != null && !conditionList.isEmpty()) {
             StructuredList structuredList = new StructuredList();
-            structuredList.setType("unordered");
             Paragraph conditionIntro = new Paragraph();
             conditionIntro.setContent("The patient suffers from: ");
             textList.add(conditionIntro);
 
-            structuredList.setType("unordered");
             List<ListItem> listItems = new ArrayList<>();
             structuredList.setItems(listItems);
 
@@ -124,7 +122,6 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
             textAnamnesiList.add(introParagraphAnamnesi);
 
             StructuredList procedureStructuredList = new StructuredList();
-            procedureStructuredList.setType("unordered");
             List<ListItem> listItemsProcedure = new ArrayList<>();
 
             textAnamnesiList.add(procedureStructuredList);
@@ -163,7 +160,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 ZonedDateTime zonedDateTime = procedure.getOccurrenceDateTimeType().getValue()
                         .toInstant()
                         .atZone(ZoneId.of("UTC"));
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssZ");
                 String formattedDate = zonedDateTime.format(formatter);
                 EffectiveTime effectiveTime = new EffectiveTime(
                         lowAnamnesi,
@@ -177,6 +174,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                         "SNOMED CT",
                         "Procedure Codes"
                 );
+                valueAnamnesi.setCode("CD");
                 observationCDA.setValue(valueAnamnesi);
 
             }

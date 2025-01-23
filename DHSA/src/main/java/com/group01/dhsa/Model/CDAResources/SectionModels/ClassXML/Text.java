@@ -8,7 +8,7 @@ import java.util.List;
 public class Text {
 
     @XmlElements({
-            @XmlElement(name = "p", type = Paragraph.class),
+            @XmlElement(name = "paragraph", type = Paragraph.class),
             @XmlElement(name = "list", type = StructuredList.class),
             @XmlElement(name = "table", type = Table.class)
     })

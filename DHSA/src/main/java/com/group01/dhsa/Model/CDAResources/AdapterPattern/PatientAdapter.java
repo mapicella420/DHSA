@@ -68,7 +68,7 @@ public class PatientAdapter implements CdaSection<RecordTarget, Patient> {
         patientCDA.setAdministrativeGenderCode(gender);
 
         BirthTime birthTime = new BirthTime();
-        birthTime.setValue(fhirObject.getBirthDateElement().asStringValue());
+        birthTime.setValue(fhirObject.getBirthDateElement().asStringValue().replace("-", ""));
 
         patientCDA.setBirthTime(birthTime);
 

@@ -138,13 +138,11 @@ public class DischargePanelController {
 
     @FXML
     void switchSelectedPatient(ActionEvent event) {
-
         if (patientIDMenu.getText().equals("Patient ID")) {
             MenuItem caller = (MenuItem) event.getSource();
             patientIDMenu.setText(caller.getText());
             patientIDMenu.getItems().remove(caller);
-        }
-        else {
+        } else {
             MenuItem caller = (MenuItem) event.getSource();
             String oldCaller = patientIDMenu.getText();
             patientIDMenu.setText(caller.getText());
@@ -158,25 +156,27 @@ public class DischargePanelController {
         List<Encounter> encounterList = FHIRClient.getInstance()
                 .getEncountersForPatient(patientIDMenu.getText());
 
-        System.out.println("Found " + encounterList.size() );
-
         if (!encounterList.isEmpty()) {
             int i = 1;
-
             for (Encounter encounter : encounterList) {
-                if(checkEncounter(encounter)) {
+                if (checkEncounter(encounter)) {
                     MenuItem item = new MenuItem(encounter.getIdentifier().getFirst().getValue());
-                    item.setId("item"+i);
-                    i = i + 1;
+                    item.setId("item" + i);
+                    i++;
                     item.setOnAction(this::switchSelectedEncounter);
                     encounterIDMenu.getItems().add(item);
                 }
             }
-            encounterIDMenu.setDisable(false);
+
+            if (!encounterIDMenu.getItems().isEmpty()) {
+                encounterIDMenu.setDisable(false);
+            }
         }
+
         dischargePatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
                 encounterIDMenu.getText().equals("Encounter ID"));
     }
+
 
     @FXML
     void switchSelectedEncounter(ActionEvent event) {

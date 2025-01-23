@@ -185,4 +185,6 @@ public class ObjectFactory {
 
     public StatusCode createStatusCode() { return new StatusCode(); }
 
+    public Time createTime() { return new Time(); }
+
 }

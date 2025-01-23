@@ -2,9 +2,6 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
-import com.group01.dhsa.Model.DicomImporter;
-import com.mongodb.client.*;
-import org.bson.Document;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -82,7 +79,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
         if (observations != null && !observations.isEmpty()) {
             List<StructuredList> structuredLists = new ArrayList<>();
             StructuredList structuredList = new StructuredList();
-            structuredList.setType("unordered");
             structuredLists.add(structuredList);
 
             Paragraph observationParagraph = new Paragraph(
@@ -119,7 +115,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
             List<ListItem> carePlanItems = new ArrayList<>();
             StructuredList carePlanStructuredList = new StructuredList();
-            carePlanStructuredList.setType("unordered");
             carePlanStructuredList.setItems(carePlanItems);
 
             for (CarePlan carePlan : carePlans) {
@@ -157,7 +152,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
             textList.add(procedureParagraph);
             List<ListItem> itemsProcedure = new ArrayList<>();
             StructuredList procedureStructuredList = new StructuredList();
-            procedureStructuredList.setType("unordered");
             procedureStructuredList.setItems(itemsProcedure);
 
             for (Procedure procedure : procedures) {
@@ -187,7 +181,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
             List<ListItem> itemsImmunization = new ArrayList<>();
             StructuredList immunizationStructuredList = new StructuredList();
-            immunizationStructuredList.setType("unordered");
             immunizationStructuredList.setItems(itemsImmunization);
 
             for (Immunization immunization: immunizationList) {
@@ -215,7 +208,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
             List<ListItem> allergyItems = new ArrayList<>();
             StructuredList allergyStructuredList = new StructuredList();
-            allergyStructuredList.setType("unordered");
             allergyStructuredList.setItems(allergyItems);
 
             for (AllergyIntolerance allergy : allergies) {
@@ -256,7 +248,6 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         if (imagingStudies != null && !imagingStudies.isEmpty()) {
             StructuredList imagingStudyStructuredList = new StructuredList();
-            imagingStudyStructuredList.setType("unordered");
             String introImagingStudies = "As part of the diagnostic process" +
                     ", the following imaging studies were performed:";
             textList.add(new Paragraph(introImagingStudies));
@@ -308,7 +299,48 @@ public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
 
         }
 
-//        List<>
+        List<MedicationRequest> medicationRequestList = FHIRClient.getInstance()
+                .getMedicationRequestForPatientAndEncounter(patientId, encounterId);
+
+        if (medicationRequestList != null && !medicationRequestList.isEmpty()) {
+            Paragraph medicationParagraph = new Paragraph(
+                    "The following medications were prescribed:");
+            textList.add(medicationParagraph);
+
+            List<ListItem> medicationItems = new ArrayList<>();
+            StructuredList medicationStructuredList = new StructuredList();
+            medicationStructuredList.setItems(medicationItems);
+
+            for (MedicationRequest medicationRequest : medicationRequestList) {
+                StringBuilder medicationContent = new StringBuilder();
+
+                String medicationDisplay = medicationRequest.getMedication().getConcept().getCodingFirstRep().getDisplay();
+                medicationContent.append(medicationDisplay);
+
+                medicationRequest.getExtension().stream()
+                        .filter(extension -> extension.getUrl().equals("http://hl7.org/fhir/StructureDefinition/base-cost"))
+                        .findFirst()
+                        .ifPresent(extension -> {
+                            Double baseCost = extension.getValueQuantity().getValue().doubleValue();
+                            medicationContent.append(" (Base cost: $").append(String.format("%.2f", baseCost)).append(")");
+                        });
+
+                medicationRequest.getExtension().stream()
+                        .filter(extension -> extension.getUrl().equals("http://hl7.org/fhir/StructureDefinition/total-cost"))
+                        .findFirst()
+                        .ifPresent(extension -> {
+                            Double totalCost = extension.getValueQuantity().getValue().doubleValue();
+                            medicationContent.append(" (Total cost: $").append(String.format("%.2f", totalCost)).append(")");
+                        });
+
+                String status = medicationRequest.getStatus().toCode();
+                medicationContent.append(". Status: ").append(status).append(".");
+
+                medicationItems.add(new ListItem(medicationContent.toString()));
+            }
+
+            textList.add(medicationStructuredList);
+        }
 
         Practitioner practitioner = FHIRClient.getInstance().getPractitionerFromId(fhirObject
                 .getParticipantFirstRep().getActor().getReference().split("/")[1]);
