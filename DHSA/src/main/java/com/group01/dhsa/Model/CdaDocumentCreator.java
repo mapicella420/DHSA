@@ -7,6 +7,7 @@ import com.group01.dhsa.ObserverPattern.EventObservable;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.*;
 
+import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -98,10 +99,12 @@ public class CdaDocumentCreator {
         documentBuilder.addComponentOfSection(encounter);
 
         // Add additional details (e.g., observations) to the CDA document
-        documentBuilder.addComponentSection(encounter);
+        documentBuilder.addAdmissionSection(encounter);
 
-        // Fetch observations related to the patient
-        List<Observation> fhirObservations = client.getObservationsForPatient(patientId);
+        documentBuilder.addClinicalHistorySection(encounter);
+
+        documentBuilder.addHospitalCourseSection(encounter);
+
 
         // Build the CDA document and return the resulting file
         try {
@@ -110,6 +113,8 @@ public class CdaDocumentCreator {
             return tempFile;
         } catch (IOException e) {
             throw new RuntimeException("Failed to build CDA document: " + e.getMessage());
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
         }
     }
 

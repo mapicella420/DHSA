@@ -8,6 +8,9 @@ public class Low {
     @XmlAttribute(name = "value")
     private String value;
 
+    @XmlAttribute(name = "nullFlavor")
+    private String nullFlavor;
+
     public Low() {
     }
 
@@ -21,5 +24,13 @@ public class Low {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getNullFlavor() {
+        return nullFlavor;
+    }
+
+    public void setNullFlavor(String nullFlavor) {
+        this.nullFlavor = nullFlavor;
     }
 }

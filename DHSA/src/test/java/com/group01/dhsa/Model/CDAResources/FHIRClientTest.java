@@ -272,4 +272,35 @@ class FHIRClientTest {
         assert expectedPatient != null;
         assertEquals(patient.getId(), expectedPatient.getId());
     }
+
+    @Test
+    void getConditionsForPatientAndEncounter() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+
+        List<Condition> conditions = fhirClient.getConditionsForPatientAndEncounter(patientId, encounterId);
+
+
+        Bundle bundle = testClient.search()
+                .forResource(Condition.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+
+        List<Condition> expectedConditions = bundle.getEntry().stream()
+                .map(entry -> (Condition) entry.getResource())
+                .toList();
+
+
+        assertNotNull(conditions, "The list of conditions should not be null.");
+        assertEquals(expectedConditions.size(), conditions.size(), "The number of conditions does not match.");
+        for (int i = 0; i < conditions.size(); i++) {
+            assertEquals(expectedConditions.get(i).getId(), conditions.get(i).getId(),
+                    "The expected conditions do not match the returned ones.");
+        }
+    }
+
 }

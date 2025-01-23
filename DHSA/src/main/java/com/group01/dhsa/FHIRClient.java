@@ -2,10 +2,13 @@ package com.group01.dhsa;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.DateClientParam;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
 import org.hl7.fhir.r5.model.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -258,6 +261,76 @@ public class FHIRClient {
         return bundle.getEntry().stream()
                 .map(entry -> (Condition) entry.getResource())
                 .collect(Collectors.toList());
+    }
+
+    public List<Condition> getPreviousConditionsForPatient(String patientId, DateTimeType date) {
+        Bundle bundle = client.search()
+                .forResource(Condition.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        return bundle.getEntry().stream()
+                .map(entry -> (Condition) entry.getResource())
+                .filter(condition -> {
+                    DateTimeType onset = condition.getOnsetDateTimeType();
+                    return onset != null && onset.before(date);
+                })
+                .toList();
+    }
+
+    public List<Procedure> getPreviousProceduresForPatient(String patientId, DateTimeType date) {
+        Bundle bundle = client.search()
+                .forResource(Procedure.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueIds = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource())
+                .filter(procedure -> {
+                    DateTimeType onset = procedure.getOccurrenceDateTimeType();
+                    return onset != null && onset.before(date);
+                })
+                .filter(procedure -> uniqueIds.add(procedure.getOccurrenceDateTimeType().toHumanDisplay()))
+                .toList();
+
+    }
+
+    public List<MedicationRequest> getPreviousMedicationRequestsForPatient(String patientId, DateTimeType date) {
+        Bundle encounterBundle = client.search()
+                .forResource(Encounter.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new DateClientParam("date").before().day(date.getValue()))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> encounterIds = encounterBundle.getEntry().stream()
+                .map(entry -> entry.getResource().getIdElement().getIdPart())
+                .collect(Collectors.toSet());
+
+        Bundle medicationRequestBundle = client.search()
+                .forResource(MedicationRequest.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueIds = new HashSet<>();
+        return medicationRequestBundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource())
+                .filter(medicationRequest -> {
+                    boolean isUnique = uniqueIds.add(
+                            medicationRequest.getMedication().getConcept()
+                                    .getCodingFirstRep().getCode());
+
+                    boolean isFromPreviousEncounter =
+                            encounterIds.contains(
+                            medicationRequest.getEncounter().getReference().split("/")[1]);
+
+                    return isUnique && isFromPreviousEncounter;
+                })
+                .toList();
     }
 }
 

@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 import jakarta.xml.bind.annotation.*;
 import java.util.List;
 
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StructuredList {
 

@@ -183,6 +183,6 @@ public class ObjectFactory {
 
     public ListItem createListItem() { return new ListItem(); }
 
-
+    public StatusCode createStatusCode() { return new StatusCode(); }
 
 }

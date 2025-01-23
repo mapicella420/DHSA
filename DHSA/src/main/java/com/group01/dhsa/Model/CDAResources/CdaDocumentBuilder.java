@@ -8,8 +8,15 @@ import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
 
 /**
  * The `CdaDocumentBuilder` class is responsible for constructing and serializing
@@ -107,23 +114,14 @@ public class CdaDocumentBuilder {
      *
      * @param encounter The FHIR `Encounter` resource containing admission details
      */
-    public void addComponentSection(Encounter encounter) {
+    public void addAdmissionSection(Encounter encounter) {
         AdmissionAdapter admissionAdapter = new AdmissionAdapter();
         Component component = admissionAdapter.toCdaObject(encounter);
 
-        clinicalDocument.setComponent(component);
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
     }
-
-    // Example method for adding an observation section (commented out in original code)
-/*
-    public CdaDocumentBuilder addObservationSection(Observation fhirObservation) {
-        ObservationAdapter observationAdapter = new ObservationAdapter();
-        ObservationCDA observationCDA = observationAdapter.toCdaObject(fhirObservation);
-
-        clinicalDocument.setObservationSection(observationCDA);
-        return this;
-    }
-*/
 
     /**
      * Builds the CDA document by serializing it to an XML file.
@@ -132,20 +130,60 @@ public class CdaDocumentBuilder {
      * @throws JAXBException If an error occurs during JAXB marshalling
      * @throws IOException   If an error occurs while creating the temporary file
      */
-    public File build() throws JAXBException, IOException {
-        // Create a JAXB context for serializing the ClinicalDocument
+    public File  build() throws JAXBException, IOException, TransformerException {
+
         JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
 
         // Configure the marshaller for pretty-printing the XML
+
         Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+
 
         // Create a temporary file to store the XML
+        StringWriter stringWriter = new StringWriter();
+
+
+        marshaller.marshal(clinicalDocument, stringWriter);
+
+
         File tempFile = File.createTempFile("clinicalDocument", ".xml");
 
         // Serialize the ClinicalDocument to the temporary file
         marshaller.marshal(clinicalDocument, tempFile);
 
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+
+
+        transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(stringWriter.toString())),
+                new StreamResult(tempFile));
+
         return tempFile;
     }
+
+    public void addHospitalCourseSection(Encounter encounter) {
+        HospitalCourseAdapter hospitalCourseAdapter = new HospitalCourseAdapter();
+
+        Component component = hospitalCourseAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public void addClinicalHistorySection(Encounter encounter) {
+        ClinicalHistoryAdapter clinicalHistoryAdapter = new ClinicalHistoryAdapter();
+
+        Component component = clinicalHistoryAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+
+
 }
+

@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.CDAResources.SectionModels;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @XmlRootElement(name = "ClinicalDocument")
@@ -19,7 +20,7 @@ public class ClinicalDocument {
     @XmlAttribute(name = "xmlns:xsi")
     private String xmlnsXsi = "http://www.w3.org/2001/XMLSchema-instance";
 
-    // Elementi XML
+
     @XmlElement(name = "typeId")
     private TypeId typeId;
 
@@ -69,7 +70,7 @@ public class ClinicalDocument {
     private ComponentOf componentOf;
 
     @XmlElement(name = "component")
-    private Component component;
+    private List<Component> component;
 
 
     public ClinicalDocument() {
@@ -243,11 +244,14 @@ public class ClinicalDocument {
         this.componentOf = componentOf;
     }
 
-    public Component getComponent() {
+    public List<Component> getComponent() {
+        if (component == null) {
+            component = new ArrayList<Component>();
+        }
         return component;
     }
 
-    public void setComponent(Component component) {
+    public void setComponent(List<Component> component) {
         this.component = component;
     }
 }
