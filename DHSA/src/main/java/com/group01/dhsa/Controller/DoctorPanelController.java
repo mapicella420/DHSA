@@ -120,6 +120,25 @@ public class DoctorPanelController {
         return fileChooser.showOpenDialog(stage);
     }
 
+    /**
+     * Action to view CSV content.
+     */
+    @FXML
     public void onViewCsvMenuClick(ActionEvent actionEvent) {
+        System.out.println("Navigating to View CSV screen...");
+
+        // Retrieve the current stage
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
+
+        // Use the ChangeScreen utility to navigate to the new screen
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/ViewFhirResourcesScreen.fxml", currentStage, "View CSV");
+
+        // Notify the event manager (if necessary) to handle any related events
+        if (eventManager != null) {
+            eventManager.notify("view_csv", null);
+        } else {
+            System.err.println("EventManager is not set!");
+        }
     }
 }

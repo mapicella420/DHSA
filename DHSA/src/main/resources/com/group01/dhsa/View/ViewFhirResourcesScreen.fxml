@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" style="-fx-padding: 20; -fx-pref-width: 800; -fx-pref-height: 600;" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.ViewFhirResourcesController">
+    <!-- Titolo -->
+    <Label styleClass="label-title" text="FHIR Resources Viewer" />
+
+    <!-- Barra di ricerca -->
+    <HBox spacing="10">
+        <TextField fx:id="searchField" promptText="Search by keyword..." styleClass="search-bar" />
+        <Button fx:id="searchButton" onAction="#onSearch" styleClass="button-blue" text="Search" />
+    </HBox>
+
+    <!-- Selettore delle risorse -->
+    <HBox spacing="20">
+        <Label text="Select Resource Type:" styleClass="label" />
+        <ChoiceBox fx:id="resourceTypeChoiceBox" styleClass="choice-box" />
+        <Button fx:id="loadButton" onAction="#onLoadResources" styleClass="button-blue" text="Load" />
+    </HBox>
+
+    <!-- Tabella per visualizzare i dati -->
+    <TableView fx:id="fhirResourcesTable" styleClass="table-view" VBox.vgrow="ALWAYS">
+        <columns>
+            <!-- Colonne dinamiche; possono essere configurate e popolate nel controller -->
+            <TableColumn fx:id="resourceTypeColumn" styleClass="table-column" text="Resource Type" />
+            <TableColumn fx:id="identifierColumn" styleClass="table-column" text="Identifier" />
+            <TableColumn fx:id="detailsColumn" styleClass="table-column" text="Details" />
+        </columns>
+    </TableView>
+
+    <!-- Barra di azione -->
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button fx:id="backButton" onAction="#onBack" styleClass="button-blue" text="Back" />
+        <Pane HBox.hgrow="ALWAYS" />
+        <Button fx:id="refreshButton" onAction="#onRefresh" styleClass="button-green" text="Refresh" />
+        <Button fx:id="downloadButton" onAction="#onDownloadResource" styleClass="button-red" text="Download Resource" />
+    </HBox>
+
+    <!-- Progress Bar e stato -->
+    <VBox alignment="CENTER" spacing="5">
+        <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Status: Ready" />
+        <ProgressBar fx:id="progressBar" prefWidth="200" visible="false" />
+    </VBox>
+</VBox>

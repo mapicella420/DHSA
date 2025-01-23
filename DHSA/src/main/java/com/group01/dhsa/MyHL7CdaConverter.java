@@ -1,11 +1,14 @@
 package com.group01.dhsa;
 
+import com.group01.dhsa.Model.FhirExporter;
 import com.group01.dhsa.Model.MongoInitializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 public class MyHL7CdaConverter extends Application {
 
@@ -31,6 +34,13 @@ public class MyHL7CdaConverter extends Application {
 
     public static void main(String[] args) {
         initializeDatabase();
+        FhirExporter exporter = new FhirExporter();
+
+        // Simula un evento export_request per il tipo "Patient"
+        File tempFile = new File("Patient");
+        exporter.handleEvent("export_request", tempFile);
+
+
 
         launch(args);
     }

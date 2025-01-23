@@ -1,6 +1,7 @@
 package com.group01.dhsa;
 
 import com.group01.dhsa.Model.CsvImporter;
+import com.group01.dhsa.Model.FhirExporter;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 
 public class EventManager {
@@ -19,8 +20,9 @@ public class EventManager {
     }
 
     /**
-     *  Metodo per ottenere l'unica istanza Singleton
-     * @return instance
+     * Metodo per ottenere l'unica istanza Singleton.
+     *
+     * @return L'istanza di EventManager.
      */
     public static EventManager getInstance() {
         if (instance == null) {
@@ -29,16 +31,26 @@ public class EventManager {
         return instance;
     }
 
-    // Metodo per ottenere l'EventObservable
+    /**
+     * Ottiene l'EventObservable.
+     *
+     * @return L'istanza di EventObservable.
+     */
     public EventObservable getEventObservable() {
         return eventObservable;
     }
 
-    // Inizializza i listener
+    /**
+     * Inizializza i listener e registra le classi necessarie.
+     */
     private void initializeListeners() {
-        // Registra il CsvImporter come listener
+        // Registra il CsvImporter come listener per l'importazione
         CsvImporter csvImporter = new CsvImporter();
-
         eventObservable.subscribe("csv_upload", csvImporter);
+
+
+        FhirExporter fhirExporter = new FhirExporter();
+        eventObservable.subscribe("export_request", fhirExporter);
+
     }
 }

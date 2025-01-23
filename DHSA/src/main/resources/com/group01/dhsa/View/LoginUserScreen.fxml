@@ -10,19 +10,21 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.LoginUserController">
+<AnchorPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.6" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.LoginUserController">
     <children>
         <VBox alignment="CENTER" prefHeight="350.4" prefWidth="500.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <AnchorPane prefHeight="40.0" prefWidth="500.0">
-            <children>
-               <MenuButton fx:id="myHospitalMenuItem" layoutX="14.0" layoutY="1.0" mnemonicParsing="false" text="My Hospital">
-                 <items>
-                   <MenuItem fx:id="otherHospitalMenuItem" mnemonicParsing="false" onAction="#changeOrganization" text="Other Hospital" />
-                 </items>
-               </MenuButton>
-            </children>
-         </AnchorPane>
-            <!-- Titolo -->
+            <!-- Barra di selezione dell'organizzazione -->
+            <AnchorPane prefHeight="40.0" prefWidth="500.0">
+                <children>
+                    <MenuButton fx:id="myHospitalMenuItem" layoutX="14.0" layoutY="1.0" mnemonicParsing="false" text="My Hospital">
+                        <items>
+                            <MenuItem fx:id="otherHospitalMenuItem" mnemonicParsing="false" onAction="#changeOrganization" text="Other Hospital" />
+                        </items>
+                    </MenuButton>
+                </children>
+            </AnchorPane>
+
+            <!-- Titolo della schermata -->
             <Label prefHeight="66.0" prefWidth="146.0" styleClass="label-title" text="Login Screen" />
 
             <!-- Campo Username -->
@@ -35,10 +37,14 @@
             <HBox alignment="CENTER" prefHeight="35.0" prefWidth="500.0" spacing="10.0">
                 <Label prefWidth="100.0" text="Password:" />
                 <PasswordField fx:id="passwordField" promptText="Enter your password" />
+                <TextField fx:id="passwordTextField" promptText="Enter your password" visible="false" />
+                <Button fx:id="togglePasswordButton" onAction="#togglePasswordVisibility" text="Show" />
             </HBox>
-         <Label fx:id="errorMessage" />
-   
-                  <!-- Bottone di Login -->
+
+            <!-- Messaggio di errore -->
+            <Label fx:id="errorMessage" style="-fx-text-fill: red;" text="" />
+
+            <!-- Bottone di Login -->
             <Button fx:id="loginButton" onAction="#handleLogin" styleClass="button-red" text="Login" />
         </VBox>
     </children>
