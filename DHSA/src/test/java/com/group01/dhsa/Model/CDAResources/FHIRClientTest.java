@@ -8,7 +8,9 @@ import org.hl7.fhir.r5.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -449,6 +451,220 @@ class FHIRClientTest {
                     "The expected procedures do not match the ones returned.");
         }
     }
+
+    @Test
+    void getProceduresForPatientAndEncounter() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+        List<Procedure> procedures = fhirClient.getProceduresForPatientAndEncounter(patientId, encounterId);
+
+        Bundle bundle = testClient.search()
+                .forResource(Procedure.class)
+                .where(Procedure.PATIENT.hasId(patientId))
+                .and(Procedure.ENCOUNTER.hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<Procedure> expectedProcedures = bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource())
+                .collect(Collectors.toList());
+
+        assertNotNull(procedures, "The list of procedures should not be null.");
+        assertEquals(expectedProcedures.size(), procedures.size(), "The number of procedures does not match.");
+        for (int i = 0; i < procedures.size(); i++) {
+            assertEquals(expectedProcedures.get(i).getId(), procedures.get(i).getId(),
+                    "The expected procedures do not match the returned ones.");
+        }
+    }
+
+
+    @Test
+    void ImmunizationsForPatientAndEncounter() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+        // Eseguiamo il metodo getImmunizationsForPatientAndEncounter
+        List<Immunization> immunizations = fhirClient.getImmunizationsForPatientAndEncounter(patientId, encounterId);
+
+        // Eseguiamo una query per ottenere tutte le vaccinazioni per il paziente
+        Bundle bundle = testClient.search()
+                .forResource(Immunization.class)
+                .where(Immunization.PATIENT.hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Filtriamo le vaccinazioni dal Bundle in base all'Encounter ID e alle date distinte
+        Set<String> uniqueDates = new HashSet<>();
+        List<Immunization> expectedImmunizations = bundle.getEntry().stream()
+                .map(entry -> (Immunization) entry.getResource())
+                .filter(immunization -> {
+                    boolean idMatch = encounterId.matches(immunization.getEncounter()
+                            .getReference().split("/")[1]);
+                    boolean dateDistinct = uniqueDates.add(
+                            immunization.getOccurrenceDateTimeType().toHumanDisplay()
+                    );
+                    return idMatch && dateDistinct;
+                })
+                .toList();
+
+        // Verifica che la lista di immunizzazioni non sia nulla
+        assertNotNull(immunizations, "The list of immunizations should not be null.");
+
+        // Confronta il numero di immunizzazioni
+        assertEquals(expectedImmunizations.size(), immunizations.size(), "The number of immunizations does not match.");
+
+        // Verifica che ogni immunizzazione corrisponda per ID
+        for (int i = 0; i < immunizations.size(); i++) {
+            assertEquals(expectedImmunizations.get(i).getId(), immunizations.get(i).getId(),
+                    "The expected immunizations do not match the returned ones.");
+        }
+    }
+
+
+
+
+    @Test
+    void CarePlansForPatientAndEncounter() {
+        String patientId = "b8eb8d31-1031-fb5b-e207-b9815f80744c";
+        String encounterId = "9331c45b-0beb-42aa-1a13-012a432f7c3c";
+
+        List<CarePlan> carePlans = fhirClient.getCarePlansForPatientAndEncounter(patientId, encounterId);
+
+        Bundle bundle = testClient.search()
+                .forResource(CarePlan.class)
+                .where(CarePlan.PATIENT.hasId(patientId))
+                .and(CarePlan.ENCOUNTER.hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<CarePlan> expectedCarePlans = bundle.getEntry().stream()
+                .map(entry -> (CarePlan) entry.getResource())
+                .collect(Collectors.toList());
+
+        assertNotNull(carePlans, "The list of care plans should not be null.");
+        assertEquals(expectedCarePlans.size(), carePlans.size(), "The number of care plans does not match.");
+        for (int i = 0; i < carePlans.size(); i++) {
+            assertEquals(expectedCarePlans.get(i).getId(), carePlans.get(i).getId(),
+                    "The expected care plans do not match the returned ones.");
+        }
+    }
+
+
+    @Test
+    void AllergiesForPatientAndEncounter() {
+        String patientId = "ce4ce4d8-d4e2-aca2-5a92-8ce703c5077a";
+        String encounterId = "7c5d7a54-12e8-f192-550c-e8ef61db7c0e";
+
+        // Eseguiamo il metodo getAllergiesForPatientAndEncounter
+        List<AllergyIntolerance> allergies = fhirClient.getAllergiesForPatientAndEncounter(patientId, encounterId);
+
+        // Eseguiamo una query per ottenere tutte le allergie per il paziente
+        Bundle bundle = testClient.search()
+                .forResource(AllergyIntolerance.class)
+                .where(AllergyIntolerance.PATIENT.hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Filtriamo le allergie dal Bundle in base all'Encounter ID e alle allergie distinte
+        Set<String> uniqueAllergies = new HashSet<>();
+        List<AllergyIntolerance> expectedAllergies = bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergyIntolerance -> {
+                    // Filtro per Encounter ID
+                    boolean thisEncounter = allergyIntolerance
+                            .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/encounter-reference")
+                            .getValue().toString().split("/")[1].replace("]","").equals(encounterId);
+
+                    // Filtro per allergie uniche (basato sul codice dell'allergia)
+                    boolean unique = uniqueAllergies.add(allergyIntolerance.getCode()
+                            .getCodingFirstRep().getDisplay());
+
+                    return thisEncounter && unique;
+                })
+                .collect(Collectors.toList()); // Raccogliamo i risultati filtrati in una lista
+
+        // Verifica che la lista di allergie non sia nulla
+        assertNotNull(allergies, "The list of allergies should not be null.");
+
+        // Confronta il numero di allergie
+        assertEquals(expectedAllergies.size(), allergies.size(), "The number of allergies does not match.");
+
+        // Verifica che ogni allergia corrisponda per ID
+        for (int i = 0; i < allergies.size(); i++) {
+            assertEquals(expectedAllergies.get(i).getId(), allergies.get(i).getId(),
+                    "The expected allergies do not match the returned ones.");
+        }
+
+        // In alternativa, puoi anche verificare che la lista restituita sia vuota se non ci sono corrispondenze
+        if (expectedAllergies.isEmpty()) {
+            assertTrue(allergies.isEmpty(), "If no allergies match, the result should be empty.");
+        }
+    }
+
+
+    @Test
+    void ImagingStudiesForPatientAndEncounter() {
+        String patientId = "0f8fa0de-b75f-4e09-d8be-e8c8946be4c0";
+        String encounterId = "11fa206c-ccd5-cff4-8faa-52eaa7915c16";
+
+        List<ImagingStudy> imagingStudies = fhirClient.getImagingStudiesForPatientAndEncounter(patientId, encounterId);
+
+        Bundle bundle = testClient.search()
+                .forResource(ImagingStudy.class)
+                .where(ImagingStudy.PATIENT.hasId(patientId))
+                .and(ImagingStudy.ENCOUNTER.hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<ImagingStudy> expectedImagingStudies = bundle.getEntry().stream()
+                .map(entry -> (ImagingStudy) entry.getResource())
+                .collect(Collectors.toList());
+
+        assertNotNull(imagingStudies, "The list of imaging studies should not be null.");
+        assertEquals(expectedImagingStudies.size(), imagingStudies.size(), "The number of imaging studies does not match.");
+        for (int i = 0; i < imagingStudies.size(); i++) {
+            assertEquals(expectedImagingStudies.get(i).getId(), imagingStudies.get(i).getId(),
+                    "The expected imaging studies do not match the returned ones.");
+        }
+    }
+
+
+    @Test
+    void MedicationsForPatientAndEncounter() {
+        String patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846";
+        String encounterId = "155aa73b-46da-5808-c218-80a5ed671009";
+
+        // Metodo sotto test
+        List<MedicationRequest> medications = fhirClient.getMedicationRequestForPatientAndEncounter(patientId, encounterId);
+
+        // Creazione del bundle simulato
+        Bundle bundle = testClient.search()
+                .forResource(MedicationRequest.class) // Cambiato da MedicationAdministration a MedicationRequest
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Otteniamo la lista attesa dai risultati del bundle
+        Set<String> uniqueMedicationRequests = new HashSet<>();
+        List<MedicationRequest> expectedMedications = bundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource())
+                .filter(medicationRequest ->
+                        uniqueMedicationRequests.add(medicationRequest
+                                .getMedication().getConcept().getCodingFirstRep().getDisplay()))
+                .toList();
+
+        // Asserzioni
+        assertNotNull(medications, "The list of medications should not be null.");
+        assertEquals(expectedMedications.size(), medications.size(), "The number of medications does not match.");
+
+        for (int i = 0; i < medications.size(); i++) {
+            assertEquals(expectedMedications.get(i).getId(), medications.get(i).getId(),
+                    "The expected medications do not match the returned ones.");
+        }
+    }
+
 
 
 }
