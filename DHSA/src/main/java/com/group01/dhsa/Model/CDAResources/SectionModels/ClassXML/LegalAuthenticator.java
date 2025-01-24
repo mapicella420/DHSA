@@ -6,7 +6,7 @@ import jakarta.xml.bind.annotation.*;
 public class LegalAuthenticator {
 
     @XmlElement(name = "time")
-    private String time;
+    private Time time;
 
     @XmlElement(name = "signatureCode")
     private SignatureCode signatureCode;
@@ -17,17 +17,17 @@ public class LegalAuthenticator {
     public LegalAuthenticator() {
     }
 
-    public LegalAuthenticator(String time, SignatureCode signatureCode, AssignedEntity assignedEntity) {
+    public LegalAuthenticator(Time time, SignatureCode signatureCode, AssignedEntity assignedEntity) {
         this.time = time;
         this.signatureCode = signatureCode;
         this.assignedEntity = assignedEntity;
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 
