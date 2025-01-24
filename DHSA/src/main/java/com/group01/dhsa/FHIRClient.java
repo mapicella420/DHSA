@@ -469,5 +469,22 @@ public class FHIRClient {
                 )
                 .toList();
     }
+
+    public List<AllergyIntolerance> getAllergiesForPatient(String patientId) {
+        Bundle bundle = client.search()
+                .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueAllergies = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergyIntolerance -> {
+                    return uniqueAllergies.add(allergyIntolerance.getCode()
+                            .getCodingFirstRep().getDisplay());
+                })
+                .toList();
+    }
 }
 

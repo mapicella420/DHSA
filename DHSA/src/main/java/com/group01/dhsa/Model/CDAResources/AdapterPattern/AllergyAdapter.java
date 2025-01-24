@@ -37,9 +37,8 @@ public class AllergyAdapter implements CdaSection<Component, Encounter> {
         String patientId = fhirObject.getSubject().getReference().split("/")[1];
         String encounterId = fhirObject.getIdPart();
 
-        List<AllergyIntolerance> allergies = FHIRClient.getInstance().getAllergiesForPatientAndEncounter(
-                patientId,
-                encounterId
+        List<AllergyIntolerance> allergies = FHIRClient.getInstance().getAllergiesForPatient(
+                patientId
         );
 
         if (allergies != null && !allergies.isEmpty()) {

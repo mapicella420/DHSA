@@ -251,5 +251,15 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    public void addHospitalDischargeSection(Encounter encounter) {
+        HospitalDischargeAdapter hospitalDischargeAdapter = new HospitalDischargeAdapter();
+
+        Component component = hospitalDischargeAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
 }
 

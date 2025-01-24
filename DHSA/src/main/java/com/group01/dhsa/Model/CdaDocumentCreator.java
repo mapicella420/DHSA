@@ -116,6 +116,8 @@ public class CdaDocumentCreator {
 
         documentBuilder.addAllergySection(encounter);
 
+        documentBuilder.addHospitalDischargeSection(encounter);
+
         // Build the CDA document and return the resulting file
         try {
             File tempFile = documentBuilder.build();
