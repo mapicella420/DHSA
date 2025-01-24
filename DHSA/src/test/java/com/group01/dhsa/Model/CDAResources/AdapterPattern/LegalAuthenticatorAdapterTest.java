@@ -65,7 +65,7 @@ class LegalAuthenticatorAdapterTest {
         // Verify the signature time
         LocalDateTime now = LocalDateTime.now();
         String expectedTime = now.atOffset(ZoneOffset.ofHours(1)).format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssZ"));
-        assertEquals(expectedTime, legalAuthenticator.getTime(), "The signature time does not match");
+        assertEquals(expectedTime, legalAuthenticator.getTime().getValue(), "The signature time does not match");
 
         System.out.println("LegalAuthenticator CDA successfully generated: " + legalAuthenticator);
     }

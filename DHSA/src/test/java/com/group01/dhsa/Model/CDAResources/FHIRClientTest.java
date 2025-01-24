@@ -691,6 +691,35 @@ class FHIRClientTest {
         }
     }
 
+    @Test
+    void getAllergiesForPatient(){
+        String patientId = "ce4ce4d8-d4e2-aca2-5a92-8ce703c5077a";
+
+        List<AllergyIntolerance> allergies = fhirClient.getAllergiesForPatient(patientId);
+
+        Bundle bundle = testClient.search()
+                .forResource(AllergyIntolerance.class)
+                .where(AllergyIntolerance.PATIENT.hasId(patientId)) // Filter by patient ID
+                .returnBundle(Bundle.class)
+                .execute();
+
+        List<AllergyIntolerance> expectedAllergies = bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .collect(Collectors.toList());
+
+        assertNotNull(allergies, "The list of allergies should not be null.");
+
+        assertEquals(expectedAllergies.size(), allergies.size(), "The number of allergies does not match.");
+
+        for (int i = 0; i < allergies.size(); i++) {
+            assertEquals(expectedAllergies.get(i).getId(), allergies.get(i).getId(),
+                    "The expected allergies do not match the returned ones.");
+        }
+
+        if (expectedAllergies.isEmpty()) {
+            assertTrue(allergies.isEmpty(), "If no allergies match, the result should be empty.");
+        }
+    }
 
 
 }

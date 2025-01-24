@@ -30,7 +30,8 @@ public class LegalAuthenticatorAdapter implements CdaSection <LegalAuthenticator
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssZ");
-        legalAuthenticator.setTime(now.atOffset(ZoneOffset.ofHours(1)).format(formatter));
+        Time time = new Time(now.atOffset(ZoneOffset.ofHours(1)).format(formatter));
+        legalAuthenticator.setTime(time);
 
         legalAuthenticator.setSignatureCode(new SignatureCode("S"));
 
