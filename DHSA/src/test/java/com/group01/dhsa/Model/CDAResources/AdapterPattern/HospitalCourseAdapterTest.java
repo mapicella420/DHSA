@@ -29,37 +29,29 @@ class HospitalCourseAdapterTest {
 
     @Test
     void toCdaObject() {
-        // Call the method to be tested
         Component component = hospitalCourseAdapter.toCdaObject(encounter);
 
-        // Validate the component
         assertNotNull(component, "The Component object should not be null");
 
-        // Validate the structured body of the component
         StructuredBody structuredBody = component.getStructuredBody();
         assertNotNull(structuredBody, "The StructuredBody should not be null");
 
-        // Validate the inner component of the structured body
         ComponentInner componentInner = structuredBody.getComponentInner();
         assertNotNull(componentInner, "The ComponentInner should not be null");
 
-        // Validate the section of the component inner
         Section section = componentInner.getSection();
         assertNotNull(section, "The Section should not be null");
         assertEquals("8648-8", section.getCode().getCode(), "The Section code does not match");
         assertEquals("Decorso Ospedaliero", section.getTitle().getTitle(), "The Section title does not match");
 
-        // Validate the text in the section
         Text text = section.getText();
         assertNotNull(text, "The Text should not be null");
         assertFalse(text.getValues().isEmpty(), "The Text paragraphs should not be empty");
 
-        // Validate if the first paragraph mentions patient information
         Paragraph firstParagraph = (Paragraph) text.getValues().get(0);
         assertTrue(firstParagraph.getContent().contains("The patient " ),
                 "The first paragraph should mention the patient's information");
 
-        // Validate conditions for the patient during the encounter
         List<Condition> conditions = fhirClient.getConditionsForPatientAndEncounter(patientId, encounter.getIdPart());
         if (conditions != null && !conditions.isEmpty()) {
             assertTrue(text.getValues().stream()
@@ -67,7 +59,6 @@ class HospitalCourseAdapterTest {
                     "The Text should include condition information");
         }
 
-        // Validate procedures during the hospital course
         List<Procedure> procedures = fhirClient.getProceduresForPatientAndEncounter(patientId, encounter.getIdPart());
         if (procedures != null && !procedures.isEmpty()) {
             List<ComponentInner> components = section.getComponent();
@@ -85,7 +76,6 @@ class HospitalCourseAdapterTest {
                     "The procedures section should include the list of procedures");
         }
 
-        // Validate medications prescribed during the hospital course
         List<MedicationRequest> medicationRequests = fhirClient.getMedicationRequestForPatientAndEncounter(patientId, encounter.getIdPart());
         if (medicationRequests != null && !medicationRequests.isEmpty()) {
             List<ComponentInner> components = section.getComponent();
@@ -105,7 +95,6 @@ class HospitalCourseAdapterTest {
 
 
 
-        // Print out the result for visual inspection (optional)
         System.out.println("Hospital Course CDA successfully generated: " + component);
     }
 }
