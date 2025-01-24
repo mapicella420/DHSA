@@ -9,6 +9,7 @@ import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -220,6 +221,35 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    public void addRelevantDiagnosticSection(Encounter encounter) {
+        RelevantDiagnosticAdapter relevantDiagnosticAdapter = new RelevantDiagnosticAdapter();
+
+        Component component = relevantDiagnosticAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public void addHistoryOfProceduresSection(Encounter encounter) {
+        HistoryOfProceduresAdapter historyOfProceduresAdapter = new HistoryOfProceduresAdapter();
+
+        Component component = historyOfProceduresAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public void addAllergySection(Encounter encounter) {
+        AllergyAdapter allergyAdapter = new AllergyAdapter();
+
+        Component component = allergyAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
 
 }
 

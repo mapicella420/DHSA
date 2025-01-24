@@ -8,56 +8,47 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EntryTest {
 
     @Test
     public void testingEntry() {
         try {
-            Entry entry = new Entry();
-
-            EntryRelationship entryRelationship = new EntryRelationship();
-            Act act = new Act();
-
-            entry.setEntryRelationship(entryRelationship);
-            entry.setAct(act);
-
-            List<ObservationCDA> observationList = new ArrayList<>();
-
             ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
             observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
-            Value value = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            Translation  translation = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            value.setTranslation(translation);
-            observation1.setValue(value);
+            Value value1 = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            Translation translation1 = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            value1.setTranslation(translation1);
+            observation1.setValue(value1);
 
-
-            observationList.add(observation1);
+            Entry entry1 = new Entry(observation1);
 
             ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
             observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
             observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observationList.add(observation2);
 
-            entry.setObservation(observationList);
+            Entry entry2 = new Entry(observation2);
 
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(Entry.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(entry, writer);
+
+            marshaller.marshal(entry1, writer);
+            marshaller.marshal(entry2, writer);
 
             String xmlOutput = writer.toString();
             System.out.println("Serialized XML:\n" + xmlOutput);
 
             StringReader reader = new StringReader(xmlOutput);
             Unmarshaller unmarshaller = context.createUnmarshaller();
-            Entry deserializedEntry = (Entry) unmarshaller.unmarshal(reader);
 
-            if (deserializedEntry != null) {
-                System.out.println("\nDeserialization successful. Entry object is valid.");
+            Entry deserializedEntry1 = (Entry) unmarshaller.unmarshal(reader);
+
+            Entry deserializedEntry2 = (Entry) unmarshaller.unmarshal(reader);
+
+            if (deserializedEntry1 != null && deserializedEntry2 != null) {
+                System.out.println("\nDeserialization successful. Entry objects are valid.");
             } else {
                 System.out.println("\nDeserialization failed.");
             }

@@ -89,7 +89,7 @@ class PatientAdapterTest {
         assertTrue(xmlOutput.contains("<streetAddressLine>" + patient.getAddressFirstRep().getLine().getFirst() + "</streetAddressLine>"));
 
         // Verifica che la data di nascita sia presente
-        assertTrue(xmlOutput.contains("<birthTime value=\"" + patient.getBirthDateElement().asStringValue() + "\"/>"));
+        assertTrue(xmlOutput.contains("<birthTime value=\"" + patient.getBirthDateElement().asStringValue().replace("-","") + "\"/>"));
 
         // Verifica che il codice del genere sia corretto
         String genderDisplay = "Sconosciuto";

@@ -187,4 +187,12 @@ public class ObjectFactory {
 
     public Time createTime() { return new Time(); }
 
+    public ValueContent createValueContent() { return new ValueContent(); }
+
+    public TableHead createTableHead() { return new TableHead(); }
+
+    public TableBody createTableBody() { return new TableBody(); }
+
+    public ProcedureCDA createProcedure() { return new ProcedureCDA(); }
+
 }

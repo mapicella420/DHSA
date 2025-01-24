@@ -127,13 +127,8 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
             textAnamnesiList.add(procedureStructuredList);
 
             //Entry
-            List<ObservationCDA> observationCDAList = new ArrayList<>();
-
             List<Entry> entryListAnamnesi = new ArrayList<>();
             sectionAnamnesi.setEntry(entryListAnamnesi);
-            Entry entryAnamnesi = new Entry();
-            entryListAnamnesi.add(entryAnamnesi);
-            entryAnamnesi.setObservation(observationCDAList);
 
             for (Procedure procedure : procedureList) {
                 String procedureDisplay = procedure.getCode().getCodingFirstRep().getDisplay();
@@ -153,7 +148,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 observationCDA.setCode(code);
                 StatusCode statusCodeAnamnesi = new StatusCode("completed");
                 observationCDA.setStatusCode(statusCodeAnamnesi);
-                observationCDAList.add(observationCDA);
+                entryListAnamnesi.add(new Entry(observationCDA));
 
                 Low lowAnamnesi = new Low();
                 lowAnamnesi.setNullFlavor("UNK");

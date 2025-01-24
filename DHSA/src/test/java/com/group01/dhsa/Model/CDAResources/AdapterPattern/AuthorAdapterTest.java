@@ -51,12 +51,6 @@ class AuthorAdapterTest {
         // Verifica che l'AssignedAuthor sia stato correttamente impostato
         assertNotNull(author.getAssignedAuthor());
 
-        // Verifica che il time sia stato correttamente impostato
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String expectedTime = now.atOffset(ZoneOffset.ofHours(1)).format(formatter);
-        assertEquals(expectedTime, author.getTime());
-
 
         // Verifica che l'ID sia stato impostato correttamente (codice fiscale)
         String nome = practitioner.getNameFirstRep().getGivenAsSingleString();

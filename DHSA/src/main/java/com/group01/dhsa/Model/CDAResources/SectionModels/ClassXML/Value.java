@@ -82,4 +82,12 @@ public class Value {
     public void setTranslation(Translation translation) {
         this.translation = translation;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

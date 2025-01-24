@@ -38,12 +38,16 @@ public class CdaDataExtractor {
             extractEncounterLocation(doc, data);
             extractResponsibleParty(doc,data);
             // Estrarre sezioni specifiche (es. Diagnosi di Accettazione)
-            extractSectionDetails(doc, data, "46241-6", "admission");
-            extractSectionDetails(doc, data, "47039-3", "clinicalOverview");
-            extractSectionDetails(doc, data, "11329-0", "anamnesis");
-            extractSectionDetails(doc, data, "42346-7", "medications");
-            extractSectionDetails(doc, data, "8648-8", "hospitalCourse");
-            extractSectionDetails(doc, data, "11493-4", "findings");
+            extractSectionDetails(doc, data, "46241-6", "LOINC" , "admission");
+            extractSectionDetails(doc, data, "47039-3", "LOINC","clinicalOverview");
+            extractSectionDetails(doc, data, "11329-0", "LOINC", "anamnesis");
+            extractSectionDetails(doc, data, "42346-7","LOINC", "medications");
+            extractSectionDetails(doc, data, "8648-8", "LOINC","hospitalCourse");
+            extractSectionDetails(doc, data, "11493-4","LOINC","findings");
+            extractSectionDetails(doc, data, "47519-4","LOINC", "procedures");
+            extractSectionDetails(doc, data, "48765-2","LOINC","allergies");
+            extractSectionDetails(doc, data, "11535-2","LOINC", "conditions");
+            extractSectionDetails(doc, data, "18776-5","LOINC", "followup");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -230,12 +234,11 @@ public class CdaDataExtractor {
     }
 
 
-    private void extractSectionDetails(Document doc, Map<String, String> data, String code, String prefix) {
+    private void extractSectionDetails(Document doc, Map<String, String> data, String code, String codeSystemName, String prefix) {
         Element section = getSectionByCode(doc, code);
         if (section != null) {
             // Estrarre i codici di sistema e i dettagli
             data.put(prefix + "Code", getAttributeValue(section, "code", "code"));
-            data.put(prefix + "CodeSystem", getAttributeValue(section, "code", "codeSystem"));
             data.put(prefix + "CodeSystemName", getAttributeValue(section, "code", "codeSystemName"));
 
             // Estrarre i dettagli della sezione <text>, se disponibili
@@ -246,9 +249,8 @@ public class CdaDataExtractor {
             data.put(prefix + "Details", sectionText);
         } else {
             // Se la sezione non è presente, riempire con valori predefiniti
-            data.put(prefix + "Code", "N/A");
-            data.put(prefix + "CodeSystem", "N/A");
-            data.put(prefix + "CodeSystemName", "N/A");
+            data.put(prefix + "Code", code);
+            data.put(prefix + "CodeSystemName", codeSystemName);
             data.put(prefix + "Details", "<p>No details available.</p>");
         }
     }
