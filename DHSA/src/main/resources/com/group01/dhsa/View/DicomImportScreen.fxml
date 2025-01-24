@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox stylesheets="@../styles/stylesDicom.css" prefHeight="300.0" prefWidth="600.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DicomImportController" alignment="CENTER">
+<VBox stylesheets="@../styles/styles.css" prefHeight="300.0" prefWidth="600.0" spacing="20" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DicomImportController" alignment="CENTER">
 
     <!-- Title -->
     <Label prefHeight="40.0" prefWidth="580.0" styleClass="label-title" text="DICOM Import File" alignment="CENTER" />

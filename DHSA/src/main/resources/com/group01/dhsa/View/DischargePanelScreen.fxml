@@ -1,84 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
-<BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DischargePanelController">
-<left>
-    <AnchorPane prefHeight="400.0" prefWidth="600.0">
-        <children>
-            <MenuBar prefHeight="25.0" prefWidth="600.0">
-                <menus>
-                    <!-- File Menu -->
-                    <Menu styleClass="menu-bar" text="File">
-                        <items>
-                            <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
-                        </items>
-                    </Menu>
-                </menus>
-            </MenuBar>
-            <VBox alignment="CENTER" spacing="20.0" />
-            <Label layoutX="200.0" layoutY="48.0" styleClass="label-title" text="Discharge Patient">
-                <font>
-                    <Font size="29.0" />
-                </font>
-            </Label>
-            <StackPane fx:id="stackPaneDischarge" layoutX="34.0" layoutY="88.0" prefHeight="287.0" prefWidth="552.0">
-               <children>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0">
-                     <children>
-                        <Button fx:id="backButton" styleClass="button-blue" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
-                        <MenuButton fx:id="patientIDMenu" disable="true" layoutX="92.0" layoutY="144.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID" />
-                        <Label fx:id="errorLabel" layoutX="92.0" layoutY="117.0" />
-                        <Button fx:id="searchButton" layoutX="304.0" layoutY="79.0" mnemonicParsing="false" onAction="#searchPatient">
-                         <graphic>
-                             <ImageView fitWidth="20" fitHeight="20">
-                                 <image>
-                                     <Image url="@../icons/search.png" />
-                                 </image>
-                             </ImageView>
-                         </graphic>
+<BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DischargePanelController" prefWidth="500.0" prefHeight="400.0">
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu styleClass="menu-bar" text="File">
+                    <items>
+                        <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+    <center>
+        <AnchorPane>
+            <children>
+                <VBox alignment="CENTER" spacing="15.0" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
+                    <Label styleClass="label-title" text="Discharge Patient">
+                        <font>
+                            <Font size="24.0" />
+                        </font>
+                    </Label>
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <TextField fx:id="firstNameField" promptText="Type First Name" prefHeight="26.0" />
+                        <TextField fx:id="lastNameField" promptText="Type Last Name" prefHeight="26.0" />
+                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#searchPatient">
+                            <graphic>
+                                <ImageView fitWidth="20" fitHeight="20">
+                                    <image>
+                                        <Image url="@../icons/search.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </Button>
-                        <TextField fx:id="lastNameField" layoutX="92.0" layoutY="78.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
-                        <!-- Red Button -->
-                        <Button fx:id="dischargePatientButton" disable="true" layoutX="390.0" layoutY="225.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />
-                        <TextField fx:id="firstNameField" layoutX="92.0" layoutY="36.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
-                        <MenuButton fx:id="encounterIDMenu" disable="true" layoutX="92.0" layoutY="183.0" mnemonicParsing="false" onAction="#switchSelectedEncounter" prefHeight="26.0" prefWidth="358.0" text="Encounter ID" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </StackPane>
-            <StackPane fx:id="stackPaneCDA" layoutX="35.0" layoutY="94.0" prefHeight="304.0" prefWidth="558.0" visible="false">
-               <children>
-                  <AnchorPane prefHeight="298.0" prefWidth="558.0">
-                     <children>
-                        <Button fx:id="backButton2" layoutX="71.0" layoutY="242.0" mnemonicParsing="false" onAction="#switchPanel" text="Back" />
-                         <Button fx:id="uploadButton" layoutX="385.0" layoutY="238.0" mnemonicParsing="false" styleClass="button-red" onAction="#uploadCda" text="Upload CDA"/>
-                        <Label fx:id="cdaStatus" layoutX="84.0" layoutY="79.0" text="Preparing CDA..." />
-                        <ProgressIndicator fx:id="progressCDA" layoutX="71.0" layoutY="111.0" progress="0.0" />
-                        <Button fx:id="previewButton" disable="true" layoutX="374.0" layoutY="75.0" mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
-                     </children>
-                  </AnchorPane>
-               </children>
-            </StackPane>
-        </children>
-        <BorderPane.margin>
-            <Insets />
-        </BorderPane.margin>
-    </AnchorPane>
-</left>
+                    </HBox>
+                    <MenuButton fx:id="patientIDMenu" disable="true" text="Patient ID" prefHeight="26.0" />
+                    <MenuButton fx:id="encounterIDMenu" disable="true" text="Encounter ID" prefHeight="26.0" />
+                    <HBox alignment="CENTER" spacing="20.0">
+                        <Button fx:id="backButton" styleClass="button-blue" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+                        <Button fx:id="dischargePatientButton" styleClass="button-red" disable="true" mnemonicParsing="false" onAction="#dischargeSelectedPatient" text="Discharge Patient" prefHeight="34.0" />
+                    </HBox>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </center>
 </BorderPane>
+

@@ -187,3 +187,46 @@ p {
     box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
     margin-bottom: 30px; /* Spaziatura inferiore */
 }
+
+/* Stile per la tabella */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina spazi tra bordi */
+    margin: 20px 0; /* Margine superiore e inferiore */
+    font-size: 14px; /* Dimensione testo della tabella */
+    background-color: #f9f9f9; /* Sfondo chiaro */
+    border: 1px solid #ddd; /* Bordo grigio chiaro */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
+}
+
+table th, table td {
+    padding: 10px; /* Spaziatura interna */
+    text-align: left; /* Allinea il testo a sinistra */
+    border: 1px solid #ddd; /* Bordo delle celle */
+}
+
+table th {
+    background-color: #0056b3; /* Sfondo blu */
+    color: white; /* Testo bianco */
+    font-weight: bold; /* Testo in grassetto */
+    text-transform: uppercase; /* Testo maiuscolo */
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Riga pari con sfondo chiaro */
+}
+
+table tbody tr:hover {
+    background-color: #e6f7ff; /* Riga evidenziata al passaggio del mouse */
+}
+
+/* Testo nelle celle */
+table td {
+    color: #333; /* Testo scuro */
+    font-size: 14px; /* Testo uniforme */
+}
+
+/* Centrare il contenuto opzionale */
+table.centered td, table.centered th {
+    text-align: center;
+}

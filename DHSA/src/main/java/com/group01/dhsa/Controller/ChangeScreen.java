@@ -38,6 +38,7 @@ public class ChangeScreen {
 
             // Show the new stage
             newStage.setTitle(title);
+            newStage.setResizable(true);
             newStage.show();
 
             // Return the controller of the loaded FXML

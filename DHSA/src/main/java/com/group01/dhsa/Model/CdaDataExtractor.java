@@ -44,6 +44,7 @@ public class CdaDataExtractor {
             extractSectionDetails(doc, data, "42346-7","LOINC", "medications");
             extractSectionDetails(doc, data, "8648-8", "LOINC","hospitalCourse");
             extractSectionDetails(doc, data, "11493-4","LOINC","findings");
+            extractSectionDetails(doc, data, "30954-2","LOINC","exam");
             extractSectionDetails(doc, data, "47519-4","LOINC", "procedures");
             extractSectionDetails(doc, data, "48765-2","LOINC","allergies");
             extractSectionDetails(doc, data, "11535-2","LOINC", "conditions");
@@ -241,8 +242,12 @@ public class CdaDataExtractor {
             data.put(prefix + "Code", getAttributeValue(section, "code", "code"));
             data.put(prefix + "CodeSystemName", getAttributeValue(section, "code", "codeSystemName"));
 
-            // Estrarre i dettagli della sezione <text>, se disponibili
+            // Estrarre i dettagli della sezione <text>
             String sectionText = extractSectionText(section);
+            if (code.equals("30954-2")) { // Se è la sezione "Esami diagnostici e/o di laboratorio significativi"
+                sectionText = extractTable(section); // Gestione speciale per includere la tabella
+            }
+
             if (sectionText.isEmpty()) {
                 sectionText = "<p>No details available.</p>";
             }
@@ -254,6 +259,53 @@ public class CdaDataExtractor {
             data.put(prefix + "Details", "<p>No details available.</p>");
         }
     }
+
+    private String extractTable(Element section) {
+        StringBuilder tableBuilder = new StringBuilder();
+
+        // Cerca il nodo <table> nella sezione <text>
+        NodeList tableNodes = section.getElementsByTagName("table");
+        if (tableNodes.getLength() > 0) {
+            Element table = (Element) tableNodes.item(0);
+
+            // Costruire l'intestazione della tabella
+            tableBuilder.append("<table border='1'>");
+            NodeList headerRows = table.getElementsByTagName("thead");
+            if (headerRows.getLength() > 0) {
+                Element thead = (Element) headerRows.item(0);
+                tableBuilder.append("<thead>");
+                NodeList headerCells = thead.getElementsByTagName("td");
+                tableBuilder.append("<tr>");
+                for (int i = 0; i < headerCells.getLength(); i++) {
+                    tableBuilder.append("<th>").append(headerCells.item(i).getTextContent().trim()).append("</th>");
+                }
+                tableBuilder.append("</tr>");
+                tableBuilder.append("</thead>");
+            }
+
+            // Costruire il corpo della tabella
+            NodeList bodyRows = table.getElementsByTagName("tbody");
+            if (bodyRows.getLength() > 0) {
+                Element tbody = (Element) bodyRows.item(0);
+                tableBuilder.append("<tbody>");
+                NodeList rows = tbody.getElementsByTagName("tr");
+                for (int i = 0; i < rows.getLength(); i++) {
+                    tableBuilder.append("<tr>");
+                    NodeList cells = ((Element) rows.item(i)).getElementsByTagName("td");
+                    for (int j = 0; j < cells.getLength(); j++) {
+                        tableBuilder.append("<td>").append(cells.item(j).getTextContent().trim()).append("</td>");
+                    }
+                    tableBuilder.append("</tr>");
+                }
+                tableBuilder.append("</tbody>");
+            }
+
+            tableBuilder.append("</table>");
+        }
+
+        return tableBuilder.toString();
+    }
+
 
 
 

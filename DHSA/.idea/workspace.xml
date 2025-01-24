@@ -5,43 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="Fix adaptable screen">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AllergyAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HistoryOfProceduresAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/RelevantDiagnosticAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ProcedureCDA.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableBody.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableHead.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ValueContent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalDischargeStudiesAdapterTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/RelevantDiagnosticAdapterTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalDischargeStudiesAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalDischargeStudiesAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Act.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Act.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Code.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Code.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Entry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Entry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EntryRelationship.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EntryRelationship.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ObservationCDA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ObservationCDA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Table.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Table.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableCell.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/TableRow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Value.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Value.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/ChangeScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/ChangeScreen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapterTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/FHIRClientTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentInnerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentInnerTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/ComponentTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EntryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/EntryTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/SectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/SectionTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredBodyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredBodyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomImportScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomImportScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomListScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomListScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomViewScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DicomViewScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/UploadCSVScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/UploadCSVScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/CDAStyles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/CDAStyles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/styles/stylesDicom.css" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,7 +76,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Merging cdaView",
+    "git-widget-placeholder": "cdaView",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_directory_selection": "C:/Users/mapic/Desktop/PW/DHSA/project/DHSA/DHSA/src/main/java/com/group01/dhsa",
