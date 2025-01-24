@@ -2,21 +2,22 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
+
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.group01.dhsa.Controller.CdaListController"
-            prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/styles.css">
+            stylesheets="@../styles/styles.css"
+            prefHeight="600.0" prefWidth="800.0">
 
     <children>
-        <VBox spacing="20" layoutX="10.0" layoutY="10.0" prefWidth="780.0" prefHeight="580.0" alignment="CENTER">
+        <VBox spacing="20.0" alignment="CENTER" AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.bottomAnchor="10.0">
             <!-- Title -->
             <Label text="CDA Documents" styleClass="label-title" alignment="CENTER" />
 
             <!-- Search Bar -->
-            <HBox spacing="10" alignment="CENTER">
+            <HBox spacing="10.0" alignment="CENTER">
                 <Label text="Search by:" styleClass="label" />
                 <ComboBox fx:id="searchFieldSelector" promptText="Select Field" styleClass="combo-box">
                     <items>
@@ -32,7 +33,7 @@
             </HBox>
 
             <!-- Table View -->
-            <TableView fx:id="cdaTable" prefHeight="400.0" prefWidth="780.0" styleClass="table-view">
+            <TableView fx:id="cdaTable" VBox.vgrow="ALWAYS" styleClass="table-view">
                 <columns>
                     <TableColumn text="Creation Date" fx:id="creationDateColumn" prefWidth="150.0" />
                     <TableColumn text="Patient Name" fx:id="patientNameColumn" prefWidth="150.0" />
@@ -42,14 +43,12 @@
                 </columns>
             </TableView>
 
-
-
             <!-- Buttons -->
-            <HBox spacing="20" alignment="CENTER">
+            <HBox spacing="20.0" alignment="CENTER">
                 <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
                 <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
                 <Button fx:id="viewDetailsButton" text="View CDA Details" onAction="#onViewDetailsClick" disable="true" styleClass="button-red" />
-                <Button fx:id="dischargePatientButton"  onAction="#onDischargePatientClick"  styleClass="button-red" text="Discharge Patient" />
+                <Button fx:id="dischargePatientButton" onAction="#onDischargePatientClick" styleClass="button-red" text="Discharge Patient" />
             </HBox>
         </VBox>
     </children>
