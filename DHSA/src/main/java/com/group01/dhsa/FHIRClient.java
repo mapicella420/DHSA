@@ -443,5 +443,31 @@ public class FHIRClient {
                 .toList();
     }
 
+
+    public List<Device> getDeviceByPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Device.class)
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueDevices = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (Device) entry.getResource())
+                .filter(device -> {
+                    boolean thisPatient = device
+                            .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient")
+                            .getValue().toString().split("/")[1].replace("]","").equals(patientId);
+
+                    boolean thisEncounter = device
+                            .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter")
+                            .getValue().toString().split("/")[1].replace("]","").equals(encounterId);
+
+                    boolean unique = uniqueDevices.add(device.getUdiCarrierFirstRep()
+                                    .getCarrierHRF());
+                            return thisEncounter && thisPatient && unique;
+                        }
+                )
+                .toList();
+    }
 }
 

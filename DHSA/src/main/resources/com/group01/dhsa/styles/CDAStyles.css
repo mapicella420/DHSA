@@ -102,7 +102,13 @@ section h2 {
     border-bottom: 2px solid #0056b3;
     padding-bottom: 5px;
 }
-
+section h3 {
+    color: #333333;
+    font-size: 16px; /* Dimensione ottimale */
+    margin-bottom: 10px;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 5px;
+}
 .admission-diagnosis, .clinical-overview, .hospital-course {
     padding: 20px;
     background-color: #eef7fc;
@@ -112,29 +118,25 @@ section h2 {
     margin-bottom: 30px;
 }
 
-.admission-diagnosis ul,
-.clinical-overview ul,
-.hospital-course ul {
+/* Stile per le liste generate */
+ul {
     padding-left: 20px;
     margin-top: 10px;
-    list-style-type: disc;
-    color: #333;
-    font-size: 14px;
+    list-style-type: disc; /* Stile del punto elenco */
+    color: #555555; /* Colore del testo */
+    font-size: 12px; /* Font piccolo per liste */
 }
 
-.admission-diagnosis ul li,
-.clinical-overview ul li,
-.hospital-course ul li {
-    margin-bottom: 8px;
-    line-height: 1.6;
+ul li {
+    margin-bottom: 8px; /* Margine tra gli elementi della lista */
+    line-height: 1.6; /* Spaziatura tra le righe */
 }
 
-.admission-diagnosis ul li::marker,
-.clinical-overview ul li::marker,
-.hospital-course ul li::marker {
-    color: #0056b3;
-    font-size: 14px;
+ul li::marker {
+    color: #555555; /* Colore del marker */
+    font-size: 12px; /* Dimensione del marker */
 }
+
 
 .row {
     display: flex;
@@ -149,4 +151,39 @@ section h2 {
     margin: 0;
     min-width: 220px;
     font-size: 16px; /* Testo uniforme */
+}
+
+/* Classe specifica per i campi con codici su una singola riga */
+.small-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    font-size: 12px; /* Font più piccolo */
+    color: #555; /* Colore del testo più tenue */
+    margin-bottom: 10px; /* Margine inferiore per spaziatura */
+    align-items: center; /* Allineamento verticale centrato */
+}
+
+.small-row p {
+    margin: 0; /* Rimuovi margini */
+    padding: 0 5px; /* Spaziatura orizzontale tra i campi */
+    flex: 1; /* Permette un layout uniforme */
+    text-align: center; /* Centra il contenuto */
+    min-width: 150px; /* Garantisce una larghezza minima */
+}
+
+/* Regola per il font nei paragrafi generici */
+p {
+    font-size: 14px; /* Font di default per paragrafi */
+    margin: 8px 0;
+    color: #555555;
+}
+
+.subsection-container {
+    padding: 20px;
+    background-color: #eef7fc; /* Sfondo blu chiaro */
+    border: 2px solid #0073e6; /* Bordo blu */
+    border-radius: 8px; /* Angoli arrotondati */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
+    margin-bottom: 30px; /* Spaziatura inferiore */
 }

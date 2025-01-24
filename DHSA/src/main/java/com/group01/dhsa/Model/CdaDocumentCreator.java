@@ -108,6 +108,9 @@ public class CdaDocumentCreator {
         documentBuilder.addClinicalHistorySection(encounter);
         documentBuilder.addHospitalCourseSection(encounter);
 
+        documentBuilder.addHospitalDischargeStudiesSection(encounter);
+
+
         // Build the CDA document and return the resulting file
         try {
             File tempFile = documentBuilder.build();
@@ -119,7 +122,6 @@ public class CdaDocumentCreator {
             throw new RuntimeException(e);
         }
     }
-
 
     /**
      * Reads and prints the content of the CDA document file.

@@ -11,23 +11,24 @@
     <header>
         <h1>Hospital Discharge Letter</h1>
         <div class="general-info">
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Template ID:</strong> {{templateId}}</p>
                 <p><strong>Type ID:</strong> {{typeId}}</p>
                 <p><strong>Document ID:</strong> {{documentId}}</p>
             </div>
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Document Type:</strong> {{documentType}}</p>
                 <p><strong>System Code:</strong> {{codeSystemName}}</p>
+                <p><strong>Version:</strong> {{versionNumber}}</p>
+
             </div>
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
                 <p><strong>Realm Code:</strong> {{realmCode}}</p>
                 <p><strong>Confidentiality:</strong> {{confidentialityCode}}</p>
             </div>
-             <div class="row">
+            <div class="small-row">
                 <p><strong>Date:</strong> {{creationDate}}</p>
-                <p><strong>Version:</strong> {{versionNumber}}</p>
                 <p><strong>Language:</strong> {{languageCode}}</p>
             </div>
         </div>
@@ -153,60 +154,73 @@
 
     <section>
         <h2>Admission Diagnosis</h2>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{admissionCode}}</p>
+            <p><strong>Code System:</strong> {{admissionCodeSystem}}</p>
+            <p><strong>Code System Name:</strong> {{admissionCodeSystemName}}</p>
+        </div>
         <div class="admission-diagnosis">
-            <div class="row">
-                <p><strong>Code:</strong> {{admissionCode}}</p>
-                <p><strong>Code System:</strong> {{admissionCodeSystem}}</p>
-                <p><strong>Code System Name:</strong> {{admissionCodeSystemName}}</p>
-            </div>
-            <h3>Details</h3>
-            <div class="admission-details">
-                {{admissionDetails}}
-            </div>
+            {{admissionDetails}}
         </div>
     </section>
 
+    <!-- Inquadramento Clinico Iniziale -->
     <section>
         <h2>Inquadramento Clinico Iniziale</h2>
-        <div class="clinical-overview">
-            <div class="row">
-                <p><strong>Code:</strong> {{clinicalOverviewCode}}</p>
-                <p><strong>Code System:</strong> {{clinicalOverviewCodeSystem}}</p>
-                <p><strong>Code System Name:</strong> {{clinicalOverviewCodeSystemName}}</p>
-            </div>
-            <h3>Details</h3>
-            <div class="clinical-details">
-                {{clinicalOverviewDetails}}
-            </div>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{clinicalOverviewCode}}</p>
+            <p><strong>Code System:</strong> {{clinicalOverviewCodeSystem}}</p>
+            <p><strong>Code System Name:</strong> {{clinicalOverviewCodeSystemName}}</p>
         </div>
-    </section>
-
-    <section>
-        <h2>Anamnesi</h2>
-        <div class="anamnesis-details">
+        <div class="clinical-overview">
+            {{clinicalOverviewDetails}}
+        </div>
+        <h3>Anamnesi</h3>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{anamnesisCode}}</p>
+            <p><strong>System:</strong> {{anamnesisCodeSystem}}</p>
+            <p><strong>Display Name:</strong> {{anamnesisDisplayName}}</p>
+        </div>
+        <div class="subsection-container">
             {{anamnesisDetails}}
         </div>
-    </section>
-
-    <section>
-        <h2>Terapia Farmacologica all’Ingresso</h2>
-        <div class="medications-details">
+        <h3>Terapia Farmacologica all’Ingresso</h3>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{medicationsCode}}</p>
+            <p><strong>System:</strong> {{medicationsCodeSystem}}</p>
+            <p><strong>Display Name:</strong> {{medicationsCodeDisplayName}}</p>
+        </div>
+        <div class="subsection-container">
             {{medicationsDetails}}
         </div>
+
     </section>
 
     <!-- Nuova sezione: Decorso Ospedaliero -->
     <section>
         <h2>Decorso Ospedaliero</h2>
-        <div class="hospital-course">
-            <div class="hospital-course-details">
-                <p><strong>Details:</strong></p>
-                <div class="details-content">
-                    {{hospitalCourseDetails}}
-                </div>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{hospitalCourseCode}}</p>
+            <p><strong>System:</strong> {{hospitalCourseCodeSystem}}</p>
+            <p><strong>Display Name:</strong> {{hospitalCourseCodeSystemName}}</p>
+        </div>
+        <div class="subsection-container">
+            {{hospitalCourseDetails}}
+        </div>
+        <!-- Sottosezione: Riscontri ed Accertamenti Significativi -->
+        <div class="significant-findings">
+            <h3>Riscontri ed Accertamenti Significativi</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{findingsCode}}</p>
+                <p><strong>Code System:</strong> {{findingsCodeSystem}}</p>
+                <p><strong>Code System Name:</strong> {{findingsCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{findingsDetails}}
             </div>
         </div>
     </section>
+
 
     <footer>
         <p>Document automatically generated. © 2025 HL7 Italia</p>

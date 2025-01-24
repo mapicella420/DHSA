@@ -363,6 +363,18 @@ public class CdaDataExtractor {
                 // Estrarre "Anamnesi Generale"
                 Element anamnesisSection = getSectionByCode(doc, "11329-0");
                 if (anamnesisSection != null) {
+                        // Estrarre i codici dalla sezione <code>
+                        Element codeElement2 = (Element) anamnesisSection.getElementsByTagName("code").item(0);
+                        if (codeElement2 != null) {
+                            data.put("anamnesisCode", codeElement2.hasAttribute("code") ? codeElement2.getAttribute("code") : "11329-0");
+                            data.put("anamnesisCodeSystem", codeElement2.hasAttribute("codeSystem") ? codeElement2.getAttribute("codeSystem") : "2.16.840.1.113883.6.1");
+                            data.put("anamnesisDisplayName", codeElement2.hasAttribute("codeSystemName") ? codeElement2.getAttribute("codeSystemName") : "LOINC");
+                        } else {
+                            // Fallback per i codici mancanti
+                            data.put("anamnesisCode", "11329-0");
+                            data.put("anamnesisCodeSystem", "2.16.840.1.113883.6.1");
+                            data.put("anamnesisDisplayName", "LOINC");
+                        }
                     // Estrarre il testo
                     Element anamnesisText = (Element) anamnesisSection.getElementsByTagName("text").item(0);
                     if (anamnesisText != null) {
@@ -415,6 +427,19 @@ public class CdaDataExtractor {
                 // Estrarre "Terapia Farmacologica all’Ingresso"
                 Element medicationsSection = getSectionByCode(doc, "42346-7");
                 if (medicationsSection != null) {
+                    // Estrarre i codici dalla sezione <code>
+                    Element codeElement2 = (Element) medicationsSection.getElementsByTagName("code").item(0);
+                    if (codeElement2 != null) {
+                        data.put("medicationsCode", codeElement2.hasAttribute("code") ? codeElement2.getAttribute("code") : "N/A");
+                        data.put("medicationsCodeSystem", codeElement2.hasAttribute("codeSystem") ? codeElement2.getAttribute("codeSystem") : "N/A");
+                        data.put("medicationsCodeDisplayName", codeElement2.hasAttribute("codeSystemName") ? codeElement2.getAttribute("codeSystemName") : "N/A");
+                    } else {
+                        // Fallback per i codici mancanti
+                        data.put("medicationsCode", "42346-7");
+                        data.put("medicationsCodeSystem", "2.16.840.1.113883.6.1");
+                        data.put("medicationsCodeDisplayName", "LOINC");
+                    }
+
                     // Estrarre il contenuto del testo
                     Element medicationsText = (Element) medicationsSection.getElementsByTagName("text").item(0);
                     if (medicationsText != null) {
@@ -443,8 +468,14 @@ public class CdaDataExtractor {
                         data.put("medicationsDetails", "<p>No medications available.</p>");
                     }
                 } else {
+                    // Sezione non presente
+                    data.put("medicationsCode", "N/A");
+                    data.put("medicationsCodeSystem", "N/A");
+                    data.put("medicationsDisplayName", "N/A");
                     data.put("medicationsDetails", "<p>No medications available.</p>");
                 }
+
+
 
             } else {
                 data.put("clinicalOverviewDetails", "<p>No clinical overview available.</p>");
@@ -459,13 +490,13 @@ public class CdaDataExtractor {
                 // Estrarre i dettagli del codice
                 Element codeElement = (Element) hospitalCourseSection.getElementsByTagName("code").item(0);
                 if (codeElement != null) {
-                    data.put("hospitalCourseCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "N/A");
-                    data.put("hospitalCourseCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "N/A");
-                    data.put("hospitalCourseCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "N/A");
+                    data.put("hospitalCourseCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "8648-8");
+                    data.put("hospitalCourseCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "2.16.840.1.113883.6.1");
+                    data.put("hospitalCourseCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "LOINC");
                 } else {
-                    data.put("hospitalCourseCode", "N/A");
-                    data.put("hospitalCourseCodeSystem", "N/A");
-                    data.put("hospitalCourseCodeSystemName", "N/A");
+                    data.put("hospitalCourseCode", "8648-8");
+                    data.put("hospitalCourseCodeSystem", "2.16.840.1.113883.6.1");
+                    data.put("hospitalCourseCodeSystemName", "LOINC");
                 }
 
                 // Estrarre i dettagli del testo
@@ -516,12 +547,59 @@ public class CdaDataExtractor {
                 data.put("hospitalCourseDetails", "<p>No hospital course available.</p>");
             }
 
+            // Estrarre i dati relativi ai Riscontri ed Accertamenti Significativi
+            Element findingsSection = getSectionByCode(doc, "11493-4");
 
+            if (findingsSection != null) {
+                // Estrarre i dettagli del codice
+                Element codeElement = (Element) findingsSection.getElementsByTagName("code").item(0);
+                if (codeElement != null) {
+                    data.put("findingsCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "11493-4");
+                    data.put("findingsCodeSystem", codeElement.hasAttribute("codeSystem") ? codeElement.getAttribute("codeSystem") : "2.16.840.1.113883.6.1");
+                    data.put("findingsCodeSystemName", codeElement.hasAttribute("codeSystemName") ? codeElement.getAttribute("codeSystemName") : "LOINC");
+                }
 
+                // Estrarre i dettagli testuali (paragrafi e liste)
+                Element textElement = (Element) findingsSection.getElementsByTagName("text").item(0);
+                if (textElement != null) {
+                    StringBuilder detailsBuilder = new StringBuilder();
+                    NodeList children = textElement.getChildNodes();
 
+                    for (int i = 0; i < children.getLength(); i++) {
+                        Node node = children.item(i);
 
+                        // Gestire paragrafi
+                        if (node.getNodeName().equals("paragraph")) {
+                            String value = node.getTextContent().trim();
+                            if (!value.isEmpty()) {
+                                detailsBuilder.append("<p>").append(value).append("</p>");
+                            }
+                        }
 
+                        // Gestire liste
+                        if (node.getNodeName().equals("list")) {
+                            Element listElement = (Element) node;
+                            NodeList items = listElement.getElementsByTagName("item");
 
+                            if (items.getLength() > 0) {
+                                detailsBuilder.append("<ul>"); // Lista non ordinata
+                                for (int j = 0; j < items.getLength(); j++) {
+                                    String itemValue = items.item(j).getTextContent().trim();
+                                    if (!itemValue.isEmpty()) {
+                                        detailsBuilder.append("<li>").append(itemValue).append("</li>");
+                                    }
+                                }
+                                detailsBuilder.append("</ul>");
+                            }
+                        }
+                    }
+                    if (!detailsBuilder.isEmpty()) {
+                        data.put("findingsDetails", detailsBuilder.toString());
+                    } else {
+                        data.put("findingsDetails", "<p>No details available.</p>");
+                    }
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -577,8 +655,6 @@ public class CdaDataExtractor {
         }
         return null;
     }
-
-
 
 
 }

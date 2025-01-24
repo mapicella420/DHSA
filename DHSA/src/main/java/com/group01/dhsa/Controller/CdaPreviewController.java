@@ -30,6 +30,7 @@ public class CdaPreviewController {
         // Iscriviti agli eventi di generazione HTML
         eventManager.subscribe("html_generated", this::onHtmlGenerated);
         eventManager.subscribe("html_generation_failed", this::onHtmlGenerationFailed);
+
     }
 
     public void setCdaFile(File cdaFile) {
