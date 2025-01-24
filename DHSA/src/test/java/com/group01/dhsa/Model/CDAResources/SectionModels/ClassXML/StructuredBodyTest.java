@@ -16,46 +16,38 @@ public class StructuredBodyTest {
     @Test
     public void testingStructuredBody() {
         try {
+            // Creazione della sezione
             Section section = new Section();
-
             section.setClassCode("classCode1");
             section.setMoodCode("moodCode1");
 
+            // Creazione del codice per la sezione
             Code code = new Code("code1", "codeSystem1", "codeSystemName1", "displayName1");
             section.setCode(code);
 
+            // Creazione del titolo per la sezione
             Title title = new Title("Title1");
             section.setTitle(title);
 
+            // Creazione della lista di Entry
             List<Entry> entryList = new ArrayList<>();
 
-            Entry entry = new Entry();
-            EntryRelationship entryRelationship = new EntryRelationship();
-            Act act = new Act();
-
-            entry.setEntryRelationship(entryRelationship);
-            entry.setAct(act);
-
-            List<ObservationCDA> observationList = new ArrayList<>();
-
+            // Creazione di un'osservazione
             ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
             observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
-            Value value = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            Translation translation = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            value.setTranslation(translation);
-            observation1.setValue(value);
+            Value value1 = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            Translation translation1 = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            value1.setTranslation(translation1);
+            observation1.setValue(value1);
+            List<ObservationCDA> observationList = new ArrayList<>();
             observationList.add(observation1);
 
-            ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
-            observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observationList.add(observation2);
-
-            entry.setObservation(observationList);
-
-            entryList.add(entry);
+            // Aggiunta dell'osservazione all'Entry
+            Entry entry1 = new Entry(observation1);
+            entryList.add(entry1);
             section.setEntry(entryList);
 
+            // Creazione di un ComponentInner e assegnazione alla StructuredBody
             ComponentInner componentInner = new ComponentInner();
             componentInner.setTypeCode("typeCode1");
             componentInner.setSection(section);
@@ -65,21 +57,23 @@ public class StructuredBodyTest {
             structuredBody.setClassCode("classCode2");
             structuredBody.setMoodCode("moodCode2");
 
+            // Serializzazione dell'oggetto StructuredBody in XML
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(StructuredBody.class);
             Marshaller marshaller = context.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(structuredBody, writer);
 
+            // Stampa dell'output XML serializzato
             String xmlOutput = writer.toString();
             System.out.println("Serialized XML:\n" + xmlOutput);
 
-
+            // Deserializzazione del XML in un oggetto StructuredBody
             StringReader reader = new StringReader(xmlOutput);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             StructuredBody deserializedStructuredBody = (StructuredBody) unmarshaller.unmarshal(reader);
 
-
+            // Verifica che la deserializzazione sia avvenuta con successo
             if (deserializedStructuredBody != null) {
                 System.out.println("\nDeserialization successful. StructuredBody object is valid.");
             } else {

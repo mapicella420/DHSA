@@ -17,7 +17,6 @@ public class SectionTest {
     public void testingSection() {
         try {
             Section section = new Section();
-
             section.setClassCode("classCode1");
             section.setMoodCode("moodCode1");
 
@@ -27,35 +26,35 @@ public class SectionTest {
             Title title = new Title("Title1");
             section.setTitle(title);
 
-            List<Entry> entryList = new ArrayList<>();
-
-            Entry entry = new Entry();
-            EntryRelationship entryRelationship = new EntryRelationship();
-            Act act = new Act();
-
-            entry.setEntryRelationship(entryRelationship);
-            entry.setAct(act);
-
-            List<ObservationCDA> observationList = new ArrayList<>();
+            Entry entry1 = new Entry();
+            EntryRelationship entryRelationship1 = new EntryRelationship();
+            Act act1 = new Act();
+            entry1.setEntryRelationship(entryRelationship1);
+            entry1.setAct(act1);
 
             ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
             observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
-            Value value = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            Translation translation = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            value.setTranslation(translation);
-            observation1.setValue(value);
-            observationList.add(observation1);
+            Value value1 = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            Translation translation1 = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            value1.setTranslation(translation1);
+            observation1.setValue(value1);
+            entry1.setObservation(observation1);
+
+            Entry entry2 = new Entry();
+            EntryRelationship entryRelationship2 = new EntryRelationship();
+            Act act2 = new Act();
+            entry2.setEntryRelationship(entryRelationship2);
+            entry2.setAct(act2);
 
             ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
             observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
             observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observationList.add(observation2);
+            entry2.setObservation(observation2);
 
-            entry.setObservation(observationList);
-
-            entryList.add(entry);
+            List<Entry> entryList = new ArrayList<>();
+            entryList.add(entry1);
+            entryList.add(entry2);
             section.setEntry(entryList);
-
 
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(Section.class);

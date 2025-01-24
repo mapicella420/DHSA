@@ -17,7 +17,6 @@ public class ComponentTest {
     public void testingComponent() {
         try {
             Section section = new Section();
-
             section.setClassCode("classCode1");
             section.setMoodCode("moodCode1");
 
@@ -29,31 +28,23 @@ public class ComponentTest {
 
             List<Entry> entryList = new ArrayList<>();
 
-            Entry entry = new Entry();
-            EntryRelationship entryRelationship = new EntryRelationship();
-            Act act = new Act();
-
-            entry.setEntryRelationship(entryRelationship);
-            entry.setAct(act);
-
-            List<ObservationCDA> observationList = new ArrayList<>();
-
             ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
             observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
-            Value value = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            Translation translation = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            value.setTranslation(translation);
-            observation1.setValue(value);
-            observationList.add(observation1);
+            Value value1 = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            Translation translation1 = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            value1.setTranslation(translation1);
+            observation1.setValue(value1);
+
+            Entry entry1 = new Entry(observation1);
 
             ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
             observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
             observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observationList.add(observation2);
 
-            entry.setObservation(observationList);
+            Entry entry2 = new Entry(observation2);
 
-            entryList.add(entry);
+            entryList.add(entry1);
+            entryList.add(entry2);
             section.setEntry(entryList);
 
             ComponentInner componentInner = new ComponentInner();
@@ -68,7 +59,6 @@ public class ComponentTest {
             Component component = new Component();
             component.setStructuredBody(structuredBody);
 
-
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(Component.class);
             Marshaller marshaller = context.createMarshaller();
@@ -78,11 +68,9 @@ public class ComponentTest {
             String xmlOutput = writer.toString();
             System.out.println("Serialized XML:\n" + xmlOutput);
 
-
             StringReader reader = new StringReader(xmlOutput);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             Component deserializedComponent = (Component) unmarshaller.unmarshal(reader);
-
 
             if (deserializedComponent != null) {
                 System.out.println("\nDeserialization successful. Component object is valid.");

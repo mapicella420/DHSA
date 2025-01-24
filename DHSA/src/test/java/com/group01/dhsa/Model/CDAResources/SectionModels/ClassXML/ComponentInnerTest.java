@@ -17,48 +17,8 @@ public class ComponentInnerTest {
     public void testingComponentInner() {
         try {
             Section section = new Section();
-
             section.setClassCode("classCode1");
             section.setMoodCode("moodCode1");
-
-            Code code1 = new Code("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            section.setCode(code1);
-
-            Title title1 = new Title("Title1");
-            section.setTitle(title1);
-
-            List<Entry> entryList = new ArrayList<>();
-
-            Entry entry = new Entry();
-            EntryRelationship entryRelationship = new EntryRelationship();
-            Act act = new Act();
-
-            entry.setEntryRelationship(entryRelationship);
-            entry.setAct(act);
-
-            List<ObservationCDA> observationList = new ArrayList<>();
-
-            ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
-            observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
-            Value value = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            Translation translation = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
-            value.setTranslation(translation);
-            observation1.setValue(value);
-            observationList.add(observation1);
-
-            ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
-            observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
-            observationList.add(observation2);
-
-            entry.setObservation(observationList);
-
-            entryList.add(entry);
-            section.setEntry(entryList);
-
-            section.setClassCode("classCode1");
-            section.setMoodCode("moodCode1");
-
 
             Code code = new Code("code1", "codeSystem1", "codeSystemName1", "displayName1");
             section.setCode(code);
@@ -66,11 +26,30 @@ public class ComponentInnerTest {
             Title title = new Title("Title1");
             section.setTitle(title);
 
+            List<Entry> entryList = new ArrayList<>();
+
+            ObservationCDA observation1 = new ObservationCDA("classCode1", "moodCode1");
+            observation1.setCode(new Code("code1", "codeSystem1", "codeSystemName1", "displayName1"));
+            Value value1 = new Value("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            Translation translation1 = new Translation("code1", "codeSystem1", "codeSystemName1", "displayName1");
+            value1.setTranslation(translation1);
+            observation1.setValue(value1);
+
+            Entry entry1 = new Entry(observation1);
+
+            ObservationCDA observation2 = new ObservationCDA("classCode2", "moodCode2");
+            observation2.setCode(new Code("code2", "codeSystem2", "codeSystemName2", "displayName2"));
+            observation2.setValue(new Value("code2", "codeSystem2", "codeSystemName2", "displayName2"));
+
+            Entry entry2 = new Entry(observation2);
+
+            entryList.add(entry1);
+            entryList.add(entry2);
+            section.setEntry(entryList);
 
             ComponentInner componentInner = new ComponentInner();
             componentInner.setTypeCode("typeCode1");
             componentInner.setSection(section);
-
 
             StringWriter writer = new StringWriter();
             JAXBContext context = JAXBContext.newInstance(ComponentInner.class);
@@ -84,7 +63,6 @@ public class ComponentInnerTest {
             StringReader reader = new StringReader(xmlOutput);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             ComponentInner deserializedComponentInner = (ComponentInner) unmarshaller.unmarshal(reader);
-
 
             if (deserializedComponentInner != null) {
                 System.out.println("\nDeserialization successful. ComponentInner object is valid.");
