@@ -203,5 +203,25 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    public void addHistoryOfProceduresSection(Encounter encounter) {
+        HistoryOfProceduresAdapter historyOfProceduresAdapter = new HistoryOfProceduresAdapter();
+
+        Component component = historyOfProceduresAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
+    public void addAllergySection(Encounter encounter) {
+        AllergyAdapter allergyAdapter = new AllergyAdapter();
+
+        Component component = allergyAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
 }
 

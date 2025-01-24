@@ -193,4 +193,6 @@ public class ObjectFactory {
 
     public TableBody createTableBody() { return new TableBody(); }
 
+    public ProcedureCDA createProcedure() { return new ProcedureCDA(); }
+
 }

@@ -4,7 +4,6 @@ import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Encounter;
 import org.hl7.fhir.r5.model.ImagingStudy;
-import org.hl7.fhir.r5.model.Observation;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

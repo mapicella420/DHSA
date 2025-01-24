@@ -109,6 +109,9 @@ public class CdaDocumentCreator {
 
         documentBuilder.addRelevantDiagnosticSection(encounter);
 
+        documentBuilder.addHistoryOfProceduresSection(encounter);
+
+        documentBuilder.addAllergySection(encounter);
 
         // Build the CDA document and return the resulting file
         try {

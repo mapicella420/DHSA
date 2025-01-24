@@ -5,6 +5,9 @@ import jakarta.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Code {
 
+    @XmlAttribute(name = "nullFlavor")
+    private String nullFlavor;
+
     @XmlAttribute(name = "code")
     private String code;
 
@@ -59,6 +62,14 @@ public class Code {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getNullFlavor() {
+        return nullFlavor;
+    }
+
+    public void setNullFlavor(String nullFlavor) {
+        this.nullFlavor = nullFlavor;
     }
 }
 
