@@ -34,12 +34,6 @@ public class MyHL7CdaConverter extends Application {
 
     public static void main(String[] args) {
         initializeDatabase();
-        FhirExporter exporter = new FhirExporter();
-
-        // Simula un evento export_request per il tipo "Patient"
-        File tempFile = new File("Patient");
-        exporter.handleEvent("export_request", tempFile);
-
 
 
         launch(args);
