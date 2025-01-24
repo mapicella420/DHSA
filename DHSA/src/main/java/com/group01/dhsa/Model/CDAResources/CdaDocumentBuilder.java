@@ -193,5 +193,15 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    public void addRelevantDiagnosticSection(Encounter encounter) {
+        RelevantDiagnosticAdapter relevantDiagnosticAdapter = new RelevantDiagnosticAdapter();
+
+        Component component = relevantDiagnosticAdapter.toCdaObject(encounter);
+
+        List<Component> list = clinicalDocument.getComponent();
+        list.add(component);
+        clinicalDocument.setComponent(list);
+    }
+
 }
 

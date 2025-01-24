@@ -132,6 +132,10 @@ public class HospitalDischargeStudiesAdapter implements CdaSection<Component, En
             textList.add(deviceStructuredList);
         }
 
+        if (textList.isEmpty()) {
+            return null;
+        }
+
         return component;
     }
 }

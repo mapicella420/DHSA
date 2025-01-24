@@ -17,9 +17,13 @@ public class Entry {
 
     //Optional
     @XmlElement(name = "observation")
-    private List<ObservationCDA> observation;
+    private ObservationCDA observation;
 
     public Entry() {
+    }
+
+    public Entry(ObservationCDA observation) {
+        this.observation = observation;
     }
 
     public EntryRelationship getEntryRelationship() {
@@ -38,11 +42,11 @@ public class Entry {
         this.act = act;
     }
 
-    public List<ObservationCDA> getObservation() {
+    public ObservationCDA getObservation() {
         return observation;
     }
 
-    public void setObservation(List<ObservationCDA> observation) {
+    public void setObservation(ObservationCDA observation) {
         this.observation = observation;
     }
 }

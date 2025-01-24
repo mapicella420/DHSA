@@ -18,6 +18,9 @@ public class ObservationCDA {
     @XmlElement(name = "value")
     private Value value;
 
+    @XmlElement(name = "value")
+    private ValueContent valueContent;
+
     @XmlElement(name = "statusCode")
     private StatusCode statusCode;
 
@@ -78,5 +81,13 @@ public class ObservationCDA {
 
     public void setEffectiveTime(EffectiveTime effectiveTime) {
         this.effectiveTime = effectiveTime;
+    }
+
+    public ValueContent getValueContent() {
+        return valueContent;
+    }
+
+    public void setValueContent(ValueContent valueContent) {
+        this.valueContent = valueContent;
     }
 }

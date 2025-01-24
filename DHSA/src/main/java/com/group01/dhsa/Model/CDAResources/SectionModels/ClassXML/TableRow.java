@@ -4,13 +4,13 @@ import jakarta.xml.bind.annotation.*;
 import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "tr", propOrder = {"cells"})
 public class TableRow {
 
     @XmlElement(name = "td")
     private List<TableCell> cells;
 
-    public TableRow() {
-    }
+    public TableRow() {}
 
     public TableRow(List<TableCell> cells) {
         this.cells = cells;
@@ -24,3 +24,4 @@ public class TableRow {
         this.cells = cells;
     }
 }
+

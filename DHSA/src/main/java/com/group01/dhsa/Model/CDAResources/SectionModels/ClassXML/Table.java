@@ -1,38 +1,37 @@
 package com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML;
 
 import jakarta.xml.bind.annotation.*;
-import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "table", propOrder = {"thead", "tbody"})
 public class Table {
 
     @XmlElement(name = "thead")
-    private TableRow header;
+    private TableHead thead;
 
     @XmlElement(name = "tbody")
-    private List<TableRow> rows;
+    private TableBody tbody;
 
-    public Table() {
+    public Table() {}
+
+    public Table(TableHead thead, TableBody tbody) {
+        this.thead = thead;
+        this.tbody = tbody;
     }
 
-    public Table(TableRow header, List<TableRow> rows) {
-        this.header = header;
-        this.rows = rows;
+    public TableHead getThead() {
+        return thead;
     }
 
-    public TableRow getHeader() {
-        return header;
+    public void setThead(TableHead thead) {
+        this.thead = thead;
     }
 
-    public void setHeader(TableRow header) {
-        this.header = header;
+    public TableBody getTbody() {
+        return tbody;
     }
 
-    public List<TableRow> getRows() {
-        return rows;
-    }
-
-    public void setRows(List<TableRow> rows) {
-        this.rows = rows;
+    public void setTbody(TableBody tbody) {
+        this.tbody = tbody;
     }
 }

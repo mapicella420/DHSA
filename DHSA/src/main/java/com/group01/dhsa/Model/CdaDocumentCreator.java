@@ -107,6 +107,8 @@ public class CdaDocumentCreator {
 
         documentBuilder.addHospitalDischargeStudiesSection(encounter);
 
+        documentBuilder.addRelevantDiagnosticSection(encounter);
+
 
         // Build the CDA document and return the resulting file
         try {

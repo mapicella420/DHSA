@@ -128,10 +128,7 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
 
         if (observations != null && !observations.isEmpty()) {
             List<Entry> entry = new ArrayList<>();
-            Entry entry1 = new Entry();
             section.setEntry(entry);
-            entry.add(entry1);
-            List<ObservationCDA> observationCDAList = new ArrayList<>();
             for (Observation obs : observations) {
                 ObservationCDA observationCDA = new ObservationCDA("OBS", "EVN");
 
@@ -148,9 +145,8 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 );
                 value.setTranslation(translation);
 
-                observationCDAList.add(observationCDA);
+                entry.add(new Entry(observationCDA));
             }
-            entry1.setObservation(observationCDAList);
         }
 
         return component;
