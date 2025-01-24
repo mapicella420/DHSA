@@ -11,21 +11,9 @@
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AdmissionAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/AuthorAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ClinicalHistoryAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/HospitalCourseAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/ObservationAdapter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/PatientAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Author.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Author.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Paragraph.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Paragraph.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/StructuredList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Text.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Text.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Title.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClassXML/Title.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ClinicalDocument.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/SectionModels/ObjectFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/CdaDocumentBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,8 +42,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/mapicella420/DHSA&quot;,
-    &quot;accountId&quot;: &quot;640b8149-c8f0-4661-a04a-67c68eaed5f8&quot;
+    &quot;url&quot;: &quot;https://github.com/mapicella420/DHSA.git&quot;,
+    &quot;accountId&quot;: &quot;ae5e6680-16de-4a24-9987-439ba4b60fcd&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -79,7 +67,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.MyApp.executor": "Run",
-    "Application.MyHL7CdaConverter.executor": "Debug",
+    "Application.MyHL7CdaConverter.executor": "Run",
     "Application.Unnamed.executor": "Run",
     "JUnit.ClinicalHistoryAdapterTest.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -149,8 +137,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.24807.4" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.24807.4" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.153" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.153" />
       </set>
     </attachedChunks>
   </component>
@@ -172,6 +160,8 @@
       <workItem from="1737450114080" duration="6508000" />
       <workItem from="1737456885111" duration="3987000" />
       <workItem from="1737550333580" duration="5128000" />
+      <workItem from="1737708816488" duration="373000" />
+      <workItem from="1737709354374" duration="4170000" />
     </task>
     <servers />
   </component>
