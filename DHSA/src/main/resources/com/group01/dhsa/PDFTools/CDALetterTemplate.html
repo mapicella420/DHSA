@@ -175,23 +175,29 @@
         <div class="clinical-overview">
             {{clinicalOverviewDetails}}
         </div>
-        <h3>Anamnesi</h3>
-        <div class="small-row">
-            <p><strong>Code:</strong> {{anamnesisCode}}</p>
-            <p><strong>System:</strong> {{anamnesisCodeSystem}}</p>
-            <p><strong>Display Name:</strong> {{anamnesisDisplayName}}</p>
+
+        <div class="anamnesis">
+            <h3>Anamnesi</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{anamnesisCode}}</p>
+                <p><strong>Code System:</strong> {{anamnesisCodeSystem}}</p>
+                <p><strong>Code System Name:</strong> {{anamnesisCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{anamnesisDetails}}
+            </div>
         </div>
-        <div class="subsection-container">
-            {{anamnesisDetails}}
-        </div>
-        <h3>Terapia Farmacologica all’Ingresso</h3>
-        <div class="small-row">
-            <p><strong>Code:</strong> {{medicationsCode}}</p>
-            <p><strong>System:</strong> {{medicationsCodeSystem}}</p>
-            <p><strong>Display Name:</strong> {{medicationsCodeDisplayName}}</p>
-        </div>
-        <div class="subsection-container">
-            {{medicationsDetails}}
+
+        <div class="medications">
+            <h3>Terapia farmacologica all'ingresso</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{medicationsCode}}</p>
+                <p><strong>Code System:</strong> {{medicationsCodeSystem}}</p>
+                <p><strong>Code System Name:</strong> {{medicationsCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{medicationsDetails}}
+            </div>
         </div>
 
     </section>
