@@ -4,8 +4,13 @@ import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
 import com.group01.dhsa.ObserverPattern.EventObservable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.*;
+import org.w3c.dom.Document;
 
 import javax.xml.transform.TransformerException;
 import java.io.File;
@@ -68,7 +73,7 @@ public class CdaDocumentCreator {
      */
     private File createCdaDocument(String patientId, String encounterId) throws JAXBException {
         FHIRClient client = FHIRClient.getInstance(); // Get the singleton FHIR client instance
-        Integer idNumber = 1; // The ID number for the CDA document
+        Integer idNumber = calculateNextCdaId(); // Calcola il numero di ID in base ai documenti esistenti
 
         // Fetch patient information from FHIR
         Patient fhirPatient = client.getPatientById(patientId);
@@ -100,11 +105,8 @@ public class CdaDocumentCreator {
 
         // Add additional details (e.g., observations) to the CDA document
         documentBuilder.addAdmissionSection(encounter);
-
         documentBuilder.addClinicalHistorySection(encounter);
-
         documentBuilder.addHospitalCourseSection(encounter);
-
 
         // Build the CDA document and return the resulting file
         try {
@@ -118,6 +120,7 @@ public class CdaDocumentCreator {
         }
     }
 
+
     /**
      * Reads and prints the content of the CDA document file.
      * This method is primarily used for debugging purposes.
@@ -129,4 +132,27 @@ public class CdaDocumentCreator {
         String content = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
         System.out.println("CDA Document Content:\n" + content);
     }
+
+    /**
+     * Calculates the next CDA ID based on the number of existing CDA documents in the MongoDB collection.
+     *
+     * @return The next CDA ID.
+     */
+    private int calculateNextCdaId() {
+        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
+            // Connessione al database e alla collezione
+            MongoDatabase database = mongoClient.getDatabase("medicalData");
+            MongoCollection<org.bson.Document> collection = database.getCollection("cdaDocuments");
+
+            // Conta il numero di documenti nella collezione
+            long count = collection.countDocuments();
+            System.out.println("Number of existing CDA documents: " + count);
+
+            // Restituisce il numero successivo
+            return (int) count + 1;
+        } catch (Exception e) {
+            throw new RuntimeException("Error while counting CDA documents in MongoDB: " + e.getMessage());
+        }
+    }
+
 }

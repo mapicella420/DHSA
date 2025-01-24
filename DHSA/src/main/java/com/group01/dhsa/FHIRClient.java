@@ -180,11 +180,13 @@ public class FHIRClient {
         Bundle bundle = client.search()
                 .forResource(Encounter.class)
                 .where(new ReferenceClientParam("patient").hasId(patient.getIdPart()))
+                .count(100)
                 .returnBundle(Bundle.class)
                 .execute();
 
         return bundle.getEntry().stream()
                 .map(entry -> (Encounter) entry.getResource())
+                .filter(encounter -> encounter.getSubject() != null)
                 .collect(Collectors.toList());
 
     }
@@ -263,6 +265,14 @@ public class FHIRClient {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Fetches a list of Conditions associated with a given Patient and preceding the given date
+     *
+     * @param patientId The identifier of the Patient.
+     * @param date The date to compare
+     *
+     * @return A list of Condition resources.
+     */
     public List<Condition> getPreviousConditionsForPatient(String patientId, DateTimeType date) {
         Bundle bundle = client.search()
                 .forResource(Condition.class)
@@ -332,5 +342,106 @@ public class FHIRClient {
                 })
                 .toList();
     }
+
+    public List<Procedure> getProceduresForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Procedure.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueIds = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource())
+                .filter(procedure -> uniqueIds.add(procedure.getOccurrenceDateTimeType().toHumanDisplay()))
+                .toList();
+    }
+
+    public List<Immunization> getImmunizationsForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(Immunization.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueDates = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (Immunization) entry.getResource())
+                .filter(immunization -> {
+                    boolean idMatch = encounterId.matches(immunization.getEncounter()
+                            .getReference().split("/")[1]);
+                    boolean dateDistinct = uniqueDates.add(
+                            immunization.getOccurrenceDateTimeType().toHumanDisplay()
+                    );
+
+                        return idMatch && dateDistinct;
+                })
+                .toList();
+    }
+
+    public List<CarePlan> getCarePlansForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(CarePlan.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle.getEntry().stream()
+                .map(entry -> (CarePlan) entry.getResource())
+                .toList();
+    }
+
+    public List<AllergyIntolerance> getAllergiesForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        Set<String> uniqueAllergies = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergyIntolerance -> {
+                            boolean thisEncounter = allergyIntolerance
+                                    .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/encounter-reference")
+                                    .getValue().toString().split("/")[1].replace("]","").equals(encounterId);
+
+                            boolean unique = uniqueAllergies.add(allergyIntolerance.getCode()
+                                    .getCodingFirstRep().getDisplay());
+                            return thisEncounter && unique;
+                        }
+                )
+                .toList();
+    }
+
+    public List<ImagingStudy> getImagingStudiesForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(ImagingStudy.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        return bundle.getEntry().stream()
+                .map(entry -> (ImagingStudy) entry.getResource())
+                .toList();
+    }
+
+    public List<MedicationRequest> getMedicationRequestForPatientAndEncounter(String patientId, String encounterId) {
+        Bundle bundle = client.search()
+                .forResource(MedicationRequest.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueMedicationRequests = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource())
+                .filter(medicationRequest ->
+                        uniqueMedicationRequests.add(medicationRequest
+                                        .getMedication().getConcept().getCodingFirstRep()
+                                        .getDisplay()))
+                .toList();
+    }
+
 }
 

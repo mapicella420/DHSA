@@ -8,6 +8,7 @@ import java.util.List;
 
 @XmlRootElement(name = "ClinicalDocument")
 @XmlAccessorType(XmlAccessType.FIELD)
+
 public class ClinicalDocument {
 
     // Attributo namespace
@@ -20,7 +21,6 @@ public class ClinicalDocument {
     @XmlAttribute(name = "xmlns:xsi")
     private String xmlnsXsi = "http://www.w3.org/2001/XMLSchema-instance";
 
-
     @XmlElement(name = "typeId")
     private TypeId typeId;
 
@@ -29,9 +29,6 @@ public class ClinicalDocument {
 
     @XmlElement(name = "id")
     private Id id;
-
-    @XmlElement(name = "realmCode")
-    private RealmCode realmCode;
 
     @XmlElement(name = "code")
     private Code code;
@@ -44,6 +41,9 @@ public class ClinicalDocument {
 
     @XmlElement(name = "confidentialityCode")
     private ConfidentialityCode confidentialityCode;
+
+    @XmlElement(name = "realmCode")
+    private RealmCode realmCode;
 
     @XmlElement(name = "languageCode")
     private LanguageCode languageCode;

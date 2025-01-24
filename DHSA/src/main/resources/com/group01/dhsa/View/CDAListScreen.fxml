@@ -49,7 +49,7 @@
                 <Button fx:id="backButton" text="Back" onAction="#onBackButtonClick" styleClass="button-blue" />
                 <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
                 <Button fx:id="viewDetailsButton" text="View CDA Details" onAction="#onViewDetailsClick" disable="true" styleClass="button-red" />
-                <Button fx:id="exportButton" text="Export Selected" onAction="#onExportButtonClick" disable="true" styleClass="button-green" />
+                <Button fx:id="dischargePatientButton"  onAction="#onDischargePatientClick"  styleClass="button-red" text="Discharge Patient" />
             </HBox>
         </VBox>
     </children>

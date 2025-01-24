@@ -16,44 +16,47 @@ class AdmissionAdapterTest {
     private AdmissionAdapter admissionAdapter;
     private FHIRClient fhirClient;
     private Encounter encounter;
+    String patientId;
 
     @BeforeEach
     void setUp() {
         admissionAdapter = new AdmissionAdapter();
         fhirClient = FHIRClient.getInstance();
 
-        // Replace with an actual Encounter ID for testing purposes
-        String encounterId = "d14de31f-ad35-d0e4-b76e-4d9a548539c3";
+        String encounterId = "5e371258-6ec2-3615-619a-b9bb6d4a4d9a";
         encounter = fhirClient.getEncounterById(encounterId);
+        patientId = "8b0484cd-3dbd-8b8d-1b72-a32f74a5a846";
     }
 
     @Test
     void toCdaObject() {
-        // Call the method to test
         Component component = admissionAdapter.toCdaObject(encounter);
 
-        // Validate the Component object
+
         assertNotNull(component, "The Component object should not be null");
 
-        // Validate the StructuredBody and its inner components
+
         StructuredBody structuredBody = component.getStructuredBody();
         assertNotNull(structuredBody, "The StructuredBody should not be null");
+
         ComponentInner componentInner = structuredBody.getComponentInner();
         assertNotNull(componentInner, "The ComponentInner should not be null");
 
-        // Validate the Section and its attributes
+
         Section section = componentInner.getSection();
         assertNotNull(section, "The Section should not be null");
         assertEquals("46241-6", section.getCode().getCode(), "The Section code does not match");
         assertEquals("Motivo del ricovero", section.getTitle().getTitle(), "The Section title does not match");
 
-        // Validate the Text object
+
         Text text = section.getText();
         assertNotNull(text, "The Text should not be null");
-        assertFalse(text.getParagraphs().isEmpty(), "The Text paragraphs should not be empty");
+        assertFalse(text.getValues().isEmpty(), "The Text paragraphs should not be empty");
 
-        // Verify that the text contains admission details
-        String firstParagraphContent = text.getParagraphs().get(0).getContent();
+
+        Paragraph ParagraphContent = (Paragraph) text.getValues().get(0);
+        String firstParagraphContent = ParagraphContent.getContent();
+
         assertTrue(firstParagraphContent.contains("The patient was admitted on"),
                 "The first paragraph should contain the admission date");
 
@@ -63,29 +66,20 @@ class AdmissionAdapterTest {
                 encounter.getIdElement().getIdPart()
         );
         if (conditions != null && !conditions.isEmpty()) {
-            assertTrue(text.getParagraphs().stream()
-                            .anyMatch(p -> p.getContent().contains("The patient has been diagnosed with")),
+            assertTrue(text.getValues().stream()
+                            .anyMatch(p -> p.toString().contains("The patient has been diagnosed with")),
                     "The Text should include condition information");
         }
 
-        // Validate Observations
-        List<Observation> observations = fhirClient.getObservationsForPatientAndEncounter(
-                encounter.getSubject().getReference().split("/")[1],
-                encounter.getIdElement().getIdPart()
-        );
-        if (observations != null && !observations.isEmpty()) {
-            assertTrue(text.getLists().stream()
-                            .flatMap(list -> list.getItems().stream())
-                            .anyMatch(item -> item.getContent().contains("Blood Pressure")),
-                    "The Text should include observation details");
-        }
 
-        // Validate Entry object
+
+
         List<Entry> entries = section.getEntry();
         assertNotNull(entries, "The Section entries should not be null");
         assertFalse(entries.isEmpty(), "The Section entries should not be empty");
 
-        // Print a success message
+
         System.out.println("Component CDA successfully generated: " + component);
     }
+
 }

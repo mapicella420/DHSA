@@ -6,8 +6,8 @@ import jakarta.xml.bind.annotation.*;
 @XmlRootElement(name = "author")
 public class Author {
 
-    @XmlAttribute(name = "time")
-    private String time;
+    @XmlElement(name = "time")
+    private Time time;
 
     @XmlElement(name = "assignedAuthor")
     private AssignedAuthor assignedAuthor;
@@ -18,11 +18,11 @@ public class Author {
     public Author() {
     }
 
-    public String getTime() {
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Time time) {
         this.time = time;
     }
 

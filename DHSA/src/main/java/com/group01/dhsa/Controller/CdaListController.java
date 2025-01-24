@@ -1,6 +1,7 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -30,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CdaListController {
+    public Button dischargePatientButton;
     @FXML
     private TableView<Document> cdaTable;
 
@@ -74,6 +76,12 @@ public class CdaListController {
     private static final String COLLECTION_NAME = "cdaDocuments";
 
     private Document selectedDocument = null; // Documento selezionato
+
+    private final EventObservable eventManager;
+
+    public CdaListController() {
+        this.eventManager = EventManager.getInstance().getEventObservable();
+    }
 
     @FXML
     public void initialize() {
@@ -213,7 +221,12 @@ public class CdaListController {
 
     private String formatDate(String rawDate) {
         try {
-            if (rawDate.contains("-")) { // Formato ISO 8601
+            if (rawDate.length() == 8 && rawDate.matches("\\d{8}")) { // Formato `yyyyMMdd`
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMdd");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = inputFormat.parse(rawDate);
+                return outputFormat.format(date);
+            } else if (rawDate.contains("-")) { // Formato ISO 8601
                 DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 return LocalDate.parse(rawDate, inputFormatter).format(outputFormatter);
@@ -242,6 +255,7 @@ public class CdaListController {
         }
     }
 
+
     private void loadCdaDocuments() {
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
@@ -260,35 +274,6 @@ public class CdaListController {
         } catch (Exception e) {
             System.err.println("[ERROR] Error loading CDA documents: " + e.getMessage());
         }
-    }
-
-
-    /**
-     * Restituisce il valore di un nodo XML dato il nome del nodo e un attributo.
-     *
-     * @param xmlDoc    Documento XML DOM.
-     * @param tagName   Nome del nodo.
-     * @param attribute Nome dell'attributo da estrarre (può essere null se si vuole il testo del nodo).
-     * @return Il valore dell'attributo o una stringa vuota se non trovato.
-     */
-    private String getXmlNodeValue(org.w3c.dom.Document xmlDoc, String tagName, String attribute) {
-        try {
-            org.w3c.dom.NodeList nodeList = xmlDoc.getElementsByTagName(tagName);
-            if (nodeList.getLength() > 0) {
-                org.w3c.dom.Node node = nodeList.item(0);
-                if (node != null) {
-                    if (attribute != null && node.getAttributes() != null) {
-                        org.w3c.dom.Node attrNode = node.getAttributes().getNamedItem(attribute);
-                        return attrNode != null ? attrNode.getNodeValue() : "N/A";
-                    } else {
-                        return node.getTextContent().trim();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error getting XML node value: " + e.getMessage());
-        }
-        return "N/A";
     }
 
 
@@ -389,5 +374,21 @@ public class CdaListController {
     }
 
     public void onExportButtonClick(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    private void onDischargePatientClick() {
+
+        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml",currentStage,"Discharge Patient");
+
+        //System.out.println("Discharge Patient button clicked!");
+        // Logica per dimettere il paziente
+        if (eventManager == null) {
+            System.err.println("EventManager is not set!");
+            return;
+        }
+        eventManager.notify("patient_discharge", null);
     }
 }

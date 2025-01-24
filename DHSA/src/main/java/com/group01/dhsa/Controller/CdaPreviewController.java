@@ -5,6 +5,7 @@ import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
+import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -13,10 +14,12 @@ import java.io.File;
 
 public class CdaPreviewController {
 
+    public Button uploadButton;
     @FXML
     private WebView webView;
 
     private final EventObservable eventManager;
+    private File cdaFile;
 
     public CdaPreviewController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
@@ -31,6 +34,7 @@ public class CdaPreviewController {
 
     public void setCdaFile(File cdaFile) {
         // Notifica al modello di avviare la conversione
+        this.cdaFile = cdaFile;
         System.out.println("[DEBUG] Sending convert_to_html notification for file: " + cdaFile.getAbsolutePath());
         EventManager.getInstance().getEventObservable().notify("convert_to_html", cdaFile);
     }
@@ -75,6 +79,18 @@ public class CdaPreviewController {
             }
         } catch (Exception e) {
             System.err.println("[ERROR] Error while printing: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void uploadCda() {
+        try {
+            // Notifica all'EventManager
+            EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
+
+            // Aggiorna lo stato
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

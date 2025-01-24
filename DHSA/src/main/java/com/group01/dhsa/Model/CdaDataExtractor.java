@@ -35,10 +35,21 @@ public class CdaDataExtractor {
             data.put("typeId", clinicalDocument.getElementsByTagName("typeId")
                     .item(0).getAttributes().getNamedItem("extension").getNodeValue());
 
-            // ID Documento e Authority Name
+            // ID Documento
+            Element setIdElement = (Element) clinicalDocument.getElementsByTagName("setId").item(0);
+            if (setIdElement != null) {
+                data.put("documentId", setIdElement.getAttribute("extension"));
+            } else {
+                data.put("documentId", "N/A");
+            }
+
+            // Authority Name
             Element idElement = (Element) clinicalDocument.getElementsByTagName("id").item(0);
-            data.put("documentId", idElement.getAttribute("root"));
-            data.put("assigningAuthorityName", idElement.getAttribute("assigningAuthorityName"));
+            if (idElement != null) {
+                data.put("assigningAuthorityName", idElement.getAttribute("assigningAuthorityName"));
+            } else {
+                data.put("assigningAuthorityName", "N/A");
+            }
 
             // Realm Code
             data.put("realmCode", clinicalDocument.getElementsByTagName("realmCode")
@@ -95,26 +106,42 @@ public class CdaDataExtractor {
             // Informazioni sull'autore
             Element authorElement = (Element) doc.getElementsByTagName("assignedAuthor").item(0);
 
-            // Nome dell'autore
-            Element authorNameElement = (Element) authorElement.getElementsByTagName("name").item(0);
-            data.put("authorGiven", getTextContentByTagName(authorNameElement, "given"));
-            data.put("authorFamily", getTextContentByTagName(authorNameElement, "family"));
+            if (authorElement != null) {
+                // Nome dell'autore
+                Element authorNameElement = (Element) authorElement.getElementsByTagName("name").item(0);
+                if (authorNameElement != null) {
+                    data.put("authorGiven", getTextContentByTagName(authorNameElement, "given"));
+                    data.put("authorFamily", getTextContentByTagName(authorNameElement, "family"));
+                } else {
+                    data.put("authorGiven", "N/A");
+                    data.put("authorFamily", "N/A");
+                }
 
-            // ID Autore
-            data.put("authorId", authorElement.getElementsByTagName("id")
-                    .item(0).getAttributes().getNamedItem("extension").getNodeValue());
-
-            // Autorità Assegnante
-            data.put("assigningAuthorityName", authorElement.getElementsByTagName("id")
-                    .item(0).getAttributes().getNamedItem("assigningAuthorityName").getNodeValue());
-
-            // Timestamp
-            Element authorTimeElement = (Element) doc.getElementsByTagName("author").item(0);
-            if (authorTimeElement != null && authorTimeElement.hasAttribute("time")) {
-                data.put("authorTime", formatDate(authorTimeElement.getAttribute("time")));
-            } else {
-                data.put("authorTime", "Non disponibile");
+                // ID Autore
+                Element idElement2 = (Element) authorElement.getElementsByTagName("id").item(0);
+                if (idElement2 != null) {
+                    data.put("authorId", idElement2.getAttribute("extension"));
+                    data.put("assigningAuthorityName", idElement2.getAttribute("assigningAuthorityName"));
+                } else {
+                    data.put("authorId", "N/A");
+                    data.put("assigningAuthorityName", "N/A");
+                }
             }
+
+// Timestamp dell'autore
+            Element authorTimeElement = (Element) doc.getElementsByTagName("author").item(0);
+            if (authorTimeElement != null) {
+                Element timeElement = (Element) authorTimeElement.getElementsByTagName("time").item(0);
+                if (timeElement != null && timeElement.hasAttribute("value")) {
+                    String rawDate = timeElement.getAttribute("value");
+                    data.put("authorTime", formatDate(rawDate));
+                } else {
+                    data.put("authorTime", "N/A");
+                }
+            } else {
+                data.put("authorTime", "N/A");
+            }
+
 
             // Custode del Documento
             Element custodianElement = (Element) doc.getElementsByTagName("representedCustodianOrganization").item(0);
@@ -207,11 +234,11 @@ public class CdaDataExtractor {
                     .item(0).getAttributes().getNamedItem("assigningAuthorityName").getNodeValue());
 
 
-            // Admission Diagnosis
-            Element admissionSection = (Element) doc.getElementsByTagName("section").item(0);
+            // Estrarre i dati relativi alla Diagnosi di Accettazione
+            Element admissionSection = getSectionByCode(doc, "46241-6");
 
             if (admissionSection != null) {
-                // Estrarre i dati del codice
+                // Estrarre i dettagli del codice
                 Element codeElement = (Element) admissionSection.getElementsByTagName("code").item(0);
                 if (codeElement != null) {
                     data.put("admissionCode", codeElement.hasAttribute("code") ? codeElement.getAttribute("code") : "N/A");
@@ -233,7 +260,7 @@ public class CdaDataExtractor {
                         Node node = children.item(i);
 
                         // Gestire paragrafi
-                        if (node.getNodeName().equals("p")) {
+                        if (node.getNodeName().equals("paragraph")) {
                             String value = node.getTextContent().trim();
                             if (!value.isEmpty()) {
                                 detailsBuilder.append("<p>").append(value).append("</p>");
@@ -267,7 +294,13 @@ public class CdaDataExtractor {
                 } else {
                     data.put("admissionDetails", "<p>No details available.</p>");
                 }
+            } else {
+                data.put("admissionCode", "N/A");
+                data.put("admissionCodeSystem", "N/A");
+                data.put("admissionCodeSystemName", "N/A");
+                data.put("admissionDetails", "<p>No details available.</p>");
             }
+
 
             // Estrarre i dati relativi all'inquadramento clinico iniziale
             Element clinicalOverviewSection = getSectionByCode(doc, "47039-3");
@@ -295,7 +328,7 @@ public class CdaDataExtractor {
                         Node node = children.item(i);
 
                         // Gestire paragrafi
-                        if (node.getNodeName().equals("p")) {
+                        if (node.getNodeName().equals("paragraph")) {
                             String value = node.getTextContent().trim();
                             if (!value.isEmpty()) {
                                 detailsBuilder.append("<p>").append(value).append("</p>");
@@ -326,9 +359,11 @@ public class CdaDataExtractor {
                     data.put("clinicalOverviewDetails", "<p>No details available.</p>");
                 }
 
+
                 // Estrarre "Anamnesi Generale"
                 Element anamnesisSection = getSectionByCode(doc, "11329-0");
                 if (anamnesisSection != null) {
+                    // Estrarre il testo
                     Element anamnesisText = (Element) anamnesisSection.getElementsByTagName("text").item(0);
                     if (anamnesisText != null) {
                         StringBuilder anamnesisDetails = new StringBuilder();
@@ -337,13 +372,15 @@ public class CdaDataExtractor {
                         for (int i = 0; i < anamnesisChildren.getLength(); i++) {
                             Node node = anamnesisChildren.item(i);
 
-                            if (node.getNodeName().equals("p")) {
+                            // Gestire i paragrafi nel formato <paragraph>
+                            if (node.getNodeName().equals("paragraph")) {
                                 String value = node.getTextContent().trim();
                                 if (!value.isEmpty()) {
                                     anamnesisDetails.append("<p>").append(value).append("</p>");
                                 }
                             }
 
+                            // Gestire le liste
                             if (node.getNodeName().equals("list")) {
                                 Element listElement = (Element) node;
                                 NodeList items = listElement.getElementsByTagName("item");
@@ -361,7 +398,12 @@ public class CdaDataExtractor {
                             }
                         }
 
-                        data.put("anamnesisDetails", anamnesisDetails.toString());
+                        // Inserire i dettagli nella mappa dati
+                        if (anamnesisDetails.length() > 0) {
+                            data.put("anamnesisDetails", anamnesisDetails.toString());
+                        } else {
+                            data.put("anamnesisDetails", "<p>No Anamnesis details available.</p>");
+                        }
                     } else {
                         data.put("anamnesisDetails", "<p>No details available.</p>");
                     }
@@ -369,9 +411,11 @@ public class CdaDataExtractor {
                     data.put("anamnesisDetails", "<p>No Anamnesis details available.</p>");
                 }
 
+
                 // Estrarre "Terapia Farmacologica all’Ingresso"
                 Element medicationsSection = getSectionByCode(doc, "42346-7");
                 if (medicationsSection != null) {
+                    // Estrarre il contenuto del testo
                     Element medicationsText = (Element) medicationsSection.getElementsByTagName("text").item(0);
                     if (medicationsText != null) {
                         StringBuilder medicationsDetails = new StringBuilder();
@@ -380,7 +424,8 @@ public class CdaDataExtractor {
                         for (int i = 0; i < medicationParagraphs.getLength(); i++) {
                             Node node = medicationParagraphs.item(i);
 
-                            if (node.getNodeName().equals("p")) {
+                            // Gestire i paragrafi nel formato <paragraph>
+                            if (node.getNodeName().equals("paragraph")) {
                                 String value = node.getTextContent().trim();
                                 if (!value.isEmpty()) {
                                     medicationsDetails.append("<p>").append(value).append("</p>");
@@ -388,13 +433,19 @@ public class CdaDataExtractor {
                             }
                         }
 
-                        data.put("medicationsDetails", medicationsDetails.toString());
+                        // Aggiungere i dettagli alla mappa dati
+                        if (medicationsDetails.length() > 0) {
+                            data.put("medicationsDetails", medicationsDetails.toString());
+                        } else {
+                            data.put("medicationsDetails", "<p>No medications available.</p>");
+                        }
                     } else {
                         data.put("medicationsDetails", "<p>No medications available.</p>");
                     }
                 } else {
                     data.put("medicationsDetails", "<p>No medications available.</p>");
                 }
+
             } else {
                 data.put("clinicalOverviewDetails", "<p>No clinical overview available.</p>");
                 data.put("anamnesisDetails", "<p>No Anamnesis details available.</p>");
@@ -427,7 +478,7 @@ public class CdaDataExtractor {
                         Node node = children.item(i);
 
                         // Gestire paragrafi
-                        if (node.getNodeName().equals("p")) {
+                        if (node.getNodeName().equals("paragraph")) {
                             String value = node.getTextContent().trim();
                             if (!value.isEmpty()) {
                                 detailsBuilder.append("<p>").append(value).append("</p>");
@@ -470,6 +521,7 @@ public class CdaDataExtractor {
 
 
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -492,8 +544,16 @@ public class CdaDataExtractor {
                 Date date = inputFormat2.parse(rawDate);
                 return outputFormat.format(date);
             } catch (Exception e2) {
-                // Se entrambi i formati falliscono, restituisci un messaggio di errore
-                return "Formato data non valido";
+                try {
+                    // Prova il secondo formato (senza fuso orario)
+                    SimpleDateFormat inputFormat3 = new SimpleDateFormat("yyyyMMdd");
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    Date date = inputFormat3.parse(rawDate);
+                    return outputFormat.format(date);
+                } catch (Exception e3) {
+                    // Se entrambi i formati falliscono, restituisci un messaggio di errore
+                    return "Formato data non valido";
+                }
             }
         }
     }

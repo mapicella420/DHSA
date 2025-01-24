@@ -5,7 +5,7 @@ import jakarta.xml.bind.annotation.*;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Title {
 
-    @XmlAttribute(name = "title")
+    @XmlValue
     private String title;
 
     public Title() {}

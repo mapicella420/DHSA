@@ -26,7 +26,7 @@ public class AuthorAdapter implements CdaSection<Author, Practitioner>{
 
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        author.setTime(now.atOffset(ZoneOffset.ofHours(1)).format(formatter));
+        author.setTime(new Time(now.atOffset(ZoneOffset.ofHours(1)).format(formatter).replace("+","")));
 
         AssignedAuthor assignedAuthor = new AssignedAuthor();
 
