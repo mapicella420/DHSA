@@ -1,7 +1,14 @@
 package com.group01.dhsa;
 
 import com.group01.dhsa.Model.*;
+import com.group01.dhsa.Model.FhirResources.FhirExporterFactoryManager;
+import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.FhirResources.FhirResourceExporterFactory;
 import com.group01.dhsa.ObserverPattern.EventObservable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The EventManager class is a Singleton responsible for managing events in the system.
@@ -11,12 +18,14 @@ public class EventManager {
 
     private static EventManager instance; // Singleton instance
     private final EventObservable eventObservable;
+    private List<Map<String, String>> currentResources; // Stores the current resources
 
     /**
      * Private constructor to ensure only one instance of EventManager is created.
      */
     private EventManager() {
         this.eventObservable = new EventObservable();
+        this.currentResources = new ArrayList<>(); // Initialize empty resource list
         initializeListeners(); // Initialize and register event listeners
     }
 
@@ -39,6 +48,24 @@ public class EventManager {
      */
     public EventObservable getEventObservable() {
         return eventObservable;
+    }
+
+    /**
+     * Returns the current resources stored in EventManager.
+     *
+     * @return A list of maps representing the resources.
+     */
+    public List<Map<String, String>> getCurrentResources() {
+        return currentResources;
+    }
+
+    /**
+     * Updates the current resources stored in EventManager.
+     *
+     * @param resources The list of resources to store.
+     */
+    public void setCurrentResources(List<Map<String, String>> resources) {
+        this.currentResources = resources;
     }
 
     /**
@@ -71,9 +98,51 @@ public class EventManager {
             new CdaToHtmlConverter().convertAndNotify(file);
         });
 
+        // Register FHIR resource handling listeners
+        eventObservable.subscribe("load_request", (eventType, file) -> {
+            String resourceType = file.getName();
+            loadResources(resourceType);
+        });
 
-        FhirExporter fhirExporter = new FhirExporter();
-        eventObservable.subscribe("export_request", fhirExporter);
+        eventObservable.subscribe("search_request", (eventType, file) -> {
+            String[] params = file.getName().split("_");
+            String resourceType = params[0];
+            String searchTerm = params[1];
+            searchResources(resourceType, searchTerm);
+        });
+    }
 
+    private void loadResources(String resourceType) {
+        try {
+            FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
+            FhirResourceExporter exporter = factory.createExporter();
+
+            List<Map<String, String>> resources = exporter.exportResources();
+            setCurrentResources(resources);
+
+            // Notify that resources have been loaded
+            eventObservable.notify("load_complete", null);
+
+        } catch (Exception e) {
+            System.err.println("Error loading resources for type: " + resourceType);
+            eventObservable.notify("error", null);
+        }
+    }
+
+    private void searchResources(String resourceType, String searchTerm) {
+        try {
+            FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
+            FhirResourceExporter exporter = factory.createExporter();
+
+            List<Map<String, String>> results = exporter.searchResources(searchTerm);
+            setCurrentResources(results);
+
+            // Notify that search has been completed
+            eventObservable.notify("search_complete", null);
+
+        } catch (Exception e) {
+            System.err.println("Error searching resources for type: " + resourceType + " with term: " + searchTerm);
+            eventObservable.notify("error", null);
+        }
     }
 }

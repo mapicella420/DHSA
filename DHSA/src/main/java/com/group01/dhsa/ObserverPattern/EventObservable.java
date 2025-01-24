@@ -46,10 +46,27 @@ public class EventObservable {
      */
     public void notify(String eventType, File file) {
         List<EventListener> users = listeners.get(eventType);
-        if (users != null) {
+        if (users != null && !users.isEmpty()) {
             for (EventListener listener : users) {
-                listener.handleEvent(eventType, file);
+                try {
+                    listener.handleEvent(eventType, file);
+                } catch (Exception e) {
+                    System.err.println("Error notifying listener for event type '" + eventType + "': " + e.getMessage());
+                }
             }
+        } else {
+            System.err.println("No listeners registered for event type: " + eventType);
         }
+    }
+
+    /**
+     * Checks if any listeners are registered for a specific event type.
+     *
+     * @param eventType The type of event to check.
+     * @return True if there are listeners registered for the event type, false otherwise.
+     */
+    public boolean hasListeners(String eventType) {
+        List<EventListener> users = listeners.get(eventType);
+        return users != null && !users.isEmpty();
     }
 }
