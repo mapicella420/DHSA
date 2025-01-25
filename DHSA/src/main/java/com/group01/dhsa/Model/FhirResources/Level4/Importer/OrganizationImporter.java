@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level4.Importer;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceImporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.hl7.fhir.r5.model.Organization;
@@ -17,10 +18,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizationImporter implements FhirResourceImporter {
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
 
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
     @Override
     public void importCsvToFhir(String csvFilePath) {
+        setFhirServerUrl();
         try {
             // Inizializza il client FHIR
             FhirContext fhirContext = FhirContext.forR5();

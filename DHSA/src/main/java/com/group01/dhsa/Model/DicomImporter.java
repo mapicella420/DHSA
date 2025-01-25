@@ -21,7 +21,7 @@ import java.io.File;
 public class DicomImporter implements EventListener {
 
     // MongoDB connection details
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "dicomFiles";
 
@@ -29,9 +29,19 @@ public class DicomImporter implements EventListener {
      * Handles events received by the `DicomImporter`.
      * If the event type is "dicom_upload", it triggers the DICOM file import process.
      *
-     * @param eventType The type of the event, e.g., "dicom_upload".
-     * @param file      The DICOM file associated with the event.
      */
+
+    public static String mongodbURI(){
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            return "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            return "mongodb://admin:mongodb@localhost:27018";
+        }
+        return "";
+    }
+    private static final String MONGO_URI = mongodbURI(); // MongoDB URI
+
     @Override
     public void handleEvent(String eventType, File file) {
         if ("dicom_upload".equals(eventType)) {
