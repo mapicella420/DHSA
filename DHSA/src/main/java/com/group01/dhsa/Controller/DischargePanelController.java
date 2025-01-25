@@ -4,7 +4,12 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CdaDataExtractor;
 import com.group01.dhsa.ObserverPattern.EventObservable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
@@ -14,10 +19,20 @@ import javafx.scene.input.KeyEvent;
 
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.bson.Document;
 import org.hl7.fhir.r5.model.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class DischargePanelController {
 
@@ -28,9 +43,6 @@ public class DischargePanelController {
 
     @FXML
     private Button backButton2;
-
-    @FXML
-    private ProgressIndicator progressCDA;
 
     @FXML
     private Label cdaStatus;
@@ -64,6 +76,9 @@ public class DischargePanelController {
 
     private EventObservable eventManager;
     private File cdaFile;
+    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static final String DATABASE_NAME = "medicalData";
+    private static final String COLLECTION_NAME = "cdaDocuments";
 
     public DischargePanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
@@ -286,10 +301,37 @@ public class DischargePanelController {
 
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
-        return patientId.equals(pId) &&
-                    !encounter.getType().getFirst().getCodingFirstRep()
-                            .getDisplay().equals("Death Certification");
+        return checkDicom(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
+                !encounter.getType().getFirst().getCodingFirstRep()
+                        .getDisplay().equals("Death Certification");
     }
+
+    private boolean checkDicom(String encounterId){
+        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+            MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+
+            List<Document> documents = collection.find().into(new java.util.ArrayList<>());
+
+            for (Document doc : documents) {
+                System.out.println("[DEBUG] Loaded document: " + doc.toJson());
+                String xmlContent = doc.getString("xmlContent");
+                if (xmlContent != null) {
+                    String[] cods = xmlContent.split("<encompassingEncounter>");
+                    String encId = cods[1].split("extension=\"")[1]
+                            .split("\" assigningAuthorityName")[0];
+                    if (encounterId.equals(encId)) {
+                        return false;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error loading DICOM files: " + e.getMessage());
+        }
+        return true;
+    }
+
 
     @FXML
     void uploadCda() {

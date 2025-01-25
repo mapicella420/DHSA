@@ -2,6 +2,7 @@ package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.ObserverPattern.EventObservable;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -131,15 +132,14 @@ public class ViewFhirResourcesController {
 
                     // Ottieni il valore selezionato dalla ChoiceBox
                     String selectedResourceType = resourceTypeChoiceBox.getValue();
-                    String rowResourceType = selectedResourceType; // Usa direttamente il valore scelto dall'utente
 
-                    // Mostra il ContextMenu solo se il ResourceType corrisponde al valore della ChoiceBox
-                    if (selectedResourceType != null && rowResourceType.equalsIgnoreCase(selectedResourceType)) {
-                        System.out.println("[DEBUG] ContextMenu shown: ResourceType matches ChoiceBox (" + selectedResourceType + ")");
+                    // Mostra il ContextMenu solo se il tipo di risorsa è "Patient"
+                    if ("Patient".equalsIgnoreCase(selectedResourceType)) {
+                        System.out.println("[DEBUG] ContextMenu shown: ResourceType is Patient.");
                         fhirResourcesTable.getSelectionModel().select(row.getIndex());
                         patientContextMenu.show(row, event.getScreenX(), event.getScreenY());
                     } else {
-                        System.out.println("[DEBUG] ContextMenu hidden: ResourceType does not match ChoiceBox (" + selectedResourceType + ")");
+                        System.out.println("[DEBUG] ContextMenu hidden: ResourceType is not Patient.");
                         patientContextMenu.hide();
                     }
                 } else {
@@ -147,7 +147,6 @@ public class ViewFhirResourcesController {
                     patientContextMenu.hide();
                 }
             });
-
 
             // Nascondi il ContextMenu quando si clicca su una riga vuota
             row.setOnMouseClicked(event -> {
@@ -221,9 +220,6 @@ public class ViewFhirResourcesController {
 
     }
 
-
-
-
     @FXML
     private void onLoadResources() {
         String selectedResourceType = resourceTypeChoiceBox.getValue();
@@ -252,23 +248,26 @@ public class ViewFhirResourcesController {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                // Nascondi la progress bar al termine
-                progressBar.setVisible(false);
-                statusLabel.setText("Resources loaded successfully!");
+                Platform.runLater(() -> {
+                    progressBar.setVisible(false);
+                    statusLabel.setText("Resources loaded successfully!");
+                });
             }
 
             @Override
             protected void failed() {
                 super.failed();
-                // Nascondi la progress bar e mostra l'errore
-                progressBar.setVisible(false);
-                statusLabel.setText("Failed to load resources!");
+                Platform.runLater(() -> {
+                    progressBar.setVisible(false);
+                    statusLabel.setText("Failed to load resources!");
+                });
             }
         };
 
         // Esegui il task in un thread separato
         new Thread(loadTask).start();
     }
+
 
 
     @FXML
@@ -332,27 +331,30 @@ public class ViewFhirResourcesController {
     }
 
     private void updateTable(List<Map<String, String>> resources) {
-        System.out.println("[DEBUG] Updating table with resources: " + resources); // Debug
+        Platform.runLater(() -> {
+            System.out.println("[DEBUG] Updating table with resources: " + resources); // Debug
 
-        fhirResourcesTable.getColumns().clear();
+            fhirResourcesTable.getColumns().clear();
 
-        if (resources.isEmpty()) {
-            statusLabel.setText("No resources found.");
-            return;
-        }
+            if (resources.isEmpty()) {
+                statusLabel.setText("No resources found.");
+                return;
+            }
 
-        Map<String, String> firstRow = resources.get(0);
-        for (String key : firstRow.keySet()) {
-            TableColumn<Map<String, String>, String> column = new TableColumn<>(key);
-            column.setCellValueFactory(data ->
-                    new javafx.beans.property.SimpleStringProperty(data.getValue().get(key))
-            );
-            fhirResourcesTable.getColumns().add(column);
-        }
+            Map<String, String> firstRow = resources.get(0);
+            for (String key : firstRow.keySet()) {
+                TableColumn<Map<String, String>, String> column = new TableColumn<>(key);
+                column.setCellValueFactory(data ->
+                        new javafx.beans.property.SimpleStringProperty(data.getValue().get(key))
+                );
+                fhirResourcesTable.getColumns().add(column);
+            }
 
-        fhirResourcesTable.getItems().setAll(resources);
-        System.out.println("[DEBUG] Table updated successfully."); // Debug
+            fhirResourcesTable.getItems().setAll(resources);
+            System.out.println("[DEBUG] Table updated successfully."); // Debug
+        });
     }
+
 
 
 

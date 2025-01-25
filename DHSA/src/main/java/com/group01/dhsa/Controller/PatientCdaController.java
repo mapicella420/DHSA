@@ -1,7 +1,6 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.EventManager;
-import com.group01.dhsa.ObserverPattern.EventObservable;
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -10,7 +9,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -30,18 +28,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class CdaListController implements DataReceiver{
-    public Button dischargePatientButton;
+public class PatientCdaController  implements DataReceiver{
+
     @FXML
     private TableView<Document> cdaTable;
 
     @FXML
     private TableColumn<Document, String> creationDateColumn;
-
-    @FXML
-    private TableColumn<Document, String> patientNameColumn;
 
     @FXML
     private TableColumn<Document, String> patientCFColumn;
@@ -52,27 +46,23 @@ public class CdaListController implements DataReceiver{
     @FXML
     private TableColumn<Document, String> authorNameColumn;
 
-
     @FXML
-    private Button backButton;
-
-    @FXML
-    private Button viewDetailsButton;
+    private ComboBox<String> searchFieldSelector;
 
     @FXML
     private TextField searchField;
 
     @FXML
-    private ComboBox<String> searchFieldSelector;
+    private Button backButton;
 
     @FXML
     private Button refreshButton;
+
+    @FXML
+    private Button viewDetailsButton;
     private String patientName;
 
-
     private final ObservableList<Document> cdaDocuments = FXCollections.observableArrayList();
-    private final ToggleGroup toggleGroup = new ToggleGroup(); // Gruppo per consentire una sola selezione alla volta
-
     private FilteredList<Document> filteredList;
 
     private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
@@ -81,33 +71,32 @@ public class CdaListController implements DataReceiver{
 
     private Document selectedDocument = null; // Documento selezionato
 
-    private final EventObservable eventManager;
-
-    public CdaListController() {
-        this.eventManager = EventManager.getInstance().getEventObservable();
-    }
-
     @FXML
     public void initialize() {
-        // Configura le colonne con il tipo corretto (Document)
+        System.out.println("[DEBUG] Initializing PatientCdaController...");
+
+        // Configura le colonne della tabella
         creationDateColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "creationDate")));
-        patientNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientName")));
+        patientCFColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientCF")));
         patientBirthColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientBirthTime")));
         authorNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "authorName")));
-        patientCFColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientCF")));
 
-        // Listener per abilitare i pulsanti alla selezione
+        // Configura il listener per la selezione della riga
         cdaTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 selectedDocument = newSelection;
-                viewDetailsButton.setDisable(false); // Abilita il pulsante "View Details"
-                backButton.setDisable(false);        // Abilita il pulsante "Back"
+                System.out.println("[DEBUG] Selected document: " + selectedDocument.toJson());
+                viewDetailsButton.setDisable(false);
             } else {
                 selectedDocument = null;
-                viewDetailsButton.setDisable(true); // Disabilita il pulsante
-                backButton.setDisable(true);        // Disabilita il pulsante
+                System.out.println("[DEBUG] No document selected.");
+                viewDetailsButton.setDisable(true);
             }
         });
+
+        // Configura i campi di ricerca
+        searchFieldSelector.setItems(FXCollections.observableArrayList("Creation Date", "Codice Fiscale", "Author Name"));
+        searchFieldSelector.setValue("Codice Fiscale");
 
         // Carica i documenti CDA
         loadCdaDocuments();
@@ -115,55 +104,7 @@ public class CdaListController implements DataReceiver{
         // Configura il filtro
         filteredList = new FilteredList<>(cdaDocuments, p -> true);
         cdaTable.setItems(filteredList);
-
-        // Configura la selezione del campo per la ricerca
-        searchFieldSelector.setItems(FXCollections.observableArrayList("Creation Date", "Patient Name", "CF", "Author Name"));
-        searchFieldSelector.setValue("Patient Name");
-
-        // Aggiungi un listener per il campo di ricerca
-        searchField.textProperty().addListener((obs, oldValue, newValue) -> {
-            filteredList.setPredicate(document -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String selectedField = mapField(searchFieldSelector.getValue());
-                String lowerCaseFilter = newValue.toLowerCase();
-                String fieldValue = getFieldValue(document, selectedField);
-                return fieldValue.toLowerCase().contains(lowerCaseFilter);
-            });
-        });
-    }
-
-    @Override
-    public void receiveData(Map<String, Object> data) {
-        this.patientName = (String) data.get("patientName");
-        loadCdaData();
-    }
-
-    private void loadCdaData() {
-        cdaDocuments.clear(); // Pulisce la lista esistente
-
-        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
-            MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
-            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
-
-            // Recupera solo i documenti CDA relativi al paziente selezionato
-            List<Document> documents = collection.find(new Document("patientName", this.patientName)).into(new java.util.ArrayList<>());
-
-            documents.forEach(doc -> {
-                String xmlContent = doc.getString("xmlContent");
-                if (xmlContent != null) {
-                    // Analizza il contenuto XML del CDA
-                    Document parsedDocument = parseCdaXml(xmlContent);
-                    parsedDocument.append("_id", doc.getObjectId("_id")); // Include `_id` nel documento parsato
-                    cdaDocuments.add(parsedDocument); // Aggiunge il documento alla lista
-                }
-            });
-
-            System.out.println("[DEBUG] Loaded " + cdaDocuments.size() + " CDA documents for patient: " + patientName);
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error loading CDA documents for patient '" + patientName + "': " + e.getMessage());
-        }
+        System.out.println("[DEBUG] Table initialized with items.");
     }
 
 
@@ -183,76 +124,100 @@ public class CdaListController implements DataReceiver{
         }
     }
 
-
     private Document parseCdaXml(String xmlContent) {
         Document extractedData = new Document();
         try {
+            System.out.println("[DEBUG] Parsing XML content...");
             // Configura il parser DOM
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true); // Supporto per gli spazi dei nomi
             DocumentBuilder builder = factory.newDocumentBuilder();
             org.w3c.dom.Document xmlDoc = builder.parse(new java.io.ByteArrayInputStream(xmlContent.getBytes()));
             xmlDoc.getDocumentElement().normalize();
 
-            // Estrarre campi generali
-            Element clinicalDocument = xmlDoc.getDocumentElement();
-            Document append = extractedData.append("creationDate", formatDate(getXmlNodeAttribute(clinicalDocument, "effectiveTime", "value")));
-
-            // Estrarre nome e data di nascita del paziente
-            Element patientRoleElement = (Element) xmlDoc.getElementsByTagName("patientRole").item(0);
+            // Estrarre il nome del paziente
+            Element patientRoleElement = (Element) xmlDoc.getElementsByTagNameNS("urn:hl7-org:v3", "patientRole").item(0);
             if (patientRoleElement != null) {
-                // Codice fiscale (CF)
-                extractedData.append("patientCF", getXmlNodeAttribute(patientRoleElement, "id", "extension"));
-
-                Element patientElement = (Element) patientRoleElement.getElementsByTagName("patient").item(0);
+                Element patientElement = (Element) patientRoleElement.getElementsByTagNameNS("urn:hl7-org:v3", "patient").item(0);
                 if (patientElement != null) {
-                    String patientGiven = getTextContentByTagName(patientElement, "given");
-                    String patientFamily = getTextContentByTagName(patientElement, "family");
-                    extractedData.append("patientName", patientGiven + " " + patientFamily);
-                    extractedData.append("patientBirthTime", formatDate(getXmlNodeAttribute(patientElement, "birthTime", "value")));
+                    Element givenElement = (Element) patientElement.getElementsByTagNameNS("urn:hl7-org:v3", "given").item(0);
+                    Element familyElement = (Element) patientElement.getElementsByTagNameNS("urn:hl7-org:v3", "family").item(0);
+
+                    String givenName = (givenElement != null) ? givenElement.getTextContent().trim() : "N/A";
+                    String familyName = (familyElement != null) ? familyElement.getTextContent().trim() : "N/A";
+                    String extractedPatientName = givenName + " " + familyName;
+
+                    System.out.println("[DEBUG] Extracted patient name: " + extractedPatientName);
+
+                    // Normalizza il nome del paziente atteso rimuovendo eventuali prefissi come "Mr." o "Mrs."
+                    String normalizedPatientName = patientName.replaceAll("^(Mr\\.\\s*|Mrs\\.\\s*)", "").trim();
+                    System.out.println("[DEBUG] Normalized patient name: " + normalizedPatientName);
+
+                    // Verifica se il nome del paziente corrisponde
+                    if (!extractedPatientName.equalsIgnoreCase(normalizedPatientName)) {
+                        System.out.println("[DEBUG] Patient name does not match. Expected: " + normalizedPatientName + ", Found: " + extractedPatientName);
+                        return null; // Non corrisponde, ritorna senza estrarre il documento
+                    }
+                    extractedData.append("patientName", extractedPatientName);
+                } else {
+                    System.out.println("[DEBUG] No patient element found.");
+                    return null; // Nome paziente non trovato, ritorna senza estrarre il documento
                 }
+            } else {
+                System.out.println("[DEBUG] No patientRole element found.");
+                return null; // patientRole non trovato, ritorna senza estrarre il documento
             }
 
-            // Estrarre nome dell'autore
-            Element authorElement = (Element) xmlDoc.getElementsByTagName("assignedAuthor").item(0);
+            // Estrarre altri dettagli del documento solo se il nome corrisponde
+            System.out.println("[DEBUG] Patient name matches. Extracting additional fields...");
+
+            // Estrazione del Codice Fiscale (CF)
+            Element idElement = (Element) patientRoleElement.getElementsByTagNameNS("urn:hl7-org:v3", "id").item(0);
+            if (idElement != null) {
+                String patientCF = idElement.getAttribute("extension");
+                System.out.println("[DEBUG] Extracted patient CF: " + patientCF);
+                extractedData.append("patientCF", patientCF);
+            }
+
+            // Estrazione della data di nascita
+            Element birthTimeElement = (Element) xmlDoc.getElementsByTagNameNS("urn:hl7-org:v3", "birthTime").item(0);
+            if (birthTimeElement != null) {
+                String birthTime = birthTimeElement.getAttribute("value");
+                String formattedBirthTime = formatDate(birthTime);
+                System.out.println("[DEBUG] Extracted patient birth time: " + formattedBirthTime);
+                extractedData.append("patientBirthTime", formattedBirthTime);
+            }
+
+            // Estrazione della data di creazione
+            Element effectiveTimeElement = (Element) xmlDoc.getElementsByTagNameNS("urn:hl7-org:v3", "effectiveTime").item(0);
+            if (effectiveTimeElement != null) {
+                String effectiveTime = effectiveTimeElement.getAttribute("value");
+                String formattedEffectiveTime = formatDate(effectiveTime);
+                System.out.println("[DEBUG] Extracted creation date: " + formattedEffectiveTime);
+                extractedData.append("creationDate", formattedEffectiveTime);
+            }
+
+            // Nome dell'autore
+            Element authorElement = (Element) xmlDoc.getElementsByTagNameNS("urn:hl7-org:v3", "assignedAuthor").item(0);
             if (authorElement != null) {
-                String authorGiven = getTextContentByTagName(authorElement, "given");
-                String authorFamily = getTextContentByTagName(authorElement, "family");
+                Element authorGivenElement = (Element) authorElement.getElementsByTagNameNS("urn:hl7-org:v3", "given").item(0);
+                Element authorFamilyElement = (Element) authorElement.getElementsByTagNameNS("urn:hl7-org:v3", "family").item(0);
+
+                String authorGiven = (authorGivenElement != null) ? authorGivenElement.getTextContent().trim() : "N/A";
+                String authorFamily = (authorFamilyElement != null) ? authorFamilyElement.getTextContent().trim() : "N/A";
+
+                System.out.println("[DEBUG] Extracted author name: " + authorGiven + " " + authorFamily);
                 extractedData.append("authorName", authorGiven + " " + authorFamily);
+            } else {
+                System.out.println("[DEBUG] No author element found.");
             }
 
         } catch (Exception e) {
             System.err.println("[ERROR] Error parsing CDA XML: " + e.getMessage());
+            e.printStackTrace();
         }
+        System.out.println("[DEBUG] Extracted document: " + extractedData.toJson());
         return extractedData;
-    }
-
-
-    private String getXmlNodeAttribute(Element parent, String tagName, String attributeName) {
-        try {
-            NodeList nodeList = parent.getElementsByTagName(tagName);
-            if (nodeList.getLength() > 0) {
-                Node node = nodeList.item(0);
-                if (node != null && node.getAttributes() != null) {
-                    Node attributeNode = node.getAttributes().getNamedItem(attributeName);
-                    return attributeNode != null ? attributeNode.getNodeValue() : "N/A";
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error getting XML node attribute: " + e.getMessage());
-        }
-        return "N/A";
-    }
-
-    private String getTextContentByTagName(Element parent, String tagName) {
-        try {
-            NodeList nodeList = parent.getElementsByTagName(tagName);
-            if (nodeList.getLength() > 0) {
-                return nodeList.item(0).getTextContent().trim();
-            }
-        } catch (Exception e) {
-            System.err.println("[ERROR] Error getting text content: " + e.getMessage());
-        }
-        return "N/A";
     }
 
     private String formatDate(String rawDate) {
@@ -291,26 +256,60 @@ public class CdaListController implements DataReceiver{
         }
     }
 
-
     private void loadCdaDocuments() {
+        cdaDocuments.clear(); // Pulisce la lista
+        System.out.println("[DEBUG] Clearing existing documents...");
+
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
+            // Normalizza il nome del paziente
+            String normalizedPatientName = patientName.replaceAll("^(Mr\\.\\s*|Mrs\\.\\s*)", "").trim();
+            System.out.println("[DEBUG] Normalized patient name for matching: " + normalizedPatientName);
+
+            // Filtra i documenti CDA
             List<Document> documents = collection.find().into(new java.util.ArrayList<>());
-            documents.forEach(doc -> {
-                System.out.println("[DEBUG] Loaded document: " + doc.toJson()); // Verifica i dati caricati
+            System.out.println("[DEBUG] Retrieved " + documents.size() + " documents from MongoDB.");
+
+            for (Document doc : documents) {
                 String xmlContent = doc.getString("xmlContent");
                 if (xmlContent != null) {
                     Document parsedDocument = parseCdaXml(xmlContent);
-                    parsedDocument.append("_id", doc.getObjectId("_id")); // Include `_id` nel documento parsato
-                    cdaDocuments.add(parsedDocument);
+
+                    // Controlla se il documento è valido
+                    if (parsedDocument == null) {
+                        System.out.println("[DEBUG] Skipping document due to name mismatch or invalid content.");
+                        continue; // Salta i documenti non validi
+                    }
+
+                    // Verifica il nome del paziente
+                    String extractedPatientName = parsedDocument.getString("patientName");
+                    System.out.println("[DEBUG] Extracted patient name: " + extractedPatientName);
+
+                    if (extractedPatientName.equalsIgnoreCase(normalizedPatientName)) {
+                        parsedDocument.append("_id", doc.getObjectId("_id")); // Include `_id` nel documento parsato
+                        cdaDocuments.add(parsedDocument);
+                        System.out.println("[DEBUG] Added document for patient: " + extractedPatientName);
+                    } else {
+                        System.out.println("[DEBUG] Skipping document due to name mismatch. Expected: " + normalizedPatientName + ", Found: " + extractedPatientName);
+                    }
+                } else {
+                    System.out.println("[DEBUG] Skipping document without XML content.");
                 }
-            });
+            }
+
+            System.out.println("[DEBUG] Total documents for patient " + normalizedPatientName + ": " + cdaDocuments.size());
         } catch (Exception e) {
             System.err.println("[ERROR] Error loading CDA documents: " + e.getMessage());
+            e.printStackTrace();
         }
+        System.out.println("[DEBUG] Total documents loaded: " + cdaDocuments.size());
     }
+
+
+
+
 
 
     private String getFieldValue(Document document, String fieldName) {
@@ -321,9 +320,15 @@ public class CdaListController implements DataReceiver{
 
     @FXML
     private void onBackButtonClick() {
-        Stage stage = (Stage) backButton.getScene().getWindow();
+        // Torna alla schermata precedente
+        Stage currentStage = (Stage) backButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "Main Menu");
+        screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanel.fxml", currentStage, "Patient Panel");
+    }
+
+    @FXML
+    private void onRefreshButtonClick() {
+        loadCdaDocuments();
     }
 
     @FXML
@@ -363,7 +368,7 @@ public class CdaListController implements DataReceiver{
                 // Cambia schermata
                 Stage currentStage = (Stage) viewDetailsButton.getScene().getWindow();
                 ChangeScreen screenChanger = new ChangeScreen();
-                Object controller = screenChanger.switchScreenModal(
+                Object controller = screenChanger.switchScreen(
                         "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
                         currentStage,
                         "CDA Preview"
@@ -388,7 +393,6 @@ public class CdaListController implements DataReceiver{
         }
     }
 
-
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -397,34 +401,13 @@ public class CdaListController implements DataReceiver{
         alert.showAndWait();
     }
 
-
-
-
-    @FXML
-    private void onRefreshButtonClick() {
-        cdaDocuments.clear();
-        loadCdaDocuments();
-        filteredList = new FilteredList<>(cdaDocuments, p -> true);
-        cdaTable.setItems(filteredList);
-        System.out.println("[DEBUG] Refreshed CDA documents.");
-    }
-
-    public void onExportButtonClick(ActionEvent actionEvent) {
-    }
-
-    @FXML
-    private void onDischargePatientClick() {
-
-        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
-        ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DischargePanelScreen.fxml",currentStage,"Discharge Patient");
-
-        //System.out.println("Discharge Patient button clicked!");
-        // Logica per dimettere il paziente
-        if (eventManager == null) {
-            System.err.println("EventManager is not set!");
-            return;
+    @Override
+    public void receiveData(Map<String, Object> data) {
+        if (data != null && data.containsKey("patientName")) {
+            this.patientName = (String) data.get("patientName");
+            loadCdaDocuments();
+            System.out.println(patientName);// Puoi aggiungere qui logica per utilizzare `patientName`
         }
-        eventManager.notify("patient_discharge", null);
     }
+
 }

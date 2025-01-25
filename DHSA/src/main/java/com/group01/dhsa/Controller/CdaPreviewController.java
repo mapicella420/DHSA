@@ -62,10 +62,9 @@ public class CdaPreviewController {
     }
 
     public void handleBackButton(ActionEvent actionEvent) {
-        System.out.println("[DEBUG] Returning to the Discharge Patient screen.");
+        System.out.println("Closing application...");
         Stage stage = (Stage) webView.getScene().getWindow();
-        ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "DICOM Files");
+        stage.close();
     }
 
     @FXML
@@ -151,6 +150,4 @@ public class CdaPreviewController {
             System.out.println("[DEBUG] No file selected.");
         }
     }
-
-
 }

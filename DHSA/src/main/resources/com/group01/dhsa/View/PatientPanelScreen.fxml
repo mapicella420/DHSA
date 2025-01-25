@@ -1,14 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.group01.dhsa.View.PatientPanelScreen"
-            prefHeight="400.0" prefWidth="600.0">
+<BorderPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.PatientPanelController">
 
-</AnchorPane>
+    <!-- MenuBar -->
+    <top>
+        <MenuBar prefHeight="25.0">
+            <menus>
+                <!-- File Menu -->
+                <Menu styleClass="menu-bar" text="File">
+                    <items>
+                        <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
+                        <MenuItem onAction="#onLogout" styleClass="menu-item" text="Logout" />
+                    </items>
+                </Menu>
+
+                <!-- Clinical Data Menu -->
+                <Menu styleClass="menu-bar" text="Clinical Data">
+                    <items>
+                        <MenuItem onAction="#onViewClinicalData" styleClass="menu-item" text="View Clinical Data" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <!-- Main Content -->
+    <!-- Main Content -->
+    <center>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">
+            <!-- Titolo -->
+            <Label styleClass="label-title" text="Patient Dashboard" />
+
+            <!-- Barra di ricerca -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Search:" />
+                <TextField fx:id="searchField" promptText="Type to search..." onKeyReleased="#onSearch" />
+            </HBox>
+
+            <!-- Barra per selezionare il tipo di risorsa -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Select Resource Type:" />
+                <ChoiceBox fx:id="resourceTypeChoiceBox" onAction="#onResourceTypeChange" styleClass="choice-box" />
+            </HBox>
+
+            <!-- Tabella -->
+            <TableView fx:id="clinicalDataTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+                <!-- Colonne dinamiche configurate nel controller -->
+            </TableView>
+
+            <!-- Barra di azione -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button fx:id="refreshButton" onAction="#onRefresh" styleClass="button-green" text="Refresh" />
+                <Button fx:id="downloadButton" onAction="#onDownload" styleClass="button-red" text="Download Selected" />
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Barra di stato -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+            <Label fx:id="statusLabel" styleClass="status-label" text="Status: Ready" />
+            <ProgressBar fx:id="progressBar" prefWidth="200" visible="false" />
+        </HBox>
+    </bottom>
+
+</BorderPane>

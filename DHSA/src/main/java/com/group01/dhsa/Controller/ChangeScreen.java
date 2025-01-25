@@ -71,21 +71,18 @@ public class ChangeScreen {
             // Create a new stage for the loaded scene
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+
+            // Set the title and properties of the new stage
             newStage.setTitle(title);
-
-            // Set modality to prevent interaction with other stages
-            newStage.initModality(Modality.APPLICATION_MODAL);
-
-            // Set the current stage as the owner of the new stage
-            newStage.initOwner(currentStage);
-
-            // Show the new stage and wait until it is closed
-            newStage.showAndWait();
+            newStage.setResizable(true);
+            newStage.initOwner(currentStage); // Set the owner for modality (optional)
+            newStage.initModality(Modality.WINDOW_MODAL); // Optional: change to Modality.NONE for no modality
+            newStage.show();
 
             // Return the controller of the loaded FXML
-            return loader.getController();
+            return loader.getController(); // Return the actual controller
         } catch (IOException ex) {
-            // Show an error dialog if loading fails
+            ex.printStackTrace(); // Print the stack trace for debugging
             Platform.runLater(() -> {
                 DialogUtil.showDialog("Error loading the screen: " + path, Alert.AlertType.ERROR, "Screen Change Error");
             });

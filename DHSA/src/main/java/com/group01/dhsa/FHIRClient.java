@@ -46,19 +46,100 @@ public class FHIRClient {
     }
 
     /**
+     * Fetches resources of the given type for a specific patient.
+     *
+     * @param resourceType The type of the resource (e.g., Observation, Encounter).
+     * @param patientId    The ID of the patient.
+     * @return A list of resources.
+     * @throws IllegalArgumentException if the resource type is unsupported.
+     */
+    public List<?> fetchResourcesForPatient(String resourceType, String patientId) {
+        switch (resourceType) {
+            case "Observation":
+                return getObservationsForPatient(patientId);
+            case "Encounter":
+                return getEncountersForPatientIdentifier(patientId);
+            case "Procedure":
+                return getProceduresForPatient(patientId);
+            case "AllergyIntolerance":
+                return getAllergyIntolerancesForPatient(patientId);
+            case "CarePlan": // Aggiungi il caso per CarePlan
+                return getCarePlansForPatient(patientId);
+            case "Medications": // Aggiungi il caso per CarePlan
+                return getMedicationRequestsForPatient(patientId);
+            case "ImagingStudy": // Aggiungi il caso per CarePlan
+                return getImagingStudiesForPatient(patientId);
+            case "Condition": // Aggiungi il caso per CarePlan
+                return getConditionsForPatient(patientId);
+            case "Immunization": // Aggiungi il caso per CarePlan
+                return getImmunizationsForPatient(patientId);
+            default:
+                throw new IllegalArgumentException("Unsupported resource type: " + resourceType);
+        }
+    }
+
+    public List<ImagingStudy> getImagingStudiesForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse ImagingStudy
+        Bundle bundle = client.search()
+                .forResource(ImagingStudy.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] ImagingStudy fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No ImagingStudy resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse ImagingStudy
+        return bundle.getEntry().stream()
+                .map(entry -> (ImagingStudy) entry.getResource()) // Converte le entry in risorse ImagingStudy
+                .filter(imagingStudy -> imagingStudy.hasStarted() && imagingStudy.getStartedElement().hasValue()) // Filtro per ImagingStudy validi
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Fetches a Patient resource from the FHIR server using the given patient identifier.
      *
      * @param patientId The identifier of the Patient.
      * @return The Patient resource.
      */
     public Patient getPatientById(String patientId) {
+        System.out.println("[DEBUG] Fetching Patient by ID: " + patientId);
         Bundle bundle = client.search()
                 .forResource(Patient.class)
                 .where(Patient.IDENTIFIER.exactly().identifier(patientId))
                 .returnBundle(Bundle.class)
                 .execute();
-        return (Patient) bundle.getEntryFirstRep().getResource();
+
+        System.out.println("[DEBUG] Patient fetch bundle: " + bundle);
+
+        if (bundle.hasEntry() && !bundle.getEntry().isEmpty()) {
+            Resource resource = bundle.getEntryFirstRep().getResource();
+            System.out.println("[DEBUG] Retrieved Patient resource: " + resource);
+
+            return resource instanceof Patient ? (Patient) resource : null;
+        } else {
+            System.err.println("[ERROR] No Patient found for ID: " + patientId);
+            return null;
+        }
     }
+
 
     /**
      * Fetches a Practitioner resource from the FHIR server using the given practitioner identifier.
@@ -150,6 +231,83 @@ public class FHIRClient {
         return (Patient) bundle.getEntryFirstRep().getResource();
     }
 
+    public Patient getPatientFromIdentifier(String patientId) {
+        // Perform a search query for the Patient resource with the specified ID.
+        Bundle bundle = client.search()
+                .forResource(Patient.class) // Specify the Patient resource type.
+                .where(Patient.RES_ID.exactly().identifier(patientId)) // Match the exact resource ID.
+                .returnBundle(Bundle.class) // Return the result as a FHIR Bundle.
+                .execute(); // Execute the search query on the FHIR server.
+
+        // Retrieve the first entry from the search results and cast it to a Patient resource.
+        return (Patient) bundle.getEntryFirstRep().getResource();
+    }
+
+    /**
+     * Resolves the Patient ID from a given identifier.
+     *
+     * @param patientIdentifier The identifier of the Patient.
+     * @return The Patient ID or null if not found.
+     */
+    public String getPatientIdByIdentifier(String patientIdentifier) {
+        System.out.println("[DEBUG] Searching for Patient with identifier: " + patientIdentifier);
+        Bundle bundle = client.search()
+                .forResource(Patient.class)
+                .where(Patient.IDENTIFIER.exactly().identifier(patientIdentifier))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        System.out.println("[DEBUG] Bundle returned: " + bundle);
+
+        if (bundle.hasEntry() && !bundle.getEntry().isEmpty()) {
+            Resource resource = bundle.getEntryFirstRep().getResource();
+            System.out.println("[DEBUG] Resource retrieved: " + resource);
+
+            if (resource instanceof Patient) {
+                Patient patient = (Patient) resource;
+                return patient.getIdElement().getIdPart();
+            } else {
+                System.err.println("[ERROR] Retrieved resource is not a Patient.");
+                return null;
+            }
+        } else {
+            System.err.println("[ERROR] No Patient found for identifier: " + patientIdentifier);
+            return null;
+        }
+    }
+
+    public String getPatientIdById(String patientIdentifier) {
+        System.out.println("[DEBUG] Searching for Patient with identifier: " + patientIdentifier);
+        Bundle bundle = client.search()
+                .forResource(Patient.class)
+                .where(Patient.IDENTIFIER.exactly().identifier(patientIdentifier))
+                .returnBundle(Bundle.class)
+                .execute();
+
+        System.out.println("[DEBUG] Bundle returned: " + bundle);
+
+        if (bundle.hasEntry() && !bundle.getEntry().isEmpty()) {
+            Resource resource = bundle.getEntryFirstRep().getResource();
+            System.out.println("[DEBUG] Resource retrieved: " + resource);
+
+            if (resource instanceof Patient) {
+                Patient patient = (Patient) resource;
+                return patient.getIdElement().getIdPart();
+            } else {
+                System.err.println("[ERROR] Retrieved resource is not a Patient.");
+                return null;
+            }
+        } else {
+            System.err.println("[ERROR] No Patient found for identifier: " + patientIdentifier);
+            return null;
+        }
+    }
+
+
+
+
+
+
 
     /**
      * Fetches a list of Observations associated with a given Patient.
@@ -190,6 +348,69 @@ public class FHIRClient {
                 .collect(Collectors.toList());
 
     }
+
+    public List<Encounter> getEncountersForPatientIdentifier(String patientId) {
+        Patient patient = getPatientFromIdentifier(patientId);
+
+        Bundle bundle = client.search()
+                .forResource(Encounter.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart()))
+                .count(100)
+                .returnBundle(Bundle.class)
+                .execute();
+
+        return bundle.getEntry().stream()
+                .map(entry -> (Encounter) entry.getResource())
+                .filter(encounter -> encounter.getSubject() != null)
+                .collect(Collectors.toList());
+
+    }
+
+
+    public List<CarePlan> getCarePlansForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse CarePlan
+        Bundle bundle = client.search()
+                .forResource(CarePlan.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] CarePlan fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No CarePlan resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse CarePlan
+        return bundle.getEntry().stream()
+                .map(entry -> (CarePlan) entry.getResource()) // Converte le entry in risorse CarePlan
+                .filter(carePlan -> {
+                    // Controlla se il periodo è valido
+                    if (carePlan.hasPeriod() && carePlan.getPeriod().hasStart()) {
+                        return true;
+                    } else {
+                        System.err.println("[ERROR] CarePlan missing or invalid period: " + carePlan.getIdElement().getIdPart());
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+
 
     /**
      * Fetches a list of Encounters associated with a given Practitioner.
@@ -264,6 +485,50 @@ public class FHIRClient {
                 .map(entry -> (Condition) entry.getResource())
                 .collect(Collectors.toList());
     }
+
+    public List<Condition> getConditionsForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse Condition
+        Bundle bundle = client.search()
+                .forResource(Condition.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] Condition fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No Condition resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse Condition
+        return bundle.getEntry().stream()
+                .map(entry -> (Condition) entry.getResource()) // Converte le entry in risorse Condition
+                .filter(condition -> {
+                    // Controlla se `onsetDateTime` è valida
+                    if (condition.hasOnsetDateTimeType() && condition.getOnsetDateTimeType().hasValue()) {
+                        return true; // Include solo risorse con onset date valida
+                    } else {
+                        System.err.println("[ERROR] Condition missing or invalid onset date: " + condition.getIdElement().getIdPart());
+                        return false; // Esclude risorse con onset date mancante
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
 
     /**
      * Fetches a list of Conditions associated with a given Patient and preceding the given date
@@ -380,16 +645,32 @@ public class FHIRClient {
     }
 
     public List<CarePlan> getCarePlansForPatientAndEncounter(String patientId, String encounterId) {
+        // Recupera il paziente per validare l'ID
+        Patient patient = getPatientById(patientId);
+
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of();
+        }
+
+        // Esegui la query per le risorse CarePlan
         Bundle bundle = client.search()
                 .forResource(CarePlan.class)
-                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart()))
                 .and(new ReferenceClientParam("encounter").hasId(encounterId))
+                .count(100) // Limita il numero di risultati
                 .returnBundle(Bundle.class)
                 .execute();
+
+        System.out.println("[DEBUG] CarePlan Bundle: " + new FhirContext().newJsonParser().encodeResourceToString(bundle));
+
+        // Restituisci l'elenco di risorse CarePlan
         return bundle.getEntry().stream()
                 .map(entry -> (CarePlan) entry.getResource())
-                .toList();
+                .filter(carePlan -> carePlan.getSubject() != null)
+                .collect(Collectors.toList());
     }
+
 
     public List<AllergyIntolerance> getAllergiesForPatientAndEncounter(String patientId, String encounterId) {
         Bundle bundle = client.search()
@@ -469,22 +750,185 @@ public class FHIRClient {
                 )
                 .toList();
     }
+    public List<AllergyIntolerance> getAllergyIntolerancesForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
 
-    public List<AllergyIntolerance> getAllergiesForPatient(String patientId) {
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse AllergyIntolerance
         Bundle bundle = client.search()
                 .forResource(AllergyIntolerance.class)
-                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
                 .returnBundle(Bundle.class)
                 .execute();
 
-        Set<String> uniqueAllergies = new HashSet<>();
+        // Log per il debug
+        System.out.println("[DEBUG] AllergyIntolerance fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No AllergyIntolerance resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse AllergyIntolerance
+        return bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource()) // Converte le entry in risorse AllergyIntolerance
+                .collect(Collectors.toList());
+    }
+
+
+    public List<AllergyIntolerance> getAllergiesForPatient(String patientId) {
+        System.out.println("[DEBUG] Fetching AllergyIntolerance for patient ID: " + patientId);
+
+        // Esegui la query
+        Bundle bundle = client.search()
+                .forResource(AllergyIntolerance.class)
+                .returnBundle(Bundle.class)
+                .execute();
+
+// Filtra le risorse localmente
+        List<AllergyIntolerance> allergies = bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergy -> allergy.getPatient().getReference().equals("Patient/" + patientId))
+                .toList();
+
+        System.out.println("[DEBUG] Filtered AllergyIntolerance: " + allergies);
+
+
+        System.out.println("[DEBUG] AllergyIntolerance fetch bundle: " + bundle);
+
+        if (!bundle.hasEntry() || bundle.getEntry().isEmpty()) {
+            System.err.println("[ERROR] No AllergyIntolerance resources found for patient ID: " + patientId);
+            return List.of();
+        }
+
+        // Converte i risultati in una lista di AllergyIntolerance
         return bundle.getEntry().stream()
                 .map(entry -> (AllergyIntolerance) entry.getResource())
-                .filter(allergyIntolerance -> {
-                    return uniqueAllergies.add(allergyIntolerance.getCode()
-                            .getCodingFirstRep().getDisplay());
-                })
-                .toList();
+                .collect(Collectors.toList());
     }
+
+
+
+    /**
+     * Fetches a list of Procedures for a given Patient.
+     *
+     * @param patientId The ID of the Patient.
+     * @return A list of Procedure resources.
+     */
+    public List<Procedure> getProceduresForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse Procedure
+        Bundle bundle = client.search()
+                .forResource(Procedure.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] Procedure fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No Procedure resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse Procedure
+        return bundle.getEntry().stream()
+                .map(entry -> (Procedure) entry.getResource()) // Converte le entry in risorse Procedure
+                .collect(Collectors.toList());
+    }
+
+
+    public List<Immunization> getImmunizationsForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse Immunization
+        Bundle bundle = client.search()
+                .forResource(Immunization.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] Immunization fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No Immunization resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse Immunization
+        return bundle.getEntry().stream()
+                .map(entry -> (Immunization) entry.getResource()) // Converte le entry in risorse Immunization
+                .filter(immunization -> immunization.hasOccurrenceDateTimeType()) // Filtro per risorse con data valida
+                .collect(Collectors.toList());
+    }
+
+    public List<MedicationRequest> getMedicationRequestsForPatient(String patientId) {
+        if (patientId == null || patientId.isEmpty()) {
+            throw new IllegalArgumentException("Patient ID must not be null or empty");
+        }
+
+        // Recupera il paziente per verificare che l'ID sia valido
+        Patient patient = getPatientFromIdentifier(patientId);
+        if (patient == null) {
+            System.err.println("[ERROR] Patient not found for ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se il paziente non esiste
+        }
+
+        // Esegui la query al server FHIR per le risorse MedicationRequest
+        Bundle bundle = client.search()
+                .forResource(MedicationRequest.class)
+                .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
+                .count(100) // Limita il numero di risultati
+                .returnBundle(Bundle.class)
+                .execute();
+
+        // Log per il debug
+        System.out.println("[DEBUG] MedicationRequest fetch bundle: " + bundle);
+
+        if (bundle == null || !bundle.hasEntry()) {
+            System.out.println("[DEBUG] No MedicationRequest resources found for patient ID: " + patientId);
+            return List.of(); // Restituisce una lista vuota se non ci sono entry nel bundle
+        }
+
+        // Estrai e restituisci le risorse MedicationRequest
+        return bundle.getEntry().stream()
+                .map(entry -> (MedicationRequest) entry.getResource()) // Converte le entry in risorse MedicationRequest
+                .filter(medicationRequest -> medicationRequest.hasStatus()) // Filtro per risorse con stato valido
+                .collect(Collectors.toList());
+    }
+
+
 }
 

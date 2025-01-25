@@ -57,17 +57,24 @@ public class FhirExporter implements EventListener {
 
     private void searchResources(String resourceType, String searchTerm) {
         try {
+            System.out.println("[DEBUG] FhirExporter: Searching resources for type: " + resourceType);
+            System.out.println("[DEBUG] Search term: " + searchTerm);
+
             FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
             FhirResourceExporter exporter = factory.createExporter();
 
             List<Map<String, String>> results = exporter.searchResources(searchTerm);
 
-            // Notify completion with the search results
-            System.out.println("Search results for " + resourceType + " with term '" + searchTerm + "': " + results);
-            eventObservable.notify("search_complete", new File("Search successful"));
+
+            System.out.println("[DEBUG] Results: " + results);
+
+            eventObservable.notify("search_complete", null);
+
         } catch (Exception e) {
             System.err.println("Error searching resources for type: " + resourceType + " with term: " + searchTerm);
-            eventObservable.notify("error", new File("Search failed"));
+            e.printStackTrace();
+            eventObservable.notify("error", null);
         }
     }
+
 }

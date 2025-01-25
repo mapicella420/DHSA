@@ -3,21 +3,36 @@ package com.group01.dhsa.Model.FhirResources.Level4.Importer;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceImporter;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.mindrot.jbcrypt.BCrypt;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.hl7.fhir.r5.model.*;
 
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.UUID;
 
 public class PatientImporter implements FhirResourceImporter {
     private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static final String MONGO_DB_NAME = "data_app";
+    private static final String MONGO_COLLECTION_NAME = "users";
+    private static final String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
 
     @Override
     public void importCsvToFhir(String csvFilePath) {
-        try {
+        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+            MongoDatabase database = mongoClient.getDatabase(MONGO_DB_NAME);
+            MongoCollection<Document> usersCollection = database.getCollection(MONGO_COLLECTION_NAME);
+
+            BufferedWriter credentialsWriter = new BufferedWriter(new FileWriter(CREDENTIALS_FILE_PATH, true));
+
             // Inizializza il client FHIR
             FhirContext fhirContext = FhirContext.forR5();
             IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
@@ -29,9 +44,8 @@ public class PatientImporter implements FhirResourceImporter {
                     .withFirstRecordAsHeader()
                     .parse(in);
 
-            // Itera sui record del CSV
             for (CSVRecord record : records) {
-                // Verifica se il paziente esiste già
+                // Controlla se il paziente esiste già
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
                     String patientId = record.get("Id");
                     if (patientExistsByIdentifier(client, patientId)) {
@@ -42,22 +56,45 @@ public class PatientImporter implements FhirResourceImporter {
 
                 Patient patient = new Patient();
 
-                // ID
-                if (record.isMapped("Id")) {
+                // ID del paziente
+                String patientId = record.isMapped("Id") ? record.get("Id") : UUID.randomUUID().toString();
+                patient.addIdentifier().setValue(patientId);
 
-                    patient.addIdentifier().setValue(record.get("Id"));
+                // Nome e cognome
+                String firstName = record.isMapped("FIRST") ? record.get("FIRST") : "";
+                String lastName = record.isMapped("LAST") ? record.get("LAST") : "";
+
+                HumanName name = patient.addName();
+                if (!firstName.isEmpty()) {
+                    name.addGiven(firstName);
+                }
+                if (!lastName.isEmpty()) {
+                    name.setFamily(lastName);
                 }
 
-                // Nome
-                HumanName name = patient.addName();
+                // Generazione di username e password
+                String username = generateUsername(firstName, lastName);
+                String password = generatePassword();
+
+                // Controlla se l'username esiste già
+                if (userExistsByUsername(usersCollection, username)) {
+                    System.out.println("Username " + username + " già esistente. Skipping.");
+                    //continue;
+                }
+
+                // Salva l'utente su MongoDB
+                Document userDocument = new Document("username", username)
+                        .append("passwordHash", BCrypt.hashpw(password, BCrypt.gensalt()))
+                        .append("fhirID", patientId)
+                        .append("role", "patient");
+                usersCollection.insertOne(userDocument);
+
+                // Salva le credenziali nel file .txt
+                credentialsWriter.write("ID FHIR: " + patientId + ", Username: " + username + ", Password: " + password);
+                credentialsWriter.newLine();
+
                 if (record.isMapped("PREFIX") && !record.get("PREFIX").isEmpty()) {
                     name.addPrefix(record.get("PREFIX")); // Aggiungi il prefisso
-                }
-                if (record.isMapped("FIRST") && !record.get("FIRST").isEmpty()) {
-                    name.addGiven(record.get("FIRST")); // Nome
-                }
-                if (record.isMapped("LAST") && !record.get("LAST").isEmpty()) {
-                    name.setFamily(record.get("LAST")); // Cognome
                 }
                 if (record.isMapped("SUFFIX") && !record.get("SUFFIX").isEmpty()) {
                     name.addSuffix(record.get("SUFFIX")); // Aggiungi il suffisso
@@ -66,11 +103,13 @@ public class PatientImporter implements FhirResourceImporter {
                     name.addGiven(record.get("MAIDEN")); // Nome da nubile
                 }
 
-                // Data di nascita
+                // Completa i dettagli del paziente
                 if (record.isMapped("BIRTHDATE")) {
                     patient.setBirthDateElement(new DateType(record.get("BIRTHDATE")));
                 }
-
+                if (record.isMapped("GENDER")) {
+                    patient.setGender(parseGender(record.get("GENDER")));
+                }
                 // Data di morte
                 if (record.isMapped("DEATHDATE") && !record.get("DEATHDATE").isEmpty()) {
                     try {
@@ -170,12 +209,13 @@ public class PatientImporter implements FhirResourceImporter {
                             new Quantity().setValue(Double.parseDouble(record.get("HEALTHCARE_COVERAGE"))));
                 }
 
-                // Invia il paziente al server FHIR
-                client.create().resource(patient).execute();
 
-                // Log di conferma
-                System.out.println("Paziente con ID " + patient.getId() + " caricato con successo.");
+                // Salva il paziente nel server FHIR
+                client.create().resource(patient).execute();
+                System.out.println("Paziente con ID " + patientId + " caricato con successo.");
             }
+
+            credentialsWriter.close();
         } catch (Exception e) {
             System.err.println("Errore durante l'importazione del CSV: " + e.getMessage());
             e.printStackTrace();
@@ -196,6 +236,10 @@ public class PatientImporter implements FhirResourceImporter {
         }
     }
 
+    private boolean userExistsByUsername(MongoCollection<Document> usersCollection, String username) {
+        return usersCollection.find(new Document("username", username)).first() != null;
+    }
+
     private Enumerations.AdministrativeGender parseGender(String gender) {
         switch (gender.toLowerCase()) {
             case "m":
@@ -205,5 +249,17 @@ public class PatientImporter implements FhirResourceImporter {
             default:
                 return Enumerations.AdministrativeGender.UNKNOWN;
         }
+    }
+
+    private String generateUsername(String firstName, String lastName) {
+        // Usa parte del nome e cognome per generare un username
+        String namePart = firstName.length() > 3 ? firstName.substring(0, 3) : firstName;
+        String lastNamePart = lastName.length() > 3 ? lastName.substring(0, 3) : lastName;
+        return namePart.toLowerCase() + lastNamePart.toLowerCase() + UUID.randomUUID().toString().substring(0, 4);
+    }
+
+    private String generatePassword() {
+        // Genera una password casuale
+        return UUID.randomUUID().toString().substring(0, 8);
     }
 }
