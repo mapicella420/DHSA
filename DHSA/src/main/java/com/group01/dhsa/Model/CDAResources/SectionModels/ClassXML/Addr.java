@@ -32,6 +32,7 @@ public class Addr {
     private String country;
 
     /**
+     * Optional field
      * The state or province of the address.
      * This field is an XML element.
      */
@@ -39,6 +40,7 @@ public class Addr {
     private String state;
 
     /**
+     * Optional field
      * The county or district of the address.
      * This field is an XML element.
      */
@@ -53,6 +55,7 @@ public class Addr {
     private String city;
 
     /**
+     * Optional field
      * The census tract of the address, if available.
      * This field is an XML element.
      */
@@ -60,6 +63,7 @@ public class Addr {
     private String censusTract;
 
     /**
+     * Optional field
      * The postal code of the address.
      * This field is an XML element.
      */
@@ -83,8 +87,6 @@ public class Addr {
         this.state = state;
         this.city = city;
     }
-
-    // Getters and Setters
 
     /**
      * Returns the use of the address.

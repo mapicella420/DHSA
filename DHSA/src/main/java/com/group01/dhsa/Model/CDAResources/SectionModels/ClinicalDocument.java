@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ClinicalDocument {
 
-    // Attributo namespace
+
     @XmlAttribute(name = "xsi:schemaLocation")
     private String schemaLocation = "urn:hl7-org:v3 CDA.xsd";
 
@@ -33,6 +33,7 @@ public class ClinicalDocument {
     @XmlElement(name = "code")
     private Code code;
 
+    //Optional
     @XmlElement(name = "title")
     private Title title;
 
@@ -91,7 +92,6 @@ public class ClinicalDocument {
     }
 
 
-    //Getter e Setter
     public String getSchemaLocation() {
         return schemaLocation;
     }

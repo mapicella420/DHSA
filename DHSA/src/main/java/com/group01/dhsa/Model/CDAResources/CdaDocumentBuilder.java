@@ -211,6 +211,7 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    //Optional Section
     public void addHospitalDischargeStudiesSection(Encounter encounter) {
         HospitalDischargeStudiesAdapter hospitalDischargeStudiesAdapter = new HospitalDischargeStudiesAdapter();
 
@@ -221,6 +222,7 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    //Optional Section
     public void addRelevantDiagnosticSection(Encounter encounter) {
         RelevantDiagnosticAdapter relevantDiagnosticAdapter = new RelevantDiagnosticAdapter();
 
@@ -231,6 +233,7 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    //Optional Section
     public void addHistoryOfProceduresSection(Encounter encounter) {
         HistoryOfProceduresAdapter historyOfProceduresAdapter = new HistoryOfProceduresAdapter();
 
@@ -241,6 +244,7 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponent(list);
     }
 
+    //Optional Section
     public void addAllergySection(Encounter encounter) {
         AllergyAdapter allergyAdapter = new AllergyAdapter();
 

@@ -11,6 +11,10 @@ public class AssignedAuthor {
     @XmlElement(name = "assignedPerson")
     private AssignedPerson assignedPerson;
 
+    //Empty because we don't have data, but it's mandatory to have
+    @XmlElement(name = "telecom")
+    private Telecom telecom;
+
     public AssignedAuthor() {
     }
 
@@ -28,5 +32,13 @@ public class AssignedAuthor {
 
     public void setAssignedPerson(AssignedPerson assignedPerson) {
         this.assignedPerson = assignedPerson;
+    }
+
+    public Telecom getTelecom() {
+        return telecom;
+    }
+
+    public void setTelecom(Telecom telecom) {
+        this.telecom = telecom;
     }
 }

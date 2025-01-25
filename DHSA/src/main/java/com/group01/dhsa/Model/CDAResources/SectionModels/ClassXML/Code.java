@@ -17,6 +17,7 @@ public class Code {
     @XmlAttribute(name = "codeSystemName")
     private String codeSystemName;
 
+    //Optional
     @XmlAttribute(name = "displayName")
     private String displayName;
 
