@@ -1,9 +1,6 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
-import com.group01.dhsa.Model.FhirResources.FhirExporterFactoryManager;
-import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
-import com.group01.dhsa.Model.FhirResources.FhirResourceExporterFactory;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -13,7 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,25 +45,184 @@ public class ViewFhirResourcesController {
     @FXML
     private Button searchButton;
 
+    @FXML
+    private ContextMenu patientContextMenu;
+
+    @FXML
+    private MenuItem viewCdaMenuItem;
+
+    @FXML
+    private MenuItem viewDicomMenuItem;
+
+
     private final EventObservable eventManager;
-
-    private Task<List<Map<String, String>>> currentTask;
-
-
 
     public ViewFhirResourcesController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
+        // Registrazione agli eventi
+        this.eventManager.subscribe("load_complete", (eventType, file) -> {
+            updateTable(EventManager.getInstance().getCurrentResources());
+            progressBar.setVisible(false);
+            statusLabel.setText("Resources loaded successfully!");
+        });
+
+        this.eventManager.subscribe("search_complete", (eventType, file) -> {
+            updateTable(EventManager.getInstance().getCurrentResources());
+            progressBar.setVisible(false);
+            statusLabel.setText("Search completed successfully!");
+        });
+
+        this.eventManager.subscribe("cda_search_complete", (eventType, file) -> {
+            try {
+                System.out.println("[DEBUG] CDA search complete event triggered.");
+                updateTable(EventManager.getInstance().getCurrentResources());
+            } catch (Exception e) {
+                System.err.println("Error in CDA_search_complete listener: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+        this.eventManager.subscribe("dicom_search_complete", (eventType, file) -> {
+            try {
+                System.out.println("[DEBUG] DICOM search complete event triggered.");
+                updateTable(EventManager.getInstance().getCurrentResources());
+            } catch (Exception e) {
+                System.err.println("Error in dicom_search_complete listener: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
+
+
+        this.eventManager.subscribe("error", (eventType, file) -> {
+            progressBar.setVisible(false);
+            statusLabel.setText("An error occurred: " + (file != null ? file.getName() : "Unknown error"));
+        });
     }
 
     @FXML
     private void initialize() {
-        // Popola il ChoiceBox con i tipi di risorse disponibili
-        resourceTypeChoiceBox.getItems().addAll("Patient", "Device",  "Organization", "Encounter", "Allerg", "Careplan", "Condition", "Procedure", "ImagingStudy", "Observation", "Immunization", "MedicationRequest");
+        resourceTypeChoiceBox.getItems().addAll(
+                "Patient", "Device", "Organization", "Encounter", "Allerg",
+                "Careplan", "Condition", "Procedure", "ImagingStudy",
+                "Observation", "Immunization", "MedicationRequest"
+        );
 
-        // Configura stato iniziale
         progressBar.setVisible(false);
         statusLabel.setText("...");
+
+        // Crea e configura il ContextMenu
+        patientContextMenu = new ContextMenu();
+
+        viewCdaMenuItem = new MenuItem("View CDA");
+        viewCdaMenuItem.setOnAction(event -> onViewCda());
+
+        viewDicomMenuItem = new MenuItem("View DICOM");
+        viewDicomMenuItem.setOnAction(event -> onViewDicom());
+
+        patientContextMenu.getItems().addAll(viewCdaMenuItem, viewDicomMenuItem);
+
+        // Configura il comportamento del ContextMenu per ogni riga della tabella
+        fhirResourcesTable.setRowFactory(tv -> {
+            TableRow<Map<String, String>> row = new TableRow<>();
+            row.setOnContextMenuRequested(event -> {
+                if (!row.isEmpty()) {
+                    Map<String, String> item = row.getItem();
+                    System.out.println("[DEBUG] Selected row: " + item);
+
+                    // Ottieni il valore selezionato dalla ChoiceBox
+                    String selectedResourceType = resourceTypeChoiceBox.getValue();
+                    String rowResourceType = selectedResourceType; // Usa direttamente il valore scelto dall'utente
+
+                    // Mostra il ContextMenu solo se il ResourceType corrisponde al valore della ChoiceBox
+                    if (selectedResourceType != null && rowResourceType.equalsIgnoreCase(selectedResourceType)) {
+                        System.out.println("[DEBUG] ContextMenu shown: ResourceType matches ChoiceBox (" + selectedResourceType + ")");
+                        fhirResourcesTable.getSelectionModel().select(row.getIndex());
+                        patientContextMenu.show(row, event.getScreenX(), event.getScreenY());
+                    } else {
+                        System.out.println("[DEBUG] ContextMenu hidden: ResourceType does not match ChoiceBox (" + selectedResourceType + ")");
+                        patientContextMenu.hide();
+                    }
+                } else {
+                    System.out.println("[DEBUG] ContextMenu hidden: row is empty");
+                    patientContextMenu.hide();
+                }
+            });
+
+
+            // Nascondi il ContextMenu quando si clicca su una riga vuota
+            row.setOnMouseClicked(event -> {
+                if (event.isSecondaryButtonDown() && row.isEmpty()) {
+                    patientContextMenu.hide();
+                }
+            });
+
+            return row;
+        });
     }
+
+
+    @FXML
+    private void onViewCda() {
+        Map<String, String> selectedResource = fhirResourcesTable.getSelectionModel().getSelectedItem();
+        if (selectedResource == null) {
+            statusLabel.setText("Please select a Patient resource!");
+            return;
+        }
+
+        String patientName = selectedResource.get("Name");
+        if (patientName == null || patientName.isEmpty()) {
+            statusLabel.setText("Selected resource does not have a valid patient name!");
+            return;
+        }
+
+        progressBar.setVisible(true);
+        statusLabel.setText("Fetching CDA documents for patient: " + patientName);
+
+        // Notifica l'evento di ricerca dei documenti CDA
+        EventManager.getInstance().getEventObservable().notify("fetch_cda_by_patient", new File(patientName));
+
+        // Naviga alla schermata CDAListScreen
+        System.out.println("Navigating to CDA List screen...");
+        Stage currentStage = (Stage) backButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreenWithData("/com/group01/dhsa/View/CDAListScreen.fxml", currentStage, "CDA Files", Map.of("patientName", patientName));
+    }
+
+
+    @FXML
+    private void onViewDicom() {
+        Map<String, String> selectedResource = fhirResourcesTable.getSelectionModel().getSelectedItem();
+        if (selectedResource == null) {
+            statusLabel.setText("Please select a Patient resource!");
+            return;
+        }
+
+        String patientName = selectedResource.get("Name");
+        if (patientName == null || patientName.isEmpty()) {
+            statusLabel.setText("Selected resource does not have a valid patient name!");
+            return;
+        }
+
+        progressBar.setVisible(true);
+        statusLabel.setText("Fetching DICOM files for patient: " + patientName);
+
+        // Naviga alla schermata DicomListScreen passando il nome del paziente
+        System.out.println("Navigating to DICOM List screen...");
+        Stage currentStage = (Stage) backButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreenWithData(
+                "/com/group01/dhsa/View/DicomListScreen.fxml",
+                currentStage,
+                "DICOM Files",
+                Map.of("patientName", patientName) // Passa solo il nome del paziente
+        );
+        progressBar.setVisible(false);
+        statusLabel.setText("");
+
+    }
+
+
+
 
     @FXML
     private void onLoadResources() {
@@ -77,33 +232,42 @@ public class ViewFhirResourcesController {
             return;
         }
 
-        // Annulla il task corrente se esiste
-        if (currentTask != null && !currentTask.isDone()) {
-            currentTask.cancel();
-        }
-
+        // Rendi visibile la progress bar
         progressBar.setVisible(true);
         statusLabel.setText("Loading resources...");
 
-        currentTask = new Task<>() {
+        // Usa un Task per eseguire il caricamento in un thread separato
+        Task<Void> loadTask = new Task<>() {
             @Override
-            protected List<Map<String, String>> call() throws Exception {
-                return loadResourcesForType(selectedResourceType);
+            protected Void call() throws Exception {
+                // Simula un ritardo (rimuovi questa parte nel programma reale)
+                Thread.sleep(1000);
+
+                // Notifica l'evento di caricamento
+                EventManager.getInstance().getEventObservable().notify("load_request", new File(selectedResourceType));
+
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                // Nascondi la progress bar al termine
+                progressBar.setVisible(false);
+                statusLabel.setText("Resources loaded successfully!");
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                // Nascondi la progress bar e mostra l'errore
+                progressBar.setVisible(false);
+                statusLabel.setText("Failed to load resources!");
             }
         };
 
-        currentTask.setOnSucceeded(event -> {
-            List<Map<String, String>> resources = currentTask.getValue();
-            updateTable(resources);
-            progressBar.setVisible(false);
-        });
-
-        currentTask.setOnFailed(event -> {
-            statusLabel.setText("Error loading resources!");
-            progressBar.setVisible(false);
-        });
-
-        new Thread(currentTask).start();
+        // Esegui il task in un thread separato
+        new Thread(loadTask).start();
     }
 
 
@@ -122,53 +286,18 @@ public class ViewFhirResourcesController {
             return;
         }
 
-        // Annulla il task corrente se esiste
-        if (currentTask != null && !currentTask.isDone()) {
-            currentTask.cancel();
-        }
-
         progressBar.setVisible(true);
         statusLabel.setText("Searching for: " + searchTerm);
-
-        currentTask = new Task<>() {
-            @Override
-            protected List<Map<String, String>> call() throws Exception {
-                return searchResources(selectedResourceType, searchTerm);
-            }
-        };
-
-        currentTask.setOnSucceeded(event -> {
-            List<Map<String, String>> resources = currentTask.getValue();
-            updateTable(resources);
-            progressBar.setVisible(false);
-        });
-
-        currentTask.setOnFailed(event -> {
-            statusLabel.setText("Error during search!");
-            progressBar.setVisible(false);
-        });
-
-        new Thread(currentTask).start();
+        // Notifica l'evento di ricerca
+        EventManager.getInstance().getEventObservable().notify("search_request", new File(selectedResourceType + "_" + searchTerm));
     }
-
 
     @FXML
     private void onRefresh() {
-        // Annulla il task corrente se esiste
-        if (currentTask != null && !currentTask.isDone()) {
-            currentTask.cancel();
-            statusLabel.setText("Loading/Searching canceled.");
-        }
-
-        // Cancella i dati dalla tabella
         fhirResourcesTable.getItems().clear();
-
-        // Reset della barra di avanzamento e dello stato
         progressBar.setVisible(false);
         statusLabel.setText("Table cleared and refreshed!");
     }
-
-
 
     @FXML
     private void onDownloadResource() {
@@ -202,39 +331,9 @@ public class ViewFhirResourcesController {
         screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", stage, "Doctor Dashboard");
     }
 
-    private List<Map<String, String>> loadResourcesForType(String resourceType) {
-        try {
-            FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
-            FhirResourceExporter exporter = factory.createExporter();
-
-            List<Map<String, String>> resources = exporter.exportResources();
-            System.out.println("Loaded resources for type " + resourceType + ": " + resources);
-
-            return resources;
-        } catch (Exception e) {
-            System.err.println("Error loading resources for type: " + resourceType);
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    private List<Map<String, String>> searchResources(String resourceType, String searchTerm) {
-        try {
-            FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
-            FhirResourceExporter exporter = factory.createExporter();
-
-            List<Map<String, String>> resources = exporter.searchResources(searchTerm);
-            System.out.println("Search results for " + resourceType + " with term '" + searchTerm + "': " + resources);
-
-            return resources;
-        } catch (Exception e) {
-            System.err.println("Error searching resources for type: " + resourceType + " with term: " + searchTerm);
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
     private void updateTable(List<Map<String, String>> resources) {
+        System.out.println("[DEBUG] Updating table with resources: " + resources); // Debug
+
         fhirResourcesTable.getColumns().clear();
 
         if (resources.isEmpty()) {
@@ -245,11 +344,16 @@ public class ViewFhirResourcesController {
         Map<String, String> firstRow = resources.get(0);
         for (String key : firstRow.keySet()) {
             TableColumn<Map<String, String>, String> column = new TableColumn<>(key);
-            column.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().get(key)));
+            column.setCellValueFactory(data ->
+                    new javafx.beans.property.SimpleStringProperty(data.getValue().get(key))
+            );
             fhirResourcesTable.getColumns().add(column);
         }
 
         fhirResourcesTable.getItems().setAll(resources);
-        statusLabel.setText("Resources loaded successfully!");
+        System.out.println("[DEBUG] Table updated successfully."); // Debug
     }
+
+
+
 }

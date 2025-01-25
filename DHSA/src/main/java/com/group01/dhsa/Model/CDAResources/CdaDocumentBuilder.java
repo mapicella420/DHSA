@@ -163,24 +163,51 @@ public class CdaDocumentBuilder {
         return tempFile;
     }
 
+    /**
+     * Adds a hospital course section to the CDA document.
+     *
+     * This section describes the course of the patient's treatment during their hospital stay.
+     *
+     * @param encounter The FHIR `Encounter` resource that provides details for the hospital course section.
+     */
     public void addHospitalCourseSection(Encounter encounter) {
+        // Create an adapter to convert the FHIR Encounter resource into a CDA-compliant hospital course section.
         HospitalCourseAdapter hospitalCourseAdapter = new HospitalCourseAdapter();
 
+        // Convert the Encounter resource to a CDA Component object.
         Component component = hospitalCourseAdapter.toCdaObject(encounter);
 
+        // Retrieve the current list of components in the ClinicalDocument.
         List<Component> list = clinicalDocument.getComponent();
+
+        // Add the new hospital course component to the list.
         list.add(component);
+
+        // Update the ClinicalDocument with the modified list of components.
         clinicalDocument.setComponent(list);
     }
 
-    //Optional Section
+    /**
+     * Adds a clinical history section to the CDA document.
+     *
+     * This section outlines the patient's medical history, including prior conditions and treatments.
+     *
+     * @param encounter The FHIR `Encounter` resource that provides details for the clinical history section.
+     */
     public void addClinicalHistorySection(Encounter encounter) {
+        // Create an adapter to convert the FHIR Encounter resource into a CDA-compliant clinical history section.
         ClinicalHistoryAdapter clinicalHistoryAdapter = new ClinicalHistoryAdapter();
 
+        // Convert the Encounter resource to a CDA Component object.
         Component component = clinicalHistoryAdapter.toCdaObject(encounter);
 
+        // Retrieve the current list of components in the ClinicalDocument.
         List<Component> list = clinicalDocument.getComponent();
+
+        // Add the new clinical history component to the list.
         list.add(component);
+
+        // Update the ClinicalDocument with the modified list of components.
         clinicalDocument.setComponent(list);
     }
 

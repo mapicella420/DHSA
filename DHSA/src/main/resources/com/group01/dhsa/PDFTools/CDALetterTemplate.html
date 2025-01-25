@@ -11,26 +11,28 @@
     <header>
         <h1>Hospital Discharge Letter</h1>
         <div class="general-info">
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Template ID:</strong> {{templateId}}</p>
                 <p><strong>Type ID:</strong> {{typeId}}</p>
                 <p><strong>Document ID:</strong> {{documentId}}</p>
             </div>
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Document Type:</strong> {{documentType}}</p>
                 <p><strong>System Code:</strong> {{codeSystemName}}</p>
-                <p><strong>Confidentiality Code:</strong> {{confidentialityCode}}</p>
+                <p><strong>Version:</strong> {{versionNumber}}</p>
+
             </div>
-            <div class="row">
+            <div class="small-row">
                 <p><strong>Authority Name:</strong> {{assigningAuthorityName}}</p>
                 <p><strong>Realm Code:</strong> {{realmCode}}</p>
-                <p><strong>Creation Date:</strong> {{creationDate}}</p>
-                <p><strong>Version:</strong> {{versionNumber}}</p>
+                <p><strong>Confidentiality:</strong> {{confidentialityCode}}</p>
+            </div>
+            <div class="small-row">
+                <p><strong>Date:</strong> {{creationDate}}</p>
                 <p><strong>Language:</strong> {{languageCode}}</p>
             </div>
         </div>
     </header>
-
 
 
     <section>
@@ -54,9 +56,7 @@
             </div>
 
         </div>
-    </section>
 
-    <section>
         <h2>Author Information</h2>
         <div class="author-info">
             <div class="row">
@@ -66,10 +66,7 @@
                 <p><strong>Date and Time:</strong> {{authorTime}}</p>
             </div>
         </div>
-    </section>
 
-
-    <section>
         <h2>Document Custodian</h2>
         <div class="custodian-info">
             <div class="row">
@@ -80,11 +77,10 @@
 
         </div>
         <div class="custodian-address">
-            <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}}, {{custodianCountry}}</p>
+            <p><strong>Address:</strong> {{custodianStreet}}, {{custodianCity}}, {{custodianState}},
+                {{custodianCountry}}</p>
         </div>
-    </section>
 
-    <section>
         <h2>Legal Authenticator</h2>
         <div class="authenticator-info">
             <div class="row">
@@ -100,14 +96,13 @@
             </div>
         </div>
         <div class="authenticator-address">
-            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}}, {{authenticatorCountry}}</p>
+            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}},
+                {{authenticatorCountry}}</p>
         </div>
         <div class="authenticator-time">
             <p><strong>Signature Date and Time:</strong> {{authenticatorTime}}</p>
         </div>
-    </section>
 
-    <section>
         <h2>Encounter Information</h2>
         <div class="encounter-info">
             <div class="row">
@@ -122,9 +117,37 @@
                 <p><strong>End Date:</strong> {{encounterEnd}}</p>
             </div>
         </div>
-    </section>
+        <h3>Encounter Location</h3>
+        <div class="location-info">
+            <div class="row">
+                <p><strong>Organization ID:</strong> {{serviceProviderId}}</p>
+                <p><strong>Organization Name:</strong> {{serviceProviderName}}</p>
+                <p><strong>Department:</strong> {{facilityName}}</p>
+            </div>
+            <p><strong>Assigning Authority:</strong> {{serviceProviderAuthorityName}}</p>
+        </div>
 
-    <section>
+        <h2>Legal Authenticator</h2>
+        <div class="authenticator-info">
+            <div class="row">
+                <p><strong>Signature Code:</strong> {{authenticatorSignatureCode}}</p>
+                <p><strong>ID:</strong> {{authenticatorId}}</p>
+                <p><strong>Name:</strong> {{authenticatorGiven}} {{authenticatorFamily}}</p>
+            </div>
+        </div>
+        <div class="authenticator-org">
+            <div class="row">
+                <p><strong>Represented Organization:</strong> {{authenticatorOrgName}}</p>
+                <p><strong>Phone:</strong> {{authenticatorOrgTelecom}}</p>
+            </div>
+        </div>
+        <div class="authenticator-address">
+            <p><strong>Address:</strong> {{authenticatorStreet}}, {{authenticatorCity}}, {{authenticatorState}},
+                {{authenticatorCountry}}</p>
+        </div>
+        <div class="authenticator-time">
+            <p><strong>Signature Date and Time:</strong> {{authenticatorTime}}</p>
+        </div>
         <h2>Responsible Party</h2>
         <div class="responsible-party-info">
             <div class="row">
@@ -136,39 +159,134 @@
         </div>
     </section>
 
-    <section>
-        <h2>Encounter Location</h2>
-        <div class="location-info">
-            <div class="row">
-                <p><strong>Organization ID:</strong> {{serviceProviderId}}</p>
-                <p><strong>Organization Name:</strong> {{serviceProviderName}}</p>
-                <p><strong>Department:</strong> {{facilityName}}</p>
-            </div>
-            <p><strong>Assigning Authority:</strong> {{serviceProviderAuthorityName}}</p>
-        </div>
-    </section>
 
-    <footer>
-        <p>Document automatically generated. © 2025 HL7 Italia</p>
-    </footer>
-</div>
-
-<div class="page">
     <section>
         <h2>Admission Diagnosis</h2>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{admissionCode}}</p>
+            <p><strong>Code System Name:</strong> {{admissionCodeSystemName}}</p>
+        </div>
         <div class="admission-diagnosis">
-            <div class="admission-code-row">
-                <p><strong>Code:</strong> {{admissionCode}}</p>
-                <p><strong>Code System:</strong> {{admissionCodeSystem}}</p>
-                <p><strong>Code System Name:</strong> {{admissionCodeSystemName}}</p>
+            {{admissionDetails}}
+        </div>
+    </section>
+
+    <!-- Inquadramento Clinico Iniziale -->
+    <section>
+        <h2>Inquadramento Clinico Iniziale</h2>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{clinicalOverviewCode}}</p>
+            <p><strong>Code System Name:</strong> {{clinicalOverviewCodeSystemName}}</p>
+        </div>
+        <div class="clinical-overview">
+            {{clinicalOverviewDetails}}
+        </div>
+
+        <div class="anamnesis">
+            <h3>Anamnesi</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{anamnesisCode}}</p>
+                <p><strong>Code System Name:</strong> {{anamnesisCodeSystemName}}</p>
             </div>
-            <h3>Details</h3>
-            <div class="admission-details">
-                {{admissionDetails}}
+            <div class="subsection-container">
+                {{anamnesisDetails}}
+            </div>
+        </div>
+
+        <div class="medications">
+            <h3>Terapia farmacologica all'ingresso</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{medicationsCode}}</p>
+                <p><strong>Code System Name:</strong> {{medicationsCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{medicationsDetails}}
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Nuova sezione: Decorso Ospedaliero -->
+    <section>
+        <h2>Decorso Ospedaliero</h2>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{hospitalCourseCode}}</p>
+            <p><strong>Code System Name:</strong> {{hospitalCourseCodeSystemName}}</p>
+        </div>
+        <div class="subsection-container">
+            {{hospitalCourseDetails}}
+        </div>
+        <!-- Sottosezione: Riscontri ed Accertamenti Significativi -->
+        <div class="significant-findings">
+            <h3>Riscontri ed Accertamenti Significativi</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{findingsCode}}</p>
+                <p><strong>Code System Name:</strong> {{findingsCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{findingsDetails}}
+            </div>
+        </div>
+        <!-- Sottosezione: Esami diagnostici e/o di laboratorio significativi -->
+        <div class="exam">
+            <h3>Esami diagnostici e/o di laboratorio significativi</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{examCode}}</p>
+                <p><strong>Code System Name:</strong> {{examCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{examDetails}}
+            </div>
+        </div>
+        <!-- Sottosezione: Procedure eseguite durante il ricovero -->
+        <div class="procedures">
+            <h3>Procedure eseguite durante il ricovero</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{proceduresCode}}</p>
+                <p><strong>Code System Name:</strong> {{proceduresCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{proceduresDetails}}
+            </div>
+        </div>
+
+
+        <!-- Sottosezione: ALLERGIE E/O REAZIONI AVVERSE -->
+        <div class="allergies">
+            <h3>Allergie e/o Reazioni Avverse</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{allergiesCode}}</p>
+                <p><strong>Code System Name:</strong> {{allergiesCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{allergiesDetails}}
             </div>
         </div>
     </section>
 
+
+    <!-- Nuova sezione: Condizioni del paziente alla dimissione -->
+    <section>
+        <h2>Condizioni del paziente alla dimissione</h2>
+        <div class="small-row">
+            <p><strong>Code:</strong> {{conditionsCode}}</p>
+            <p><strong>Code System Name:</strong> {{conditionsCodeSystemName}}</p>
+        </div>
+        <div class="subsection-container">
+            {{conditionsDetails}}
+        </div>
+
+        <!-- Sottosezione: Riscontri ed Accertamenti Significativi -->
+        <div class="followup">
+            <h3>Istruzioni di follow-up</h3>
+            <div class="small-row">
+                <p><strong>Code:</strong> {{followupCode}}</p>
+                <p><strong>Code System Name:</strong> {{followupCodeSystemName}}</p>
+            </div>
+            <div class="subsection-container">
+                {{followupDetails}}
+            </div>
+        </div>
 
     <footer>
         <p>Document automatically generated. © 2025 HL7 Italia</p>

@@ -7,8 +7,9 @@
 
 <AnchorPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.LoginUserController">
     <children>
-        <VBox alignment="CENTER" prefHeight="400.0" prefWidth="500.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <AnchorPane prefHeight="40.0" prefWidth="500.0">
+        <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <!-- Menu in alto -->
+            <AnchorPane prefHeight="40.0">
                 <children>
                     <MenuButton fx:id="myHospitalMenuItem" layoutX="14.0" layoutY="1.0" mnemonicParsing="false" text="My Hospital">
                         <items>
@@ -19,33 +20,23 @@
             </AnchorPane>
 
             <!-- Titolo -->
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="240.0" styleClass="label-title" text="Login Screen" />
+            <Label alignment="CENTER" styleClass="label-title" text="Login Screen" />
 
             <!-- Sezione Username -->
             <VBox alignment="CENTER" spacing="5.0">
-                <Label alignment="CENTER" prefWidth="300.0" text="Username:" />
-                <HBox alignment="CENTER" prefWidth="400.0" spacing="5.0">
+                <Label alignment="CENTER" text="Username:" />
+                <HBox alignment="CENTER" spacing="5.0">
                     <TextField fx:id="usernameField" prefHeight="30.0" prefWidth="350.0" promptText="Enter your username" />
-                    <Button fx:id="usernameButton" managed="false" prefHeight="20.0" prefWidth="40.0" styleClass="button-icon" visible="false">
-                        <graphic>
-                            <ImageView fx:id="togglePasswordIcon" fitHeight="20.0" fitWidth="20.0" />
-                        </graphic>
-                    </Button>
+                    <Button fx:id="usernameButton" managed="false" prefHeight="30.0" prefWidth="40.0" styleClass="button-icon" visible="false"/>
                 </HBox>
             </VBox>
 
             <!-- Sezione Password -->
             <VBox alignment="CENTER" spacing="5.0">
-                <Label alignment="CENTER" prefWidth="300.0" text="Password:" />
-                <HBox alignment="CENTER" prefWidth="400.0" spacing="5.0">
-                    <PasswordField fx:id="passwordField" prefHeight="30.0" prefWidth="350.0" promptText="Enter your password">
-                  <HBox.margin>
-                     <Insets left="45.0" />
-                  </HBox.margin></PasswordField>
-                    <TextField fx:id="visiblePasswordField" managed="false" prefHeight="30.0" prefWidth="350.0" promptText="Enter your password" visible="false">
-                  <HBox.margin>
-                     <Insets left="45.0" />
-                  </HBox.margin></TextField>
+                <Label alignment="CENTER" text="Password:" />
+                <HBox alignment="CENTER" spacing="5.0">
+                    <PasswordField fx:id="passwordField" prefHeight="30.0" prefWidth="350.0" promptText="Enter your password" />
+                    <TextField fx:id="visiblePasswordField" managed="false" prefHeight="30.0" prefWidth="350.0" promptText="Enter your password" visible="false" />
                     <Button fx:id="togglePasswordButton" onAction="#togglePasswordVisibility" prefHeight="30.0" prefWidth="40.0" styleClass="button-icon">
                         <graphic>
                             <ImageView fx:id="togglePasswordIcon" fitHeight="20.0" fitWidth="20.0" />
@@ -55,13 +46,10 @@
             </VBox>
 
             <!-- Messaggio di errore -->
-            <Label fx:id="errorMessage" />
+            <Label fx:id="errorMessage" text="" />
 
             <!-- Bottone Login -->
-            <Button fx:id="loginButton" onAction="#handleLogin" prefHeight="35.0" prefWidth="100.0" styleClass="button-red" text="Login">
-            <VBox.margin>
-               <Insets bottom="50.0" />
-            </VBox.margin></Button>
+            <Button fx:id="loginButton" onAction="#handleLogin" prefHeight="35.0" prefWidth="100.0" styleClass="button-red" text="Login" />
         </VBox>
     </children>
 </AnchorPane>

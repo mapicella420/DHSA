@@ -80,12 +80,8 @@ public class DicomImporter implements EventListener {
         Document metadata = new Document();
         metadata.append("fileName", file.getName())
                 .append("filePath", file.getAbsolutePath())
-                .append("patientId", dicomObject.getString(Tag.PatientID)) // Patient ID
-                .append("studyInstanceUID", dicomObject.getString(Tag.StudyInstanceUID)) // Study UID
                 .append("patientName", dicomObject.getString(Tag.PatientName)) // Patient's Name
-                .append("studyID", dicomObject.getString(Tag.StudyID)) // Study ID
                 .append("modality", dicomObject.getString(Tag.Modality)) // Imaging modality (e.g., CT, MRI)
-                .append("studyDate", dicomObject.getString(Tag.StudyDate)) // Study date
                 .append("studyTime", dicomObject.getString(Tag.StudyTime)) // Study time
                 .append("seriesInstanceUID", dicomObject.getString(Tag.SeriesInstanceUID)) // Series UID
                 .append("sliceThickness", dicomObject.getString(Tag.SliceThickness)) // Slice thickness

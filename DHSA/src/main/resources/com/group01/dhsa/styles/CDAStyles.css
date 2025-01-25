@@ -1,20 +1,44 @@
 @media print {
-    body {
-        width: 210mm; /* Larghezza A4 */
-        height: 297mm; /* Altezza A4 */
-        margin: 0;
-        padding: 0;
-        background-color: white;
-    }
-
     .page {
-        width: 100%;
-        height: 100%;
-        page-break-after: always; /* Interruzione dopo ogni pagina */
+        page-break-after: always;
+        padding: 10mm; /* Margini più ampi per il layout */
+        margin: 0 auto;
+        width: 210mm; /* A4 */
+        height: 297mm; /* A4 */
     }
 
-    .page:last-child {
-        page-break-after: auto; /* Nessuna interruzione per l'ultima pagina */
+    header {
+        position: static; /* Posizione normale per evitare sovrapposizioni */
+        top: 0;
+        z-index: 0;
+        background-color: white; /* Sfondo bianco per l'header */
+        padding: 10px 20px;
+        border-bottom: 1px solid #ddd; /* Bordo separatore */
+        margin-bottom: 20px;
+    }
+
+    section {
+        margin-bottom: 40px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: #777777;
+        background-color: white;
+        padding: 10px 0;
+        border-top: 1px solid #ddd;
+    }
+
+    .row {
+        page-break-inside: avoid;
     }
 }
 
@@ -23,146 +47,186 @@ body {
     line-height: 1.5;
     margin: 0 auto;
     max-width: 800px;
-    padding: 20px;
+    padding: 20px; /* Margini uniformi */
     background-color: #f4f7f9;
 }
 
-/* Stile dell'header */
+/* Stile per i paragrafi */
+p {
+    margin: 8px 0;
+    font-size: 14px; /* Dimensione massima per il testo */
+    color: #555555;
+}
+
 header {
-    background-color: #e0e6ed; /* Grigio chiaro */
-    color: #002147; /* Blu scuro per contrasto */
-    padding: 15px 20px;
-    border-bottom: 3px solid #0056b3;
-    text-align: left;
+    position: static; /* Posizione normale per evitare sovrapposizioni */
+    top: 0;
+    z-index: 0;
+    background-color: white; /* Sfondo bianco per l'header */
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd; /* Bordo separatore */
+    margin-bottom: 20px;
 }
 
 header h1 {
-    font-size: 22px; /* Ridotto */
+    font-size: 22px; /* Dimensione ridotta per l'header */
     margin-bottom: 10px;
     color: #002147;
 }
 
-header .general-info {
-    font-size: 12px; /* Font più piccolo */
+.general-info {
+    font-size: 14px; /* Dimensione uniforme */
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between; /* Giustifica gli elementi */
-    gap: 10px;
+    gap: 15px;
+    justify-content: space-between;
 }
 
-header .general-info p {
-    margin: 5px 0;
-    flex: 1 1 calc(50% - 10px); /* Due elementi per riga */
-    font-size: 12px;
+.general-info p {
+    flex: 1 1 calc(42% - 10px);
+    font-size: 14px; /* Dimensione uniforme */
 }
 
-/* Stile per le righe di elementi */
-.row {
-    display: flex; /* Usa flexbox per disporre gli elementi in linea */
-    flex-wrap: wrap; /* Permette di andare a capo se lo spazio non basta */
-    justify-content: space-between; /* Distribuisce gli elementi uniformemente */
-    gap: 5px; /* Spaziatura tra i campi */
-    margin-bottom: 5px; /* Spazio sotto ogni riga */
-}
-
-/* Stile per i paragrafi all'interno di una riga */
-.row p {
-    flex: 1; /* Ogni elemento occupa lo stesso spazio */
-    margin: 0; /* Rimuove margini aggiuntivi */
-    min-width: 200px; /* Imposta una larghezza minima per garantire leggibilità */
-    font-size: 14px; /* Dimensione del testo coerente */
-}
-
-
-
-/* Sezioni principali */
 section {
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 40px;
+    padding: 20px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Titoli delle sezioni */
 section h2 {
     color: #333333;
-    font-size: 18px; /* Ridotto */
+    font-size: 18px; /* Dimensione ottimale */
     margin-bottom: 10px;
     border-bottom: 2px solid #0056b3;
     padding-bottom: 5px;
 }
+section h3 {
+    color: #333333;
+    font-size: 16px; /* Dimensione ottimale */
+    margin-bottom: 10px;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 5px;
+}
+.admission-diagnosis, .clinical-overview, .hospital-course {
+    padding: 20px;
+    background-color: #eef7fc;
+    border: 2px solid #0073e6;
+    border-radius: 8px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
 
-/* Campi generali */
+/* Stile per le liste generate */
+ul {
+    padding-left: 20px;
+    margin-top: 10px;
+    list-style-type: disc; /* Stile del punto elenco */
+    color: #555555; /* Colore del testo */
+    font-size: 12px; /* Font piccolo per liste */
+}
+
+ul li {
+    margin-bottom: 8px; /* Margine tra gli elementi della lista */
+    line-height: 1.6; /* Spaziatura tra le righe */
+}
+
+ul li::marker {
+    color: #555555; /* Colore del marker */
+    font-size: 12px; /* Dimensione del marker */
+}
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.row p {
+    flex: 1;
+    margin: 0;
+    min-width: 220px;
+    font-size: 16px; /* Testo uniforme */
+}
+
+/* Classe specifica per i campi con codici su una singola riga */
+.small-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    font-size: 12px; /* Font più piccolo */
+    color: #555; /* Colore del testo più tenue */
+    margin-bottom: 10px; /* Margine inferiore per spaziatura */
+    align-items: center; /* Allineamento verticale centrato */
+}
+
+.small-row p {
+    margin: 0; /* Rimuovi margini */
+    padding: 0 5px; /* Spaziatura orizzontale tra i campi */
+    flex: 1; /* Permette un layout uniforme */
+    text-align: center; /* Centra il contenuto */
+    min-width: 150px; /* Garantisce una larghezza minima */
+}
+
+/* Regola per il font nei paragrafi generici */
 p {
-    margin: 5px 0;
-    font-size: 14px;
+    font-size: 14px; /* Font di default per paragrafi */
+    margin: 8px 0;
     color: #555555;
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    font-size: 12px; /* Più piccolo */
-    color: #777777; /* Grigio tenue */
-    margin-top: 20px;
-    padding: 10px;
-    border-top: 1px solid #ddd;
-}
-
-/* Riduzione dei margini */
-.general-info p,
-.section p {
-    line-height: 7px; /* Riduce lo spazio tra le righe */
-}
-
-/* Stile per la sezione Admission Diagnosis */
-.admission-diagnosis {
-    padding: 15px;
-    background-color: #eef7fc; /* Sfondo azzurro chiaro */
-    border: 2px solid #0073e6; /* Bordo azzurro intenso */
+.subsection-container {
+    padding: 20px;
+    background-color: #eef7fc; /* Sfondo blu chiaro */
+    border: 2px solid #0073e6; /* Bordo blu */
     border-radius: 8px; /* Angoli arrotondati */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra per profondità */
-    margin-bottom: 20px; /* Spaziatura sotto la sezione */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
+    margin-bottom: 30px; /* Spaziatura inferiore */
 }
 
-.admission-diagnosis p {
-    margin: 8px 0; /* Margine tra paragrafi */
-    font-size: 14px; /* Dimensione del testo */
-    color: #333; /* Testo in grigio scuro */
+/* Stile per la tabella */
+table {
+    width: 100%;
+    border-collapse: collapse; /* Elimina spazi tra bordi */
+    margin: 20px 0; /* Margine superiore e inferiore */
+    font-size: 14px; /* Dimensione testo della tabella */
+    background-color: #f9f9f9; /* Sfondo chiaro */
+    border: 1px solid #ddd; /* Bordo grigio chiaro */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombreggiatura */
 }
 
-.admission-diagnosis ul {
-    padding-left: 20px; /* Spaziatura a sinistra per la lista */
-    margin-top: 10px; /* Margine sopra la lista */
-    list-style-type: disc; /* Tipo di lista non ordinata */
+table th, table td {
+    padding: 10px; /* Spaziatura interna */
+    text-align: left; /* Allinea il testo a sinistra */
+    border: 1px solid #ddd; /* Bordo delle celle */
 }
 
-.admission-diagnosis li {
-    margin: 5px 0; /* Margine tra gli elementi della lista */
-    font-size: 13px; /* Testo più piccolo rispetto ai paragrafi */
-    color: #555; /* Testo in grigio medio */
+table th {
+    background-color: #0056b3; /* Sfondo blu */
+    color: white; /* Testo bianco */
+    font-weight: bold; /* Testo in grassetto */
+    text-transform: uppercase; /* Testo maiuscolo */
 }
 
-/* Evidenziare i titoli delle osservazioni */
-.admission-diagnosis p strong {
-    color: #0056b3; /* Colore evidenziato per i titoli */
-    font-weight: bold; /* Grassetto per i titoli */
+table tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Riga pari con sfondo chiaro */
 }
 
-
-.admission-code-row {
-    display: flex;
-    flex-wrap: wrap; /* Disposizione flessibile su più righe se necessario */
-    gap: 12px; /* Spazio tra gli elementi */
-    align-items: center; /* Allineamento verticale centrale */
-    margin-top: 10px; /* Spazio sopra il contenitore */
+table tbody tr:hover {
+    background-color: #e6f7ff; /* Riga evidenziata al passaggio del mouse */
 }
 
-.admission-code-row p {
-    margin: 0; /* Rimuove margini superflui */
-    font-size: 14px; /* Testo omogeneo */
-    color: #222; /* Grigio scuro per il contrasto */
-    flex: 1; /* Bilancia lo spazio tra gli elementi */
+/* Testo nelle celle */
+table td {
+    color: #333; /* Testo scuro */
+    font-size: 14px; /* Testo uniforme */
 }
 
+/* Centrare il contenuto opzionale */
+table.centered td, table.centered th {
+    text-align: center;
+}

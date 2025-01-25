@@ -102,6 +102,49 @@
     -fx-text-fill: #2a5d84; /* Colore del testo azzurro scuro */
 }
 
+/* Stile della TableView */
+.table-view {
+    -fx-border-color: #2a5d84; /* Bordo blu scuro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 5px; /* Angoli arrotondati */
+    -fx-background-color: #ffffff; /* Sfondo bianco */
+    -fx-padding: 5; /* Spaziatura interna */
+}
+
+/* Colonne della TableView */
+.table-column {
+    -fx-font-size: 12px; /* Dimensione del testo */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-text-fill: #2a5d84; /* Colore del testo */
+    -fx-alignment: center; /* Centrare il contenuto */
+}
+
+/* Stile del FileChooser Button */
+.filechooser-button {
+    -fx-background-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente blu */
+    -fx-text-fill: white; /* Colore del testo */
+    -fx-font-size: 12px; /* Dimensione del font */
+    -fx-font-weight: bold; /* Testo in grassetto */
+    -fx-padding: 8 15; /* Spaziatura interna */
+    -fx-border-color: #2a5d84; /* Bordo blu scuro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 5px; /* Angoli arrotondati */
+    -fx-background-radius: 5px; /* Angoli arrotondati */
+    -fx-cursor: hand; /* Cambia il cursore quando passa sopra */
+}
+
+/* Effetto Hover per il FileChooser Button */
+.filechooser-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #7dbde8, #5ba4d7); /* Gradiente blu più chiaro */
+    -fx-border-color: #7dbde8; /* Bordo più chiaro */
+}
+
+/* Effetto Pressed per il FileChooser Button */
+.filechooser-button:pressed {
+    -fx-background-color: linear-gradient(to bottom, #2a5d84, #1a3c56); /* Gradiente più scuro */
+    -fx-border-color: #1a3c56; /* Bordo più scuro */
+}
+
 /* Stile base per la CheckBox */
 .checkbox {
     -fx-font-size: 10px; /* Dimensione del testo */
@@ -137,6 +180,29 @@
     -fx-shape: "M 0 0 L 6 6 M 6 0 L 0 6"; /* Forma della spunta */
     -fx-stroke-width: 2px; /* Larghezza della spunta */
     -fx-stroke: #2a5d84; /* Colore della spunta */
+}
+
+/* Stile per la sezione metadati */
+.metadata-box {
+    -fx-background-color: white; /* Sfondo bianco */
+    -fx-border-color: #5ba4d7; /* Bordo azzurro */
+    -fx-border-width: 2px; /* Larghezza del bordo */
+    -fx-border-radius: 10px; /* Angoli arrotondati */
+    -fx-padding: 15px; /* Spaziatura interna */
+    -fx-effect: dropshadow(gaussian, rgba(90, 164, 215, 0.5), 10, 0, 2, 2); /* Ombra per l'effetto card */
+    -fx-spacing: 10px;
+}
+
+/* Stile per l'immagine */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(90, 164, 215, 0.5), 10, 0, 2, 2); /* Effetto ombra */
+    -fx-background-color: white; /* Sfondo bianco */
+    -fx-border-color: linear-gradient(to bottom, #5ba4d7, #2a5d84); /* Gradiente azzurro per il bordo */
+    -fx-border-width: 3px; /* Spessore del bordo */
+    -fx-border-radius: 30px; /* Angoli arrotondati del bordo */
+    -fx-background-radius: 30px; /* Angoli arrotondati dello sfondo */
+    -fx-padding: 5px; /* Spaziatura interna per creare un contorno visibile */
+    -fx-shadow-highlight-color: transparent; /* Disattiva eventuali effetti di riflesso predefiniti */
 }
 
 .module-title {
