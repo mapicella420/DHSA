@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -12,10 +13,21 @@ import java.util.Map;
 
 public class CarePlanExporter implements FhirResourceExporter {
 
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
 
     @Override
     public List<Map<String, String>> exportResources() {
+        setFhirServerUrl();
         List<Map<String, String>> carePlansList = new ArrayList<>();
 
         try {
@@ -91,6 +103,7 @@ public class CarePlanExporter implements FhirResourceExporter {
 
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
+        setFhirServerUrl();
         List<Map<String, String>> carePlansList = new ArrayList<>();
 
         try {

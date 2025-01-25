@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Condition;
@@ -14,10 +15,21 @@ import java.util.Map;
 
 public class ConditionExporter implements FhirResourceExporter {
 
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
 
     @Override
     public List<Map<String, String>> exportResources() {
+        setFhirServerUrl();
         List<Map<String, String>> conditionsList = new ArrayList<>();
 
         try {
@@ -48,6 +60,7 @@ public class ConditionExporter implements FhirResourceExporter {
 
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
+        setFhirServerUrl();
         List<Map<String, String>> conditionsList = new ArrayList<>();
 
         try {
@@ -86,6 +99,7 @@ public class ConditionExporter implements FhirResourceExporter {
     }
 
     private boolean matchesCondition(Condition condition, String searchTerm) {
+        setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();
 
         // Match Patient reference
@@ -127,6 +141,7 @@ public class ConditionExporter implements FhirResourceExporter {
     }
 
     private Map<String, String> extractConditionData(Condition condition) {
+        setFhirServerUrl();
         Map<String, String> conditionData = new HashMap<>();
         conditionData.put("Id", condition.getIdentifierFirstRep() != null ? condition.getIdentifierFirstRep().getValue() : "N/A");
         conditionData.put("Patient", condition.hasSubject() ? condition.getSubject().getReference() : "N/A");

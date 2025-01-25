@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Procedure;
@@ -14,10 +15,21 @@ import java.util.Map;
 
 public class ProcedureExporter implements FhirResourceExporter {
 
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
 
     @Override
     public List<Map<String, String>> exportResources() {
+        setFhirServerUrl();
         List<Map<String, String>> proceduresList = new ArrayList<>();
 
         try {
@@ -46,6 +58,7 @@ public class ProcedureExporter implements FhirResourceExporter {
 
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
+        setFhirServerUrl();
         List<Map<String, String>> proceduresList = new ArrayList<>();
 
         try {
@@ -85,6 +98,7 @@ public class ProcedureExporter implements FhirResourceExporter {
 
 
     private boolean matchesProcedure(Procedure procedure, String searchTerm) {
+        setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();
 
         // Match Patient reference
@@ -147,6 +161,7 @@ public class ProcedureExporter implements FhirResourceExporter {
 
 
     private Map<String, String> extractProcedureData(Procedure procedure) {
+        setFhirServerUrl();
         Map<String, String> procedureData = new HashMap<>();
         procedureData.put("Id", procedure.getIdentifierFirstRep() != null ? procedure.getIdentifierFirstRep().getValue() : "N/A");
         procedureData.put("Patient", procedure.hasSubject() ? procedure.getSubject().getReference() : "N/A");

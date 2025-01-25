@@ -1,5 +1,7 @@
 package com.group01.dhsa.Model;
 
+import com.group01.dhsa.FHIRClient;
+
 /**
  * This class represents the logged-in user in the system,
  * utilizing the Singleton design pattern to ensure a single instance exists.
@@ -12,6 +14,9 @@ public class LoggedUser {
 
     // The FHIR ID of the logged-in user
     private static String fhirId;
+
+    // The organization
+    private static String organization;
 
     /**
      * Private constructor to prevent instantiation from outside the class.
@@ -56,5 +61,15 @@ public class LoggedUser {
      */
     public void logout() {
         fhirId = null; // Clear the FHIR ID
+        organization = null;
+        FHIRClient.removeClient();
+    }
+
+    public static String getOrganization() {
+        return organization;
+    }
+
+    public static void setOrganization(String organization) {
+        LoggedUser.organization = organization;
     }
 }

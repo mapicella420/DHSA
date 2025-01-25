@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.AllergyIntolerance;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Extension;
@@ -14,10 +15,21 @@ import java.util.Map;
 
 public class AllergyExporter implements FhirResourceExporter {
 
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
 
     @Override
     public List<Map<String, String>> exportResources() {
+        setFhirServerUrl();
         List<Map<String, String>> allergiesList = new ArrayList<>();
 
         try {
@@ -46,6 +58,7 @@ public class AllergyExporter implements FhirResourceExporter {
 
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
+        setFhirServerUrl();
         List<Map<String, String>> allergiesList = new ArrayList<>();
         try {
             // Initialize FHIR client
@@ -84,6 +97,7 @@ public class AllergyExporter implements FhirResourceExporter {
 
 
     private boolean matchesAllergy(AllergyIntolerance allergy, String searchTerm) {
+        setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();
 
         return (allergy.hasPatient() && allergy.getPatient().getReference().toLowerCase().contains(lowerCaseSearchTerm)) ||
@@ -92,6 +106,7 @@ public class AllergyExporter implements FhirResourceExporter {
     }
 
     private Map<String, String> extractAllergyDetails(AllergyIntolerance allergy) {
+        setFhirServerUrl();
         Map<String, String> allergyData = new HashMap<>();
         allergyData.put("Patient", allergy.hasPatient() ? allergy.getPatient().getReference() : "N/A");
 

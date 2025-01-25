@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CdaDataExtractor;
+import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -224,7 +225,8 @@ public class DischargePanelController {
         String surname = lastNameField.getText();
         String name = firstNameField.getText();
 
-        String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+        String FHIR_SERVER_URL = LoggedUser.getOrganization().equalsIgnoreCase("My Hospital") ?
+                "http://localhost:8080/fhir" : "http://localhost:8081/fhir";
         FhirContext fhirContext = FhirContext.forR5();
         IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
@@ -293,8 +295,6 @@ public class DischargePanelController {
             e.printStackTrace();
         }
     }
-
-
 
 
     private boolean checkEncounter(Encounter encounter){
