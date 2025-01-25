@@ -68,7 +68,7 @@ public class AuthorAdapter implements CdaSection<Author, Practitioner>{
         name.setGiven(nome);
         assignedPerson.setName(name);
 
-        Telecom telecom = new Telecom();
+        Telecom telecom = new Telecom("HP", "");
         assignedAuthor.setTelecom(telecom);
 
         assignedAuthor.setAssignedPerson(assignedPerson);
