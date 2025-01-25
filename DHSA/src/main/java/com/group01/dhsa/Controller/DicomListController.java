@@ -1,5 +1,6 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.EventManager;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -12,18 +13,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class DicomListController {
+public class DicomListController implements DataReceiver {
 
     @FXML
     private TableView<Document> dicomTable;
 
-    @FXML
-    private TableColumn<Document, Boolean> selectColumn;
 
     @FXML
     private TableColumn<Document, String> dicomIdColumn;
@@ -71,8 +73,6 @@ public class DicomListController {
 
     @FXML
     public void initialize() {
-        selectColumn.setPrefWidth(45);
-        selectColumn.setResizable(false);
         dicomIdColumn.setPrefWidth(35);
         dicomIdColumn.setResizable(false);
         fileNameColumn.setPrefWidth(200);
@@ -86,26 +86,7 @@ public class DicomListController {
         // Configura il ridimensionamento automatico della tabella
         dicomTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // Configura la colonna di selezione con RadioButton personalizzati
-        selectColumn.setCellFactory(column -> new TableCell<>() {
-            private final RadioButton radioButton = new RadioButton();
 
-            {
-                radioButton.setToggleGroup(toggleGroup);
-                radioButton.setOnAction(event -> handleSelection(getIndex()));
-            }
-
-            @Override
-            protected void updateItem(Boolean item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(radioButton);
-                    radioButton.setSelected(selectedFile == dicomFiles.get(getIndex()));
-                }
-            }
-        });
 
         // Configura i dati delle altre colonne
         dicomIdColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(dicomFiles.indexOf(data.getValue()) + 1)));
@@ -145,9 +126,71 @@ public class DicomListController {
         // Disabilita inizialmente il pulsante View DICOM
         viewImageButton.setDisable(true);
 
+        // Assegna un listener alla tabella per abilitare il pulsante View DICOM
+        dicomTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            selectedFile = newSelection;
+            viewImageButton.setDisable(selectedFile == null); // Abilita solo se è selezionata una riga
+        });
+
         System.out.println("[DEBUG] Initialization completed!");
     }
 
+    private String patientName;
+
+    @Override
+    public void receiveData(Map<String, Object> data) {
+        this.patientName = (String) data.get("patientName");
+        loadDicomData();
+    }
+
+    private void loadDicomData() {
+        try {
+            // Filter DICOM documents for the selected patient
+            List<Document> filteredResources = dicomFiles.stream()
+                    .filter(doc -> patientName.equalsIgnoreCase(getFieldValue(doc, "patientName")))
+                    .collect(Collectors.toList());
+
+            if (filteredResources.isEmpty()) {
+                System.out.println("[DEBUG] No DICOM resources found for patient: " + patientName);
+                return;
+            }
+
+            // Clear the table to ensure no duplicate columns are added
+            dicomTable.getColumns().clear();
+
+            // Explicitly define the columns
+            TableColumn<Document, String> dicomIdColumn = new TableColumn<>("ID");
+            dicomIdColumn.setCellValueFactory(data -> new SimpleStringProperty(
+                    String.valueOf(dicomFiles.indexOf(data.getValue()) + 1)));
+
+            TableColumn<Document, String> fileNameColumn = new TableColumn<>("File Name");
+            fileNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "fileName")));
+
+            TableColumn<Document, String> patientIdColumn = new TableColumn<>("Patient ID");
+            patientIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientId")));
+
+            TableColumn<Document, String> studyIdColumn = new TableColumn<>("Study ID");
+            studyIdColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "studyID")));
+
+            TableColumn<Document, String> studyDateColumn = new TableColumn<>("Study Date");
+            studyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(formatDate(getFieldValue(data.getValue(), "studyDate"))));
+
+            TableColumn<Document, String> studyTimeColumn = new TableColumn<>("Study Time");
+            studyTimeColumn.setCellValueFactory(data -> new SimpleStringProperty(formatTime(getFieldValue(data.getValue(), "studyTime"))));
+
+            // Add the explicitly defined columns to the table
+            dicomTable.getColumns().addAll(
+                    dicomIdColumn, fileNameColumn, patientIdColumn, studyIdColumn, studyDateColumn, studyTimeColumn);
+
+            // Add filtered data to the table
+            dicomTable.setItems(FXCollections.observableArrayList(filteredResources));
+            System.out.println("[DEBUG] Loaded DICOM data for patient: " + patientName);
+
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error loading DICOM data: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 
     private String mapField(String selectedField) {
@@ -181,7 +224,6 @@ public class DicomListController {
         }
     }
 
-
     private void loadDicomFiles() {
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
@@ -196,9 +238,19 @@ public class DicomListController {
     }
 
     private String getFieldValue(Document document, String fieldName) {
-        return document.containsKey(fieldName) && document.get(fieldName) != null
-                ? document.get(fieldName).toString()
-                : "N/A";
+        try {
+            Object value = document.get(fieldName);
+            if (value instanceof ObjectId) {
+                return value.toString(); // Converte ObjectId in stringa
+            } else if (value instanceof String) {
+                return (String) value; // Ritorna direttamente la stringa
+            } else if (value != null) {
+                return value.toString(); // Converte qualsiasi altro tipo in stringa
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error getting field value for '" + fieldName + "': " + e.getMessage());
+        }
+        return "N/A"; // Valore predefinito in caso di errore o campo nullo
     }
 
     private String formatDate(String date) {
@@ -208,18 +260,6 @@ public class DicomListController {
             return LocalDate.parse(date, inputFormatter).format(outputFormatter);
         } catch (Exception e) {
             return "Invalid Date";
-        }
-    }
-
-    private void handleSelection(int index) {
-        if (index >= 0 && index < dicomFiles.size()) {
-            selectedFile = dicomFiles.get(index);
-            viewImageButton.setDisable(false); // Abilita il pulsante
-            System.out.println("[DEBUG] Selected file: " + selectedFile.toJson());
-        } else {
-            selectedFile = null;
-            viewImageButton.setDisable(true); // Disabilita il pulsante
-            System.out.println("[DEBUG] No file selected.");
         }
     }
 

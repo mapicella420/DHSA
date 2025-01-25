@@ -29,8 +29,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-public class CdaListController {
+public class CdaListController implements DataReceiver{
     public Button dischargePatientButton;
     @FXML
     private TableView<Document> cdaTable;
@@ -65,6 +67,8 @@ public class CdaListController {
 
     @FXML
     private Button refreshButton;
+    private String patientName;
+
 
     private final ObservableList<Document> cdaDocuments = FXCollections.observableArrayList();
     private final ToggleGroup toggleGroup = new ToggleGroup(); // Gruppo per consentire una sola selezione alla volta
@@ -128,6 +132,38 @@ public class CdaListController {
                 return fieldValue.toLowerCase().contains(lowerCaseFilter);
             });
         });
+    }
+
+    @Override
+    public void receiveData(Map<String, Object> data) {
+        this.patientName = (String) data.get("patientName");
+        loadCdaData();
+    }
+
+    private void loadCdaData() {
+        cdaDocuments.clear(); // Pulisce la lista esistente
+
+        try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+            MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+            MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+
+            // Recupera solo i documenti CDA relativi al paziente selezionato
+            List<Document> documents = collection.find(new Document("patientName", this.patientName)).into(new java.util.ArrayList<>());
+
+            documents.forEach(doc -> {
+                String xmlContent = doc.getString("xmlContent");
+                if (xmlContent != null) {
+                    // Analizza il contenuto XML del CDA
+                    Document parsedDocument = parseCdaXml(xmlContent);
+                    parsedDocument.append("_id", doc.getObjectId("_id")); // Include `_id` nel documento parsato
+                    cdaDocuments.add(parsedDocument); // Aggiunge il documento alla lista
+                }
+            });
+
+            System.out.println("[DEBUG] Loaded " + cdaDocuments.size() + " CDA documents for patient: " + patientName);
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error loading CDA documents for patient '" + patientName + "': " + e.getMessage());
+        }
     }
 
 

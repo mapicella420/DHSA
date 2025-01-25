@@ -15,7 +15,7 @@
 
     <!-- Selettore delle risorse -->
     <HBox spacing="20">
-        <Label text="Select Resource Type:" styleClass="label" />
+        <Label styleClass="label" text="Select Resource Type:" />
         <ChoiceBox fx:id="resourceTypeChoiceBox" styleClass="choice-box" />
         <Button fx:id="loadButton" onAction="#onLoadResources" styleClass="button-blue" text="Load" />
     </HBox>
@@ -28,7 +28,10 @@
             <TableColumn fx:id="identifierColumn" styleClass="table-column" text="Identifier" />
             <TableColumn fx:id="detailsColumn" styleClass="table-column" text="Details" />
         </columns>
+        <contextMenu>
+        </contextMenu>
     </TableView>
+
 
     <!-- Barra di azione -->
     <HBox alignment="CENTER_LEFT" spacing="20">
@@ -40,7 +43,9 @@
 
     <!-- Progress Bar e stato -->
     <VBox alignment="CENTER" spacing="5">
-        <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Status: Ready" />
-        <ProgressBar fx:id="progressBar" prefWidth="200" visible="false" />
+        <Label fx:id="statusLabel" style="-fx-font-size: 14px; -fx-text-fill: gray;" text="Status: Ready">
+         <graphic>
+              <ProgressBar fx:id="progressBar" prefWidth="200" visible="false" />
+         </graphic></Label>
     </VBox>
 </VBox>

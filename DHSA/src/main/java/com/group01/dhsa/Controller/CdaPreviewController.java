@@ -6,15 +6,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CdaPreviewController {
 
-    public Button uploadButton;
+    public MenuItem upload;
+    public MenuItem export;
+    public Button backButton;
     @FXML
     private WebView webView;
 
@@ -93,6 +99,56 @@ public class CdaPreviewController {
             // Aggiorna lo stato
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleExportXmlButton(ActionEvent actionEvent) {
+        if (cdaFile != null && cdaFile.exists()) {
+            try {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Save CDA as XML");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+
+                File saveFile = fileChooser.showSaveDialog(backButton.getScene().getWindow());
+
+                if (saveFile != null) {
+                    try (FileWriter writer = new FileWriter(saveFile)) {
+                        writer.write(new String(java.nio.file.Files.readAllBytes(cdaFile.toPath())));
+                        System.out.println("[DEBUG] File exported to: " + saveFile.getAbsolutePath());
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("[ERROR] Error while exporting XML: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println("[ERROR] File not found");
+        }
+    }
+
+    @FXML
+    public void handleImportXmlButton(ActionEvent actionEvent) {
+        // Apri un file chooser per selezionare il file XML
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select XML File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
+
+        // Mostra la finestra di dialogo per scegliere il file
+        File selectedFile = fileChooser.showOpenDialog(backButton.getScene().getWindow());
+
+        if (selectedFile != null) {
+            System.out.println("[DEBUG] Selected XML file: " + selectedFile.getAbsolutePath());
+
+            // Salva il file caricato come riferimento nel controller
+            this.cdaFile = selectedFile;
+
+            // Notifica all'EventManager per avviare la conversione in HTML
+            System.out.println("[DEBUG] Sending convert_to_html notification for file: " + cdaFile.getAbsolutePath());
+            EventManager.getInstance().getEventObservable().notify("convert_to_html", cdaFile);
+
+        } else {
+            System.out.println("[DEBUG] No file selected.");
         }
     }
 

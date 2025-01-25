@@ -20,7 +20,6 @@
             <!-- Table View -->
             <TableView fx:id="dicomTable" prefHeight="342.0" prefWidth="578.0" styleClass="table-view" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="selectColumn" prefWidth="50.0" styleClass="checkbox" text="Select" />
                     <TableColumn fx:id="dicomIdColumn" prefWidth="50.0" text="ID" />
                     <TableColumn fx:id="fileNameColumn" prefWidth="164.0" text="File Name" />
                     <TableColumn fx:id="patientIdColumn" prefWidth="95.0" text="Patient ID" />
