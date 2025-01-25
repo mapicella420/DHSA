@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -99,7 +98,7 @@ public class ChangeScreen {
      * @param data a map containing the data to pass to the new controller.
      * @return the controller of the loaded FXML, or null if an error occurs.
      */
-    public Object switchScreenWithData(String path, Stage currentStage, String title, Map<String, Object> data) {
+    public Object switchScreenWithDataModal(String path, Stage currentStage, String title, Map<String, Object> data) {
         try {
             // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
@@ -117,6 +116,43 @@ public class ChangeScreen {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
 
+            // Configure the new stage
+            newStage.setTitle(title);
+            newStage.setResizable(true);
+
+            // Show the new stage without closing the current one
+            newStage.show();
+
+            return controller;
+        } catch (IOException ex) {
+            ex.printStackTrace(); // Print stack trace for debugging
+            Platform.runLater(() -> DialogUtil.showDialog(
+                    "Error loading the screen: " + path,
+                    Alert.AlertType.ERROR,
+                    "Screen Change Error"
+            ));
+        }
+        return null;
+    }
+
+    public Object switchScreenWithData(String path, Stage currentStage, String title, Map<String, Object> data) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
+            Parent root = loader.load();
+
+            // Retrieve the controller
+            Object controller = loader.getController();
+
+            // Pass data to the new controller if it implements DataReceiver
+            if (controller instanceof DataReceiver) {
+                ((DataReceiver) controller).receiveData(data);
+            }
+
+            // Create a new stage for the loaded scene
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            currentStage.close();
             // Configure the new stage
             newStage.setTitle(title);
             newStage.setResizable(true);

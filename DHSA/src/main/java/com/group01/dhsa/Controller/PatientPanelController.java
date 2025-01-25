@@ -11,7 +11,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -209,7 +208,7 @@ public class PatientPanelController {
         // Cambia schermata passando i dati al controller
         Stage currentStage = (Stage) statusLabel.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        Object controller = screenChanger.switchScreenWithData(
+        Object controller = screenChanger.switchScreenWithDataModal(
                 "/com/group01/dhsa/View/PatientCdaScreen.fxml",
                 currentStage,
                 "CDA List",

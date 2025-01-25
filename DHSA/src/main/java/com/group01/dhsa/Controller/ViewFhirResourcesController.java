@@ -209,7 +209,7 @@ public class ViewFhirResourcesController {
         System.out.println("Navigating to DICOM List screen...");
         Stage currentStage = (Stage) backButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreenWithData(
+        screenChanger.switchScreenWithDataModal(
                 "/com/group01/dhsa/View/DicomListScreen.fxml",
                 currentStage,
                 "DICOM Files",
