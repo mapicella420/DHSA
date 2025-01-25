@@ -9,7 +9,7 @@ public class RecordTarget {
     @XmlElement(name = "patientRole")
     private PatientRole patientRole;
 
-    // Getter e Setter
+
     public PatientRole getPatientRole() {
         return patientRole;
     }

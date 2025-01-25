@@ -15,7 +15,7 @@ public class PatientCDA {
     @XmlElement(name = "birthTime")
     private BirthTime birthTime;
 
-    // Getter e Setter
+
     public Name getName() {
         return name;
     }

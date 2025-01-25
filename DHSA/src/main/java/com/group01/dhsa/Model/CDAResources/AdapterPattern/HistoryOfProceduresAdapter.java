@@ -69,6 +69,7 @@ public class HistoryOfProceduresAdapter implements CdaSection<Component, Encount
             }
             textList.add(new Paragraph(procedureParagraph.getContent().concat(procedureItemContent.toString())));
 
+            //Entries are optional
             List<Entry> entryList = new ArrayList<>();
 
             for (Procedure procedure : procedures) {

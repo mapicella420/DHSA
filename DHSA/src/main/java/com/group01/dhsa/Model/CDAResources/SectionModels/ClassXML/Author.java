@@ -12,8 +12,9 @@ public class Author {
     @XmlElement(name = "assignedAuthor")
     private AssignedAuthor assignedAuthor;
 
-    @XmlElement(name = "represenedOrganization")
-    private RepresentedOrganization represenedOrganization;
+    //Optional
+    @XmlElement(name = "representedOrganization")
+    private RepresentedOrganization representedOrganization;
 
     public Author() {
     }
@@ -34,11 +35,11 @@ public class Author {
         this.assignedAuthor = assignedAuthor;
     }
 
-    public RepresentedOrganization getRepresenedOrganization() {
-        return represenedOrganization;
+    public RepresentedOrganization getRepresentedOrganization() {
+        return representedOrganization;
     }
 
-    public void setRepresenedOrganization(RepresentedOrganization represenedOrganization) {
-        this.represenedOrganization = represenedOrganization;
+    public void setRepresentedOrganization(RepresentedOrganization representedOrganization) {
+        this.representedOrganization = representedOrganization;
     }
 }

@@ -37,7 +37,6 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
         List<Object> textList = new ArrayList<>();
 
         String patientId = fhirObject.getSubject().getReference().split("/")[1];
-        String encounterId = fhirObject.getIdPart();
         List<Condition> conditionList = FHIRClient.getInstance().getPreviousConditionsForPatient(
                 patientId,
                 fhirObject.getActualPeriod().getStartElement()
@@ -96,6 +95,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 fhirObject.getActualPeriod().getStartElement()
         );
 
+        //Section is optional
         List<ComponentInner> componentInnerList = new ArrayList<>();
         if (procedureList != null && !procedureList.isEmpty()) {
             ComponentInner componentAnamnesi = new ComponentInner();
@@ -126,7 +126,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
 
             textAnamnesiList.add(procedureStructuredList);
 
-            //Entry
+            //Entry (optional)
             List<Entry> entryListAnamnesi = new ArrayList<>();
             sectionAnamnesi.setEntry(entryListAnamnesi);
 
@@ -189,6 +189,7 @@ public class ClinicalHistoryAdapter implements CdaSection<Component, Encounter> 
                 .getPreviousMedicationRequestsForPatient(patientId, fhirObject
                         .getActualPeriod().getStartElement());
 
+        //Section is optional
         if (medicationRequestList != null && !medicationRequestList.isEmpty()) {
             ComponentInner componentMedicationRequest = new ComponentInner();
             componentInnerList.add(componentMedicationRequest);

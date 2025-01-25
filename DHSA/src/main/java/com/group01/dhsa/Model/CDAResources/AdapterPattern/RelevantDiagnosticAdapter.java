@@ -32,6 +32,7 @@ public class RelevantDiagnosticAdapter implements CdaSection<Component, Encounte
                 "Esami diagnostici e/o di laboratorio significativi"
         ));
 
+        //Optional
         section.setTitle(new Title("Esami eseguiti durante il ricovero"));
 
         Text text = new Text();
@@ -91,6 +92,7 @@ public class RelevantDiagnosticAdapter implements CdaSection<Component, Encounte
 
             textList.add(imagingStudyTable);
 
+            //Entries are optional
             List<Entry> entryList = new ArrayList<>();
 
             for (ImagingStudy imagingStudy : imagingStudies) {

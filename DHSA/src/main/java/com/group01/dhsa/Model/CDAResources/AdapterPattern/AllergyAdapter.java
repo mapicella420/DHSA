@@ -35,7 +35,6 @@ public class AllergyAdapter implements CdaSection<Component, Encounter> {
         text.setValues(textList);
 
         String patientId = fhirObject.getSubject().getReference().split("/")[1];
-        String encounterId = fhirObject.getIdPart();
 
         List<AllergyIntolerance> allergies = FHIRClient.getInstance().getAllergiesForPatient(
                 patientId
@@ -71,6 +70,7 @@ public class AllergyAdapter implements CdaSection<Component, Encounter> {
                 textList.add(new Paragraph(allergyDetailBuilder));
             }
 
+            //Entries are optional
             List<Entry> entryList = new ArrayList<>();
 
             for (AllergyIntolerance allergy : allergies) {

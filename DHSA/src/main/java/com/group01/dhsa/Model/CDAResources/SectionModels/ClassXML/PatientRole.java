@@ -8,6 +8,7 @@ public class PatientRole {
     @XmlElement(name = "id")
     private Id id;
 
+    //Optional
     @XmlElement(name = "addr")
     private Addr addr;
 

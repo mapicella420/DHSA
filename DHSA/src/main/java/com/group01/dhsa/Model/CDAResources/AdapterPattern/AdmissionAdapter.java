@@ -6,7 +6,6 @@ import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AdmissionAdapter implements CdaSection<Component, Encounter>{
 
@@ -16,6 +15,7 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
      */
     @Override
     public Component toCdaObject(Encounter fhirObject) {
+
         Component component = new Component();
         StructuredBody structuredBody = new StructuredBody();
         component.setStructuredBody(structuredBody);
@@ -47,6 +47,7 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
                 patientId,
                 encounterId
         );
+
         List<Condition> conditions = FHIRClient.getInstance().getConditionsForPatientAndEncounter(
                 patientId,
                 encounterId
@@ -126,6 +127,7 @@ public class AdmissionAdapter implements CdaSection<Component, Encounter>{
 
         section.setText(text);
 
+        //Entries are optional
         if (observations != null && !observations.isEmpty()) {
             List<Entry> entry = new ArrayList<>();
             section.setEntry(entry);
