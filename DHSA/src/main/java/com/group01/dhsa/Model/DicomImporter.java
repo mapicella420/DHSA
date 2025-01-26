@@ -31,16 +31,17 @@ public class DicomImporter implements EventListener {
      *
      */
 
-    public static String mongodbURI(){
+
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";// MongoDB URI
+
+    public static void mongodbURI(){
         if (LoggedUser.getOrganization().equals("My Hospital")){
-            return "mongodb://admin:mongodb@localhost:27017";
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
 
         } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
-            return "mongodb://admin:mongodb@localhost:27018";
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
         }
-        return "";
     }
-    private static final String MONGO_URI = mongodbURI(); // MongoDB URI
 
     @Override
     public void handleEvent(String eventType, File file) {
@@ -112,6 +113,7 @@ public class DicomImporter implements EventListener {
      * @param dicomMetadata The metadata document to be saved.
      */
     private void saveToMongoDB(Document dicomMetadata) {
+        mongodbURI();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             // Connect to the MongoDB database and collection
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
