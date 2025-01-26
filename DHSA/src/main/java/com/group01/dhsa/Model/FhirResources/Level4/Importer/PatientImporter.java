@@ -60,7 +60,7 @@ public class PatientImporter implements FhirResourceImporter {
                 if (record.isMapped("Id") && !record.get("Id").isEmpty()) {
                     String patientId = record.get("Id");
                     if (patientExistsByIdentifier(client, patientId)) {
-                        System.out.println("Paziente con ID " + patientId + " già esistente. Skipping.");
+                        System.out.println("[ DEBUG ] Paziente con ID " + patientId + " già esistente. Skipping.");
                         continue;
                     }
                 }

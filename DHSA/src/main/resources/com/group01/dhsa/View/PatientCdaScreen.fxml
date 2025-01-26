@@ -43,6 +43,7 @@
 
         <!-- Buttons -->
         <HBox spacing="20.0" alignment="CENTER">
+            <Button fx:id="backButton" styleClass="button-blue" onAction="#onBackButtonClick" text="Back" />
             <Button fx:id="refreshButton" styleClass="button-blue" onAction="#onRefreshButtonClick" text="Refresh" />
             <Button fx:id="viewDetailsButton" text="View CDA Details" onAction="#onViewDetailsClick" disable="true" styleClass="button-red" />
         </HBox>

@@ -1,5 +1,6 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.Model.LoggedUser;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
@@ -291,12 +292,25 @@ public class DicomViewController {
 
     @FXML
     private void onBackButtonClick() {
-        stopPlayback();
-        System.out.println("[DEBUG] Returning to the DICOM List screen.");
         Stage stage = (Stage) dicomImageView.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", stage, "DICOM Files");
+
+        // Recupera il ruolo dell'utente loggato
+        String userRole = LoggedUser.getRole();
+
+        if ("Doctor".equalsIgnoreCase(userRole)) {
+            // Se il ruolo è Doctor, passa alla schermata DoctorPanelScreen
+            screenChanger.switchScreen("/com/group01/dhsa/View/DicomListScreen.fxml", stage, "DICOM Files");
+        } else if ("Patient".equalsIgnoreCase(userRole)) {
+            // Se il ruolo è Patient, passa alla schermata PatientPanelScreen
+            screenChanger.switchScreen("/com/group01/dhsa/View/PatientDicomScreen.fxml", stage, "Patient DICOM Files");
+        } else {
+            // Opzione predefinita in caso di ruolo sconosciuto
+            System.err.println("[ERROR] Unknown user role: " + userRole);
+            // Mostra un messaggio di errore o esegui un'azione alternativa
+        }
     }
+
 
     public void onCloseButtonClick(ActionEvent actionEvent) {
         stopPlayback();

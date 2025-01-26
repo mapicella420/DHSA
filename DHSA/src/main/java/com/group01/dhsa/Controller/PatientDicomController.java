@@ -163,7 +163,7 @@ public class PatientDicomController implements DataReceiver {
     private void onBackButtonClick() {
         Stage currentStage = (Stage) backButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanel.fxml", currentStage, "Patient Panel");
+        screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanelScreen.fxml", currentStage, "Patient Panel");
     }
 
     @FXML

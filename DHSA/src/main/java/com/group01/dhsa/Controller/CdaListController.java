@@ -378,7 +378,7 @@ public class CdaListController implements DataReceiver{
                 // Cambia schermata
                 Stage currentStage = (Stage) viewDetailsButton.getScene().getWindow();
                 ChangeScreen screenChanger = new ChangeScreen();
-                Object controller = screenChanger.switchScreenModal(
+                Object controller = screenChanger.switchScreen(
                         "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
                         currentStage,
                         "CDA Preview"

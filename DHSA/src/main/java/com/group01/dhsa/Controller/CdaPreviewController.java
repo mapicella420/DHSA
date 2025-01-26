@@ -1,6 +1,7 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -62,10 +63,25 @@ public class CdaPreviewController {
     }
 
     public void handleBackButton(ActionEvent actionEvent) {
-        System.out.println("Closing application...");
         Stage stage = (Stage) webView.getScene().getWindow();
-        stage.close();
+        ChangeScreen screenChanger = new ChangeScreen();
+
+        // Recupera il ruolo dell'utente loggato
+        String userRole = LoggedUser.getRole();
+
+        if ("Doctor".equalsIgnoreCase(userRole)) {
+            // Se il ruolo è Doctor, passa alla schermata DoctorPanelScreen
+            screenChanger.switchScreen("/com/group01/dhsa/View/CdaListScreen.fxml", stage, "CDA Files");
+        } else if ("Patient".equalsIgnoreCase(userRole)) {
+            // Se il ruolo è Patient, passa alla schermata PatientPanelScreen
+            screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanelScreen.fxml", stage, "Patient panel");
+        } else {
+            // Opzione predefinita in caso di ruolo sconosciuto
+            System.err.println("[ERROR] Unknown user role: " + userRole);
+            // Mostra un messaggio di errore o esegui un'azione alternativa
+        }
     }
+
 
     @FXML
     private void handlePrintButton(ActionEvent event) {

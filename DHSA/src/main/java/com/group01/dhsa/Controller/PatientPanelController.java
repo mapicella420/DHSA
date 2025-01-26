@@ -208,7 +208,7 @@ public class PatientPanelController {
         // Cambia schermata passando i dati al controller
         Stage currentStage = (Stage) statusLabel.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        Object controller = screenChanger.switchScreenWithDataModal(
+        Object controller = screenChanger.switchScreenWithData(
                 "/com/group01/dhsa/View/PatientCdaScreen.fxml",
                 currentStage,
                 "CDA List",
@@ -287,7 +287,7 @@ public class PatientPanelController {
         Stage currentStage = (Stage) statusLabel.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
 
-        Object controller = screenChanger.switchScreenWithDataModal(
+        Object controller = screenChanger.switchScreenWithData(
                 "/com/group01/dhsa/View/PatientDicomScreen.fxml",
                 currentStage,
                 "Dicom List",

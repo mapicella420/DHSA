@@ -1,6 +1,5 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -15,8 +14,6 @@ import javafx.stage.Stage;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -107,22 +104,6 @@ public class PatientCdaController  implements DataReceiver{
         System.out.println("[DEBUG] Table initialized with items.");
     }
 
-
-
-    private String mapField(String selectedField) {
-        switch (selectedField) {
-            case "CF":
-                return "patientCF";
-            case "Patient Name":
-                return "patientName";
-            case "Creation Date":
-                return "creationDate";
-            case "Author Name":
-                return "authorName";
-            default:
-                return "patientName"; // Default a "Patient Name" se nessun altro campo corrisponde
-        }
-    }
 
     private Document parseCdaXml(String xmlContent) {
         Document extractedData = new Document();
@@ -323,12 +304,15 @@ public class PatientCdaController  implements DataReceiver{
         // Torna alla schermata precedente
         Stage currentStage = (Stage) backButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanel.fxml", currentStage, "Patient Panel");
+        screenChanger.switchScreen("/com/group01/dhsa/View/PatientPanelScreen.fxml", currentStage, "Patient Panel");
     }
 
     @FXML
     private void onRefreshButtonClick() {
-        loadCdaDocuments();
+        // Torna alla schermata precedente
+        Stage currentStage = (Stage) backButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/PatientCdaScreen.fxml", currentStage, "Patient Panel");
     }
 
     @FXML
