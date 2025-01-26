@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="440.0" prefWidth="600.0" stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.TransferPanelController">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+                <VBox alignment="CENTER" prefHeight="315.0" prefWidth="600.0" spacing="20.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                      <Label styleClass="label-title" text="Transfer Patient">
+                          <font>
+                              <Font size="29.0" />
+                          </font>
+                      </Label>
+                      <StackPane fx:id="stackPaneDischarge" prefHeight="287.0" prefWidth="552.0">
+                          <children>
+                              <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                  <children>
+                                      <Button fx:id="backButton" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" styleClass="button-blue" text="Back" />
+                                      <MenuButton fx:id="patientIDMenu" disable="true" layoutX="88.0" layoutY="104.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID" />
+                                      <Label fx:id="errorLabel" layoutX="92.0" layoutY="117.0" />
+                                      <Button fx:id="searchButton" layoutX="300.0" layoutY="51.0" mnemonicParsing="false" onAction="#searchPatient">
+                                          <graphic>
+                                              <ImageView fitHeight="20" fitWidth="20">
+                                                  <image>
+                                                      <Image url="@../icons/search.png" />
+                                                  </image>
+                                              </ImageView>
+                                          </graphic>
+                                      </Button>
+                                      <TextField fx:id="lastNameField" layoutX="92.0" layoutY="52.0" prefHeight="26.0" prefWidth="184.0" promptText="Type Last Name" />
+                                      <!-- Red Button -->
+                                      <Button fx:id="transferPatientButton" disable="true" layoutX="216.0" layoutY="223.0" onAction="#transferSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Transfer Patient" />
+                                      <TextField fx:id="firstNameField" layoutX="92.0" layoutY="14.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
+                                      <MenuButton fx:id="encounterIDMenu" disable="true" layoutX="88.0" layoutY="144.0" mnemonicParsing="false" onAction="#switchSelectedEncounter" prefHeight="26.0" prefWidth="358.0" text="Encounter ID" />
+                              <MenuButton fx:id="organizationMenu" disable="true" layoutX="88.0" layoutY="183.0" mnemonicParsing="false" onAction="#switchSelectedOrganization" prefHeight="26.0" prefWidth="358.0" text="Select Organization" />
+                              <Label fx:id="labelTransfer" layoutX="396.0" layoutY="234.0" />
+                                  </children>
+                              </AnchorPane>
+                          </children>
+                      </StackPane>
+               </children></VBox>
+         </children>
+      </AnchorPane>
+   </center>
+   <top>
+          <MenuBar prefHeight="25.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <menus>
+                  <!-- File Menu -->
+                  <Menu styleClass="menu-bar" text="File">
+                      <items>
+                          <MenuItem onAction="#onCloseApp" styleClass="menu-item" text="Close App" />
+                      </items>
+                  </Menu>
+              </menus>
+          </MenuBar>
+   </top>
+</BorderPane>

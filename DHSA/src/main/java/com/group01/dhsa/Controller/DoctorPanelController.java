@@ -18,6 +18,9 @@ public class DoctorPanelController {
     private Button dischargePatientButton;
 
     @FXML
+    private Button transferPatientButton;
+
+    @FXML
     private MenuItem logout;
 
     private EventObservable eventManager;
@@ -151,5 +154,13 @@ public class DoctorPanelController {
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow(); // Recupera lo Stage dalla scena corrente
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/CDAListScreen.fxml", currentStage, "CDA Files");
+    }
+
+    @FXML
+    void onTransferPatientClick(ActionEvent event) {
+        System.out.println("Navigating to Transfer screen...");
+        Stage currentStage = (Stage) transferPatientButton.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+        screenChanger.switchScreen("/com/group01/dhsa/View/TransferPanelScreen.fxml", currentStage, "Transfer Patient");
     }
 }
