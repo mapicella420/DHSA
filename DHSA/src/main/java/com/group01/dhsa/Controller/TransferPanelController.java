@@ -11,6 +11,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -28,7 +29,8 @@ import java.util.List;
 
 public class TransferPanelController {
 
-    public Button previewButton;
+    @FXML
+    public Button previewTransferButton;
     @FXML
     private Button backButton;
 
@@ -71,6 +73,12 @@ public class TransferPanelController {
     @FXML
     private Label cdaStatus;
 
+    @FXML
+    private MenuItem menuItemMy;
+
+    @FXML
+    private MenuItem menuItemOther;
+
     private EventObservable eventManager;
     private File cdaFile;
     private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
@@ -106,11 +114,11 @@ public class TransferPanelController {
     private void onCdaGenerated(String eventType, File file) {
         if (file != null) {
             this.cdaFile = file;
-            previewButton.setDisable(false);
+            previewTransferButton.setDisable(false);
         }
     }
 
-    
+
     private void onCdaGenerationFailed(String eventType, File file) {
     }
 
@@ -133,9 +141,13 @@ public class TransferPanelController {
 
     @FXML
     void transferSelectedPatient() {
+        stackPaneDischarge.setVisible(false);
+        stackPaneCDA.setVisible(true);
+        previewTransferButton.setDisable(true);
+        cdaStatus.setText("Generating CDA...");
 
-        //EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
-
+        EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+//        uploadCda();
     }
 
     @FXML
@@ -207,6 +219,15 @@ public class TransferPanelController {
                 organizationMenu.getText().equals("Select Organization"));
 
         organizationMenu.setDisable(false);
+
+        MenuItem item1 = new MenuItem();
+        item1.setText("My Organization");
+        item1.setOnAction(this::switchSelectedOrganization);
+        MenuItem item2 = new MenuItem();
+        item2.setText("Other Organization");
+        item2.setOnAction(this::switchSelectedOrganization);
+        organizationMenu.getItems().add(item1);
+        organizationMenu.getItems().add(item2);
     }
 
     @FXML
@@ -238,6 +259,10 @@ public class TransferPanelController {
         encounterIDMenu.setDisable(true);
         encounterIDMenu.setText("Encounter ID");
         encounterIDMenu.getItems().clear();
+
+        organizationMenu.setDisable(true);
+        organizationMenu.setText("Select Organization");
+        organizationMenu.getItems().clear();
 
         String surname = lastNameField.getText();
         String name = firstNameField.getText();
@@ -322,7 +347,11 @@ public class TransferPanelController {
     void uploadCda() {
         try {
             EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
+
+
+            cdaStatus.setText("CDA uploaded successfully!");
         } catch (Exception e) {
+            cdaStatus.setText("Error uploading CDA: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -332,6 +361,37 @@ public class TransferPanelController {
     void switchPanel() {
         stackPaneDischarge.setVisible(true);
         stackPaneCDA.setVisible(false);
+    }
+
+    @FXML
+    void downloadPDF(ActionEvent event) {
+        try {
+            if (cdaFile != null && cdaFile.exists()) {
+                // Ottieni la finestra corrente
+                Stage currentStage = (Stage) previewTransferButton.getScene().getWindow();
+
+                // Cambia schermata usando ChangeScreen
+                ChangeScreen screenChanger = new ChangeScreen();
+                Object controller = screenChanger.switchScreen(
+                        "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
+                        currentStage,
+                        "Preview CDA Document"
+                );
+
+                // Imposta il file CDA nel controller della schermata di anteprima
+                if (controller instanceof CdaPreviewController) {
+                    ((CdaPreviewController) controller).setCdaFile(cdaFile);
+                    System.out.println("[DEBUG] CDA file passed to CdaPreviewController.");
+                } else {
+                    System.err.println("[ERROR] The controller is not an instance of CdaPreviewController.");
+                }
+            } else {
+                cdaStatus.setText("No CDA file available to preview.");
+            }
+        } catch (Exception e) {
+            cdaStatus.setText("Error opening CDA preview: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }
