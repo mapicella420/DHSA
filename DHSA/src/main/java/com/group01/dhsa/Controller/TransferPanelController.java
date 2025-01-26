@@ -62,6 +62,15 @@ public class TransferPanelController {
     @FXML
     private MenuButton organizationMenu;
 
+    @FXML
+    private StackPane stackPaneCDA;
+
+    @FXML
+    private Button backButton2;
+
+    @FXML
+    private Label cdaStatus;
+
     private EventObservable eventManager;
     private File cdaFile;
     private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
@@ -93,7 +102,7 @@ public class TransferPanelController {
     }
 
 
-    // Metodo per gestire la generazione completata della CDA
+
     private void onCdaGenerated(String eventType, File file) {
         if (file != null) {
             this.cdaFile = file;
@@ -101,7 +110,7 @@ public class TransferPanelController {
         }
     }
 
-    // Metodo per gestire il fallimento nella generazione della CDA
+    
     private void onCdaGenerationFailed(String eventType, File file) {
     }
 
@@ -310,8 +319,6 @@ public class TransferPanelController {
         return true;
     }
 
-
-    @FXML
     void uploadCda() {
         try {
             EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
@@ -321,5 +328,10 @@ public class TransferPanelController {
     }
 
 
+    @FXML
+    void switchPanel() {
+        stackPaneDischarge.setVisible(true);
+        stackPaneCDA.setVisible(false);
+    }
 
 }

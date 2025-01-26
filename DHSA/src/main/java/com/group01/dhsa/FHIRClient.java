@@ -806,36 +806,18 @@ public class FHIRClient {
 
 
     public List<AllergyIntolerance> getAllergiesForPatient(String patientId) {
-        System.out.println("[DEBUG] Fetching AllergyIntolerance for patient ID: " + patientId);
-
-        // Esegui la query
         Bundle bundle = client.search()
                 .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
                 .returnBundle(Bundle.class)
                 .execute();
-
-// Filtra le risorse localmente
-        List<AllergyIntolerance> allergies = bundle.getEntry().stream()
-                .map(entry -> (AllergyIntolerance) entry.getResource())
-                .filter(allergy -> allergy.getPatient().getReference().equals("Patient/" + patientId))
-                .toList();
-
-        System.out.println("[DEBUG] Filtered AllergyIntolerance: " + allergies);
-
-
-        System.out.println("[DEBUG] AllergyIntolerance fetch bundle: " + bundle);
-
-        if (!bundle.hasEntry() || bundle.getEntry().isEmpty()) {
-            System.err.println("[ERROR] No AllergyIntolerance resources found for patient ID: " + patientId);
-            return List.of();
-        }
-
-        // Converte i risultati in una lista di AllergyIntolerance
+        Set<String> uniqueAllergies = new HashSet<>();
         return bundle.getEntry().stream()
                 .map(entry -> (AllergyIntolerance) entry.getResource())
-                .collect(Collectors.toList());
+                .filter(allergyIntolerance -> uniqueAllergies.add(allergyIntolerance.getCode()
+                        .getCodingFirstRep().getDisplay()))
+                .toList();
     }
-
 
 
     /**

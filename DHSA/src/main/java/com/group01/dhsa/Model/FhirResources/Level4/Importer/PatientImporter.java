@@ -17,11 +17,12 @@ import org.hl7.fhir.r5.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.UUID;
 
 public class PatientImporter implements FhirResourceImporter {
     private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String MONGO_DB_NAME = "data_app";
     private static final String MONGO_COLLECTION_NAME = "users";
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
@@ -35,8 +36,19 @@ public class PatientImporter implements FhirResourceImporter {
             }
         }
     }
+
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
+
     @Override
     public void importCsvToFhir(String csvFilePath) {
+        setMongoUri();
         setFhirServerUrl();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(MONGO_DB_NAME);
@@ -97,7 +109,9 @@ public class PatientImporter implements FhirResourceImporter {
                 Document userDocument = new Document("username", username)
                         .append("passwordHash", BCrypt.hashpw(password, BCrypt.gensalt()))
                         .append("fhirID", patientId)
-                        .append("role", "patient");
+                        .append("organization", LoggedUser.getOrganization())
+                        .append("role", "patient")
+                        .append("createdAt", new Date());
                 usersCollection.insertOne(userDocument);
 
                 // Salva le credenziali nel file .txt

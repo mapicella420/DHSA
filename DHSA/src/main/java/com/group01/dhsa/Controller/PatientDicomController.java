@@ -1,9 +1,11 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +18,9 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class PatientDicomController implements DataReceiver {
 
@@ -53,15 +55,25 @@ public class PatientDicomController implements DataReceiver {
     private final ObservableList<Document> dicomFiles = FXCollections.observableArrayList();
     private FilteredList<Document> filteredList;
 
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "dicomFiles";
 
     private Document selectedDocument = null;
     private String patientName;
 
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
+
     @FXML
     public void initialize() {
+        setMongoUri();
         System.out.println("[DEBUG] Initializing PatientDicomController...");
 
         // Configurazione delle colonne
@@ -129,10 +141,15 @@ public class PatientDicomController implements DataReceiver {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
-            List<Document> documents = collection.find(new Document("patientName", patientName)).into(new java.util.ArrayList<>());
+            List<Document> documents = collection.find().into(new ArrayList<>());
 
             for (Document doc : documents) {
-                dicomFiles.add(doc);
+                String dbPatientName = doc.getString("patientName");
+
+
+                if (isNameMatch(dbPatientName, patientName)) {
+                    dicomFiles.add(doc);
+                }
             }
 
             System.out.println("[DEBUG] Loaded " + dicomFiles.size() + " DICOM files for patient: " + patientName);
@@ -140,6 +157,30 @@ public class PatientDicomController implements DataReceiver {
             System.err.println("[ERROR] Error loading DICOM files: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private boolean isNameMatch(String dbPatientName, String inputPatientName) {
+
+        String[] dbParts = dbPatientName.split(" ");
+        String[] inputParts = inputPatientName.split(" ");
+
+
+        if (dbParts.length <= inputParts.length) {
+            for (String dbPart : dbParts) {
+                if (!Arrays.asList(inputParts).contains(dbPart)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        for (String inputPart : inputParts) {
+            if (!Arrays.asList(dbParts).contains(inputPart)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private String getFieldValue(Document document, String fieldName) {
@@ -173,6 +214,7 @@ public class PatientDicomController implements DataReceiver {
 
     @FXML
     private void onViewDetailsClick() {
+        setMongoUri();
         if (selectedDocument != null) {
             try {
                 String filePath = getFieldValue(selectedDocument, "filePath");
@@ -191,6 +233,7 @@ public class PatientDicomController implements DataReceiver {
 
     @Override
     public void receiveData(Map<String, Object> data) {
+        setMongoUri();
         if (data != null && data.containsKey("patientName")) {
             this.patientName = (String) data.get("patientName");
             loadDicomFiles();
@@ -200,6 +243,7 @@ public class PatientDicomController implements DataReceiver {
 
     @FXML
     private void onViewImageClick() {
+        setMongoUri();
         if (selectedDocument != null) {
             System.out.println("[DEBUG] Selected file: " + selectedDocument.toJson());
 
