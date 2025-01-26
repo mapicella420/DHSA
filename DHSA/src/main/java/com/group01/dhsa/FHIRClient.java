@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.DateClientParam;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.HashSet;
@@ -17,11 +18,14 @@ import java.util.stream.Collectors;
  * This class follows the Singleton design pattern to ensure a single instance.
  */
 public class FHIRClient {
+
     // Singleton instance of the FHIRClient
     private static FHIRClient instance;
 
     // HAPI FHIR Generic Client for interacting with the FHIR server
     private IGenericClient client;
+
+    private static String FHIR_SERVER_URL;
 
     /**
      * Private constructor to initialize the FHIR client and set up the server URL.
@@ -39,10 +43,26 @@ public class FHIRClient {
      * @return The Singleton instance of FHIRClient.
      */
     public static FHIRClient getInstance() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                setFhirServerUrl("http://localhost:8081/fhir");
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                setFhirServerUrl("http://localhost:8080/fhir");
+            }
+        }
+
         if (instance == null) {
             instance = new FHIRClient();
         }
         return instance;
+    }
+
+    private static void setFhirServerUrl(String fhirServerUrl) {
+        FHIR_SERVER_URL = fhirServerUrl;
+    }
+
+    public static void removeClient() {
+        instance = null;
     }
 
     /**

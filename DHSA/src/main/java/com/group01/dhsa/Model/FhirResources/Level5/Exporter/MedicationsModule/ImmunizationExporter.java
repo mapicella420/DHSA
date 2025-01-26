@@ -3,6 +3,7 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.MedicationsModule;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
+import com.group01.dhsa.Model.LoggedUser;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Immunization;
@@ -17,10 +18,21 @@ import java.util.Map;
  */
 public class ImmunizationExporter implements FhirResourceExporter {
 
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
 
     @Override
     public List<Map<String, String>> exportResources() {
+        setFhirServerUrl();
         List<Map<String, String>> immunizationsList = new ArrayList<>();
 
         try {
@@ -51,6 +63,7 @@ public class ImmunizationExporter implements FhirResourceExporter {
 
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
+        setFhirServerUrl();
         List<Map<String, String>> immunizationsList = new ArrayList<>();
 
         try {
@@ -89,6 +102,7 @@ public class ImmunizationExporter implements FhirResourceExporter {
     }
 
     private boolean matchesImmunization(Immunization immunization, String searchTerm) {
+        setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();
 
         // Match Id
@@ -138,6 +152,7 @@ public class ImmunizationExporter implements FhirResourceExporter {
     }
 
     private Map<String, String> extractImmunizationData(Immunization immunization) {
+        setFhirServerUrl();
         Map<String, String> immunizationData = new HashMap<>();
         immunizationData.put("Id", immunization.getIdElement().getIdPart());
         immunizationData.put("Status", immunization.hasStatus() ? immunization.getStatus().toCode() : "N/A");

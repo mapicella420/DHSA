@@ -103,7 +103,7 @@ public class ViewFhirResourcesController {
     @FXML
     private void initialize() {
         resourceTypeChoiceBox.getItems().addAll(
-                "Patient", "Device", "Organization", "Encounter", "Allerg",
+                "Patient", "Device", "Organization", "Encounter", "Allergy",
                 "Careplan", "Condition", "Procedure", "ImagingStudy",
                 "Observation", "Immunization", "MedicationRequest"
         );

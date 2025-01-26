@@ -1,6 +1,7 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -75,7 +76,7 @@ public class CdaListController implements DataReceiver{
 
     private FilteredList<Document> filteredList;
 
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "cdaDocuments";
 
@@ -87,8 +88,20 @@ public class CdaListController implements DataReceiver{
         this.eventManager = EventManager.getInstance().getEventObservable();
     }
 
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+    }
+
     @FXML
     public void initialize() {
+        setMongoUri();
+
         // Configura le colonne con il tipo corretto (Document)
         creationDateColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "creationDate")));
         patientNameColumn.setCellValueFactory(data -> new SimpleStringProperty(getFieldValue(data.getValue(), "patientName")));
@@ -136,6 +149,7 @@ public class CdaListController implements DataReceiver{
 
     @Override
     public void receiveData(Map<String, Object> data) {
+        setMongoUri();
         this.patientName = (String) data.get("patientName");
         loadCdaData();
     }
@@ -328,6 +342,7 @@ public class CdaListController implements DataReceiver{
 
     @FXML
     private void onViewDetailsClick() {
+        setMongoUri();
         if (selectedDocument != null) {
             if (!selectedDocument.containsKey("_id") || selectedDocument.get("_id") == null) {
                 showAlert("Error", "Invalid Document", "The selected document does not have a valid ID.");
@@ -402,6 +417,7 @@ public class CdaListController implements DataReceiver{
 
     @FXML
     private void onRefreshButtonClick() {
+        setMongoUri();
         cdaDocuments.clear();
         loadCdaDocuments();
         filteredList = new FilteredList<>(cdaDocuments, p -> true);

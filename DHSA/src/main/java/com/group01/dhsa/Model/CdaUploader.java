@@ -17,15 +17,29 @@ import java.io.StringReader;
 import java.nio.file.*;
 import java.util.*;
 
+import static com.mongodb.client.model.Filters.eq;
+
 /**
  * The `CdaUploader` class listens for "cda_upload" events, reads CDA files,
  * and uploads their content to a MongoDB collection.
  */
 public class CdaUploader implements EventListener {
     // MongoDB connection configuration
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017"; // MongoDB URI
+
     private static final String DATABASE_NAME = "medicalData"; // Database name
     private static final String COLLECTION_NAME = "cdaDocuments"; // Collection name for CDA documents
+
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017"; // MongoDB URI
+
+    private static void mongodbURI(){
+
+        if (LoggedUser.getOrganization().equals("My Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
 
     /**
      * Handles events triggered by the EventManager.
@@ -34,6 +48,8 @@ public class CdaUploader implements EventListener {
      * @param eventType The type of the event (e.g., "cda_upload").
      * @param file      The file associated with the event.
      */
+
+
     @Override
     public void handleEvent(String eventType, File file) {
         if ("cda_upload".equals(eventType)) {
@@ -69,6 +85,7 @@ public class CdaUploader implements EventListener {
                     .append("patientName", patientName)
                     .append("patientData", patientData);
 
+            mongodbURI();
             // Connessione a MongoDB e salvataggio del documento
             try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
                 MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);

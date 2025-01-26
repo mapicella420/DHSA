@@ -9,6 +9,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
+import com.group01.dhsa.Model.LoggedUser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.hl7.fhir.r5.model.*;
@@ -19,14 +20,24 @@ import java.time.format.DateTimeParseException;
 import java.util.UUID;
 
 public class PatientImporter implements FhirResourceImporter {
-    private static final String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+    private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
     private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String MONGO_DB_NAME = "data_app";
     private static final String MONGO_COLLECTION_NAME = "users";
     private static final String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
 
+    private static void setFhirServerUrl() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8081/fhir";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                FHIR_SERVER_URL = "http://localhost:8080/fhir";
+            }
+        }
+    }
     @Override
     public void importCsvToFhir(String csvFilePath) {
+        setFhirServerUrl();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(MONGO_DB_NAME);
             MongoCollection<Document> usersCollection = database.getCollection(MONGO_COLLECTION_NAME);

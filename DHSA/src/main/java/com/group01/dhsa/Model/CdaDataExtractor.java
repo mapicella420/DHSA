@@ -190,7 +190,9 @@ public class CdaDataExtractor {
             }
             Element legalAuthTimeElement = (Element) doc.getElementsByTagName("legalAuthenticator").item(0);
             data.put("authenticatorTime", formatDate(legalAuthTimeElement.getElementsByTagName("time")
-                    .item(0).getTextContent()));
+                    .item(0).getAttributes()
+                    .getNamedItem("value")
+                    .getNodeValue()));
             data.put("authenticatorSignatureCode", legalAuthTimeElement.getElementsByTagName("signatureCode")
                     .item(0).getAttributes().getNamedItem("code").getNodeValue());
         }

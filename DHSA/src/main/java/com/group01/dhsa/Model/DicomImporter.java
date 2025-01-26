@@ -21,7 +21,7 @@ import java.io.File;
 public class DicomImporter implements EventListener {
 
     // MongoDB connection details
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "dicomFiles";
 
@@ -29,9 +29,20 @@ public class DicomImporter implements EventListener {
      * Handles events received by the `DicomImporter`.
      * If the event type is "dicom_upload", it triggers the DICOM file import process.
      *
-     * @param eventType The type of the event, e.g., "dicom_upload".
-     * @param file      The DICOM file associated with the event.
      */
+
+
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";// MongoDB URI
+
+    public static void mongodbURI(){
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
+
     @Override
     public void handleEvent(String eventType, File file) {
         if ("dicom_upload".equals(eventType)) {
@@ -81,7 +92,11 @@ public class DicomImporter implements EventListener {
         metadata.append("fileName", file.getName())
                 .append("filePath", file.getAbsolutePath())
                 .append("patientName", dicomObject.getString(Tag.PatientName)) // Patient's Name
+                .append("patientId", dicomObject.getString(Tag.PatientID))
                 .append("modality", dicomObject.getString(Tag.Modality)) // Imaging modality (e.g., CT, MRI)
+                .append("studyInstanceUID", dicomObject.getString(Tag.StudyInstanceUID))
+                .append("studyID", dicomObject.getString(Tag.StudyID))
+                .append("studyDate", dicomObject.getString(Tag.StudyDate))
                 .append("studyTime", dicomObject.getString(Tag.StudyTime)) // Study time
                 .append("seriesInstanceUID", dicomObject.getString(Tag.SeriesInstanceUID)) // Series UID
                 .append("sliceThickness", dicomObject.getString(Tag.SliceThickness)) // Slice thickness
@@ -98,6 +113,7 @@ public class DicomImporter implements EventListener {
      * @param dicomMetadata The metadata document to be saved.
      */
     private void saveToMongoDB(Document dicomMetadata) {
+        mongodbURI();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             // Connect to the MongoDB database and collection
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);

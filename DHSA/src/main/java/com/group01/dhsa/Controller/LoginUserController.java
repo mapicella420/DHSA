@@ -136,41 +136,32 @@ public class LoginUserController {
     }
 
     private String validateCredentials(String username, String password, String organization) {
-        try (MongoClient mongoClient = MongoClients.create(organization.equals("My Hospital")
-                ? "mongodb://admin:mongodb@localhost:27017"
-                : "mongodb://admin:mongodb@localhost:27018")) {
+        String connectionString="";
+
+        if (organization.equals("My Hospital")) {
+            connectionString = "mongodb://admin:mongodb@localhost:27017";
+        } else if (organization.equals("Other Hospital")) {
+            connectionString = "mongodb://admin:mongodb@localhost:27018";
+        }
+        try (MongoClient mongoClient = MongoClients.create(connectionString)){
             MongoDatabase mongoDatabase = mongoClient.getDatabase("data_app");
             MongoCollection<Document> usersCollection = mongoDatabase.getCollection("users");
             Document user = usersCollection.find(eq("username", username)).first();
 
-            if (organization.equals("My Hospital")) {
-
-                if (user != null) {
-                    String storedHash = user.getString("passwordHash");
-                    if (BCrypt.checkpw(password, storedHash)) {
-                        LoggedUser userLog = LoggedUser.getInstance();
-                        userLog.setFhirId(user.getString("fhirID"));
-                        System.out.println(userLog.getFhirId());
-                        return user.getString("role");
-                    }
-
+            if (user != null) {
+                String storedHash = user.getString("passwordHash");
+                if (BCrypt.checkpw(password, storedHash)) {
+                    LoggedUser userLog = LoggedUser.getInstance();
+                    userLog.setFhirId(user.getString("fhirID"));
+                    LoggedUser.setOrganization(user.getString("organization"));
+                    LoggedUser.setRole(user.getString("role"));
+                    return user.getString("role");
                 }
 
-            } else {
-                if (user != null) {
-                    String storedHash = user.getString("passwordHash");
-                    if (BCrypt.checkpw(password, storedHash)) {
-
-                        LoggedUser userLog = LoggedUser.getInstance();
-                        userLog.setFhirId(user.getString("fhirID"));
-                        return user.getString("role");
-                    }
-
-
-                }
             }
-            return null;
+
         }
+        return null;
     }
 
 }

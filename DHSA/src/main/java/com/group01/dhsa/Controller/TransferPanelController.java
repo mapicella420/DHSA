@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
-import com.group01.dhsa.Model.CdaDataExtractor;
 import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
@@ -13,43 +12,28 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.bson.Document;
-import org.hl7.fhir.r5.model.*;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.hl7.fhir.r5.model.Bundle;
+import org.hl7.fhir.r5.model.Encounter;
+import org.hl7.fhir.r5.model.Patient;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-public class DischargePanelController {
+public class TransferPanelController {
 
     public Button previewButton;
-    public Button uploadButton;
     @FXML
     private Button backButton;
 
     @FXML
-    private Button backButton2;
-
-    @FXML
-    private Label cdaStatus;
-
-    @FXML
-    private Button dischargePatientButton;
+    private Button transferPatientButton;
 
     @FXML
     private Label errorLabel;
@@ -67,13 +51,16 @@ public class DischargePanelController {
     private Button searchButton;
 
     @FXML
-    private StackPane stackPaneCDA;
-
-    @FXML
     private StackPane stackPaneDischarge;
 
     @FXML
     private MenuButton encounterIDMenu;
+
+    @FXML
+    private Label labelTransfer;
+
+    @FXML
+    private MenuButton organizationMenu;
 
     private EventObservable eventManager;
     private File cdaFile;
@@ -81,7 +68,7 @@ public class DischargePanelController {
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "cdaDocuments";
 
-    public DischargePanelController() {
+    public TransferPanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
     }
 
@@ -111,13 +98,11 @@ public class DischargePanelController {
         if (file != null) {
             this.cdaFile = file;
             previewButton.setDisable(false);
-            cdaStatus.setText("CDA generated successfully!");
         }
     }
 
     // Metodo per gestire il fallimento nella generazione della CDA
     private void onCdaGenerationFailed(String eventType, File file) {
-        cdaStatus.setText("Failed to generate CDA. Please try again.");
     }
 
 
@@ -131,33 +116,23 @@ public class DischargePanelController {
 
     @FXML
     void backToHome() {
-        Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
+        Stage currentStage = (Stage) transferPatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml",currentStage,"Doctor Dashboard");
     }
 
-    @FXML
-    void switchPanel() {
-        stackPaneDischarge.setVisible(true);
-        stackPaneCDA.setVisible(false);
-    }
 
     @FXML
-    void dischargeSelectedPatient() {
-        // Disabilita i pulsanti e aggiorna lo stato dell'interfaccia
-        stackPaneDischarge.setVisible(false);
-        stackPaneCDA.setVisible(true);
-        previewButton.setDisable(true);
-        cdaStatus.setText("Generating CDA...");
+    void transferSelectedPatient() {
 
-        // Notifica al modello di generare la CDA
-        EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+        //EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+
     }
 
     @FXML
     void onCloseApp() {
         System.out.println("Closing application...");
-        Stage stage = (Stage) dischargePatientButton.getScene().getWindow();
+        Stage stage = (Stage) transferPatientButton.getScene().getWindow();
         stage.close();
     }
 
@@ -199,8 +174,9 @@ public class DischargePanelController {
             }
         }
 
-        dischargePatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
-                encounterIDMenu.getText().equals("Encounter ID"));
+        transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
+                encounterIDMenu.getText().equals("Encounter ID") ||
+                organizationMenu.getText().equals("Select Organization"));
     }
 
 
@@ -217,8 +193,30 @@ public class DischargePanelController {
             encounterIDMenu.setText(caller.getText());
             caller.setText(oldCaller);
         }
-        dischargePatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
-                encounterIDMenu.getText().equals("Encounter ID"));
+        transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
+                encounterIDMenu.getText().equals("Encounter ID") ||
+                organizationMenu.getText().equals("Select Organization"));
+
+        organizationMenu.setDisable(false);
+    }
+
+    @FXML
+    void switchSelectedOrganization(ActionEvent event) {
+
+        if (organizationMenu.getText().equals("Select Organization")) {
+            MenuItem caller = (MenuItem) event.getSource();
+            organizationMenu.setText(caller.getText());
+            organizationMenu.getItems().remove(caller);
+        }
+        else {
+            MenuItem caller = (MenuItem) event.getSource();
+            String oldCaller = organizationMenu.getText();
+            organizationMenu.setText(caller.getText());
+            caller.setText(oldCaller);
+        }
+        transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
+                encounterIDMenu.getText().equals("Encounter ID") ||
+                organizationMenu.getText().equals("Select Organization"));
     }
 
     @FXML
@@ -275,37 +273,6 @@ public class DischargePanelController {
 
     }
 
-    @FXML
-    void downloadPDF(ActionEvent event) {
-        try {
-            if (cdaFile != null && cdaFile.exists()) {
-                // Ottieni la finestra corrente
-                Stage currentStage = (Stage) previewButton.getScene().getWindow();
-
-                // Cambia schermata usando ChangeScreen
-                ChangeScreen screenChanger = new ChangeScreen();
-                Object controller = screenChanger.switchScreen(
-                        "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
-                        currentStage,
-                        "Preview CDA Document"
-                );
-
-                // Imposta il file CDA nel controller della schermata di anteprima
-                if (controller instanceof CdaPreviewController) {
-                    ((CdaPreviewController) controller).setCdaFile(cdaFile);
-                    System.out.println("[DEBUG] CDA file passed to CdaPreviewController.");
-                } else {
-                    System.err.println("[ERROR] The controller is not an instance of CdaPreviewController.");
-                }
-            } else {
-                cdaStatus.setText("No CDA file available to preview.");
-            }
-        } catch (Exception e) {
-            cdaStatus.setText("Error opening CDA preview: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
 
     private boolean checkEncounter(Encounter encounter){
 
@@ -322,7 +289,7 @@ public class DischargePanelController {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
-            List<Document> documents = collection.find().into(new java.util.ArrayList<>());
+            List<Document> documents = collection.find().into(new ArrayList<>());
 
             for (Document doc : documents) {
                 System.out.println("[DEBUG] Loaded document: " + doc.toJson());
@@ -347,13 +314,8 @@ public class DischargePanelController {
     @FXML
     void uploadCda() {
         try {
-            // Notifica all'EventManager
             EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
-
-            // Aggiorna lo stato
-            cdaStatus.setText("CDA uploaded successfully!");
         } catch (Exception e) {
-            cdaStatus.setText("Error uploading CDA: " + e.getMessage());
             e.printStackTrace();
         }
     }

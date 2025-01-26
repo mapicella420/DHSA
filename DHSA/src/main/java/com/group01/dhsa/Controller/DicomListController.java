@@ -1,6 +1,7 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -65,14 +66,25 @@ public class DicomListController implements DataReceiver {
 
     private FilteredList<Document> filteredList;
 
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "dicomFiles";
 
     private Document selectedFile = null; // Documento selezionato
 
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+    }
+
     @FXML
     public void initialize() {
+        setMongoUri();
         dicomIdColumn.setPrefWidth(35);
         dicomIdColumn.setResizable(false);
         fileNameColumn.setPrefWidth(200);
@@ -139,6 +151,7 @@ public class DicomListController implements DataReceiver {
 
     @Override
     public void receiveData(Map<String, Object> data) {
+        setMongoUri();
         this.patientName = (String) data.get("patientName");
         loadDicomData();
     }

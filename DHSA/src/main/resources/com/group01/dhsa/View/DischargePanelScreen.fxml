@@ -7,16 +7,15 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <BorderPane stylesheets="@../styles/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.group01.dhsa.Controller.DischargePanelController">
     <left>
         <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -41,12 +40,12 @@
                     <children>
                         <AnchorPane prefHeight="200.0" prefWidth="200.0">
                             <children>
-                                <Button fx:id="backButton" styleClass="button-blue" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" text="Back" />
+                                <Button fx:id="backButton" layoutX="66.0" layoutY="230.0" mnemonicParsing="false" onAction="#backToHome" styleClass="button-blue" text="Back" />
                                 <MenuButton fx:id="patientIDMenu" disable="true" layoutX="92.0" layoutY="144.0" mnemonicParsing="false" onAction="#switchSelectedPatient" prefHeight="26.0" prefWidth="358.0" text="Patient ID" />
                                 <Label fx:id="errorLabel" layoutX="92.0" layoutY="117.0" />
                                 <Button fx:id="searchButton" layoutX="304.0" layoutY="79.0" mnemonicParsing="false" onAction="#searchPatient">
                                     <graphic>
-                                        <ImageView fitWidth="20" fitHeight="20">
+                                        <ImageView fitHeight="20" fitWidth="20">
                                             <image>
                                                 <Image url="@../icons/search.png" />
                                             </image>
@@ -67,9 +66,11 @@
                         <AnchorPane prefHeight="298.0" prefWidth="558.0">
                             <children>
                                 <Button fx:id="backButton2" layoutX="71.0" layoutY="242.0" mnemonicParsing="false" onAction="#switchPanel" text="Back" />
-                                <Button fx:id="uploadButton" layoutX="385.0" layoutY="238.0" mnemonicParsing="false" styleClass="button-red" onAction="#uploadCda" text="Upload CDA"/>
-                                <Label fx:id="cdaStatus" layoutX="84.0" layoutY="79.0" text="Preparing CDA..." />
-                                <ProgressIndicator fx:id="progressCDA" layoutX="71.0" layoutY="111.0" progress="0.0" />
+                                <Button fx:id="uploadButton" layoutX="385.0" layoutY="238.0" mnemonicParsing="false" onAction="#uploadCda" styleClass="button-red" text="Upload CDA" />
+                                <Label fx:id="cdaStatus" layoutX="84.0" layoutY="79.0" text="Preparing CDA...">
+                           <font>
+                              <Font size="36.0" />
+                           </font></Label>
                                 <Button fx:id="previewButton" disable="true" layoutX="374.0" layoutY="75.0" mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
                             </children>
                         </AnchorPane>

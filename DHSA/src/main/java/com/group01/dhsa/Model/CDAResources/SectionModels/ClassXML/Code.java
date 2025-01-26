@@ -24,6 +24,12 @@ public class Code {
     public Code() {
     }
 
+    public Code(String code, String codeSystem, String codeSystemName) {
+        this.code = code;
+        this.codeSystem = codeSystem;
+        this.codeSystemName = codeSystemName;
+    }
+
     public Code(String code, String codeSystem, String codeSystemName, String displayName) {
         this.code = code;
         this.codeSystem = codeSystem;

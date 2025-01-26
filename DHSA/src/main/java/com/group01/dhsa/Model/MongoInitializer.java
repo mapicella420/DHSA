@@ -44,6 +44,7 @@ public class MongoInitializer {
                         .append("passwordHash", adminPasswordHash)
                         .append("role", "doctor")
                         .append("fhirID", doctorFhirId)
+                        .append("organization", "My Hospital")
                         .append("createdAt", new Date());
 
                 // Insert the user into the collection
@@ -79,6 +80,7 @@ public class MongoInitializer {
                         .append("passwordHash", adminPasswordHash)
                         .append("role", "doctor")
                         .append("fhirID", otherDocFhirId)
+                        .append("organization", "Other Hospital")
                         .append("createdAt", new Date());
 
                 // Insert the user into the collection
