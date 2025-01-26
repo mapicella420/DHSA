@@ -154,6 +154,7 @@ public class LoginUserController {
                     LoggedUser userLog = LoggedUser.getInstance();
                     userLog.setFhirId(user.getString("fhirID"));
                     LoggedUser.setOrganization(user.getString("organization"));
+                    LoggedUser.setRole(user.getString("role"));
                     return user.getString("role");
                 }
 

@@ -18,6 +18,8 @@ public class LoggedUser {
     // The organization
     private static String organization;
 
+    private static String role;
+
     /**
      * Private constructor to prevent instantiation from outside the class.
      * This enforces the Singleton pattern by restricting object creation.
@@ -62,6 +64,7 @@ public class LoggedUser {
     public void logout() {
         fhirId = null; // Clear the FHIR ID
         organization = null;
+        role = null;
         FHIRClient.removeClient();
     }
 
@@ -71,5 +74,13 @@ public class LoggedUser {
 
     public static void setOrganization(String organization) {
         LoggedUser.organization = organization;
+    }
+
+    public static String getRole() {
+        return role;
+    }
+
+    public static void setRole(String role) {
+        LoggedUser.role = role;
     }
 }
