@@ -22,13 +22,13 @@
                 <Menu styleClass="menu-bar" text="Clinical Data">
                     <items>
                         <MenuItem onAction="#onViewClinicalData" styleClass="menu-item" text="View Clinical Data" />
+                        <MenuItem onAction="#onViewDicomData" styleClass="menu-item" text="View Dicom Data" />
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
     </top>
 
-    <!-- Main Content -->
     <!-- Main Content -->
     <center>
         <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20;">

@@ -254,4 +254,53 @@ public class PatientPanelController {
     }
 
 
+    @FXML
+    public void onViewDicomData(ActionEvent actionEvent) {
+        // Recupera l'identificativo del paziente loggato
+        String patientIdentifier = LoggedUser.getInstance().getFhirId();
+        if (patientIdentifier == null || patientIdentifier.isEmpty()) {
+            statusLabel.setText("Error: Logged user identifier is missing.");
+            return;
+        }
+
+        // Ottieni l'ID del paziente tramite il client FHIR
+        String patientId = FHIRClient.getInstance().getPatientIdByIdentifier(patientIdentifier);
+        if (patientId == null) {
+            statusLabel.setText("Error: Could not resolve patient ID.");
+            return;
+        }
+
+        // Recupera il nome del paziente
+        String patientName = FHIRClient.getInstance().getPatientFromIdentifier(patientId).getNameFirstRep().getNameAsSingleString();
+        if (patientName == null || patientName.isEmpty()) {
+            statusLabel.setText("Error: Could not retrieve patient name.");
+            return;
+        }
+
+        // Rimuovi prefissi come "Mr." o "Mrs."
+        String normalizedPatientName = patientName.replaceAll("^(Mr\\.\\s*|Mrs\\.\\s*)", "").trim();
+
+        // Prepara i dati da passare alla nuova schermata
+        Map<String, Object> data = Map.of("patientName", normalizedPatientName);
+
+        // Cambia schermata passando i dati al controller
+        Stage currentStage = (Stage) statusLabel.getScene().getWindow();
+        ChangeScreen screenChanger = new ChangeScreen();
+
+        Object controller = screenChanger.switchScreenWithDataModal(
+                "/com/group01/dhsa/View/PatientDicomScreen.fxml",
+                currentStage,
+                "Dicom List",
+                data
+        );
+
+        // Verifica che il controller sia un'istanza di PatientDicomController
+        if (controller instanceof PatientDicomController) {
+            ((PatientDicomController) controller).receiveData(data);
+            System.out.println("[DEBUG] Normalized patient name passed to PatientDicomController: " + normalizedPatientName);
+        } else {
+            System.err.println("[ERROR] Controller is not an instance of PatientDicomController.");
+        }
+    }
+
 }

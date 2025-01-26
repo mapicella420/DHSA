@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="554.0" prefWidth="671.0" stylesheets="@../styles/styles.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.group01.dhsa.Controller.PatientDicomController">
+
+    <children>
+        <VBox alignment="CENTER" spacing="20" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <!-- Title -->
+            <Label alignment="CENTER" styleClass="label-title" text="DICOM Files" />
+
+            <!-- Search Bar -->
+            <HBox alignment="CENTER" spacing="10">
+                <Label styleClass="label" text="Search by:" />
+                <ComboBox fx:id="searchFieldSelector" promptText="Select Field" styleClass="combo-box" HBox.hgrow="NEVER" />
+                <TextField fx:id="searchField" promptText="Enter search term..." styleClass="text-field" HBox.hgrow="ALWAYS" />
+            </HBox>
+
+            <!-- Table View -->
+            <TableView fx:id="dicomTable" prefHeight="342.0" prefWidth="578.0" styleClass="table-view" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="fileNameColumn" text="File Name" />
+                    <TableColumn fx:id="patientNameColumn" text="Patient Name" />
+                    <TableColumn fx:id="modalityColumn" text="Modality" />
+                    <TableColumn fx:id="studyDateColumn" text="Study Date" />
+                </columns>
+            </TableView>
+
+            <!-- Buttons -->
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="backButton" onAction="#onBackButtonClick" styleClass="button-blue" text="Back" />
+                <Button fx:id="refreshButton" onAction="#onRefreshButtonClick" styleClass="button-blue" text="Refresh" />
+                <Button fx:id="viewDetailsButton" disable="true" onAction="#onViewImageClick" styleClass="button-red" text="View DICOM Image" />
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
