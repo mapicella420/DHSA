@@ -148,7 +148,15 @@ public class CdaDocumentCreator {
      * @return The next CDA ID.
      */
     private int calculateNextCdaId() {
-        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
+        String url = "";
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+        try (MongoClient mongoClient = MongoClients.create(url)) {
             // Connessione al database e alla collezione
             MongoDatabase database = mongoClient.getDatabase("medicalData");
             MongoCollection<org.bson.Document> collection = database.getCollection("cdaDocuments");

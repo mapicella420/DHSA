@@ -29,17 +29,18 @@ public class CdaUploader implements EventListener {
     private static final String DATABASE_NAME = "medicalData"; // Database name
     private static final String COLLECTION_NAME = "cdaDocuments"; // Collection name for CDA documents
 
-    public static String mongodbURI(){
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017"; // MongoDB URI
+
+    private static void mongodbURI(){
 
         if (LoggedUser.getOrganization().equals("My Hospital")) {
-            return "mongodb://admin:mongodb@localhost:27017";
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
 
         } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
-            return "mongodb://admin:mongodb@localhost:27018";
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
         }
-        return "";
     }
-    private static final String MONGO_URI = mongodbURI(); // MongoDB URI
+
     /**
      * Handles events triggered by the EventManager.
      * If the event type is "cda_upload", it processes the provided file.
@@ -84,6 +85,7 @@ public class CdaUploader implements EventListener {
                     .append("patientName", patientName)
                     .append("patientData", patientData);
 
+            mongodbURI();
             // Connessione a MongoDB e salvataggio del documento
             try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
                 MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);

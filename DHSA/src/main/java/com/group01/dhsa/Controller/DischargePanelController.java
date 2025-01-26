@@ -77,12 +77,22 @@ public class DischargePanelController {
 
     private EventObservable eventManager;
     private File cdaFile;
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "cdaDocuments";
 
     public DischargePanelController() {
         this.eventManager = EventManager.getInstance().getEventObservable();
+    }
+
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
     }
 
     @FXML
@@ -307,6 +317,7 @@ public class DischargePanelController {
     }
 
     private boolean checkDicom(String encounterId){
+        setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);

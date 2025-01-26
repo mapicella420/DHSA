@@ -2,6 +2,7 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -26,9 +27,19 @@ import java.util.stream.Collectors;
 
 public class RelevantDiagnosticAdapter implements CdaSection<Component, Encounter> {
 
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "dicomFiles";
+
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+    }
 
     @Override
     public Component toCdaObject(Encounter fhirObject) {
@@ -285,6 +296,7 @@ public class RelevantDiagnosticAdapter implements CdaSection<Component, Encounte
     }
 
     private List<Document> searchDicomFiles(String patientName, DateTimeType encounterDate) {
+        setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
             MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);

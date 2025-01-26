@@ -163,7 +163,15 @@ public class EventManager {
 
 
     private void fetchCdaDocumentsByPatient(String patientName) {
-        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
+        String url = "";
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+        try (MongoClient mongoClient = MongoClients.create(url)) {
             MongoDatabase database = mongoClient.getDatabase("medicalData");
             MongoCollection<org.bson.Document> collection = database.getCollection("cdaDocuments");
 
@@ -194,7 +202,15 @@ public class EventManager {
 
 
     private void fetchDicomFilesByPatient(String patientName) {
-        try (MongoClient mongoClient = MongoClients.create("mongodb://admin:mongodb@localhost:27017")) {
+        String url = "";
+        if (LoggedUser.getOrganization() != null) {
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27018";
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+                url = "mongodb://admin:mongodb@localhost:27017";
+            }
+        }
+        try (MongoClient mongoClient = MongoClients.create(url)) {
             MongoDatabase database = mongoClient.getDatabase("medicalData");
             MongoCollection<org.bson.Document> collection = database.getCollection("dicomFiles");
 
