@@ -95,6 +95,11 @@ public class AllergyExporter implements FhirResourceExporter {
         return allergiesList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return null;
+    }
+
 
     private boolean matchesAllergy(AllergyIntolerance allergy, String searchTerm) {
         setFhirServerUrl();

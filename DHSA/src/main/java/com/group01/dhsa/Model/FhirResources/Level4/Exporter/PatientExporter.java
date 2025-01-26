@@ -48,7 +48,8 @@ public class PatientExporter implements FhirResourceExporter {
 
                 // Extract relevant fields and store them in a Map
                 Map<String, String> patientData = new HashMap<>();
-                patientData.put("Id", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
+                patientData.put("Identifier", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
+                patientData.put("Id", patient.getIdPart() != null ? patient.getIdPart() : "N/A");
 
                 // Name
                 HumanName name = patient.getNameFirstRep();
@@ -140,6 +141,9 @@ public class PatientExporter implements FhirResourceExporter {
                     boolean matches = false;
 
                     // Match Id
+                    if (!matches && patient.getIdPart().toLowerCase().contains(searchTerm.toLowerCase())) {
+                        matches = true;
+                    }
                     if (!matches && patient.getIdElement().getIdPart().toLowerCase().contains(searchTerm.toLowerCase())) {
                         matches = true;
                     }
@@ -153,6 +157,7 @@ public class PatientExporter implements FhirResourceExporter {
                             patient.getNameFirstRep().getFamily().toLowerCase().contains(searchTerm.toLowerCase())) {
                         matches = true;
                     }
+
 
                     // Match Gender
                     if (!matches && patient.hasGender() && patient.getGender().toCode().toLowerCase().contains(searchTerm.toLowerCase())) {
@@ -263,9 +268,131 @@ public class PatientExporter implements FhirResourceExporter {
             System.err.println("Error searching Patient resources: " + e.getMessage());
             e.printStackTrace();
         }
+        System.out.println(patientsList);
+        return patientsList;
+    }
+
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        setFhirServerUrl();
+        List<Map<String, String>> patientsList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Perform search query for Patient resources
+            Bundle bundle = null;
+
+            // Dynamically create the query based on the searchField
+            switch (searchField.toLowerCase()) {
+                case "id":
+                    bundle = client.search()
+                            .forResource(Patient.class)
+                            .where(new StringClientParam("_id").matches().value(searchValue))
+                            .returnBundle(Bundle.class)
+                            .execute();
+                    break;
+                case "identifier":
+                    bundle = client.search()
+                            .forResource(Patient.class)
+                            .where(new StringClientParam("identifier").matches().value(searchValue))
+                            .returnBundle(Bundle.class)
+                            .execute();
+                    break;
+                case "name":
+                    bundle = client.search()
+                            .forResource(Patient.class)
+                            .where(new StringClientParam("name").matches().value(searchValue))
+                            .returnBundle(Bundle.class)
+                            .execute();
+                    break;
+                case "birthdate":
+                    bundle = client.search()
+                            .forResource(Patient.class)
+                            .where(new StringClientParam("birthdate").matches().value(searchValue))
+                            .returnBundle(Bundle.class)
+                            .execute();
+                    break;
+                case "gender":
+                    bundle = client.search()
+                            .forResource(Patient.class)
+                            .where(new StringClientParam("gender").matches().value(searchValue))
+                            .returnBundle(Bundle.class)
+                            .execute();
+                    break;
+                default:
+                    System.err.println("[ERROR] Invalid search field: " + searchField);
+                    return patientsList; // Return empty list if the field is invalid
+            }
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Patient patient = (Patient) entry.getResource();
+
+                    // Extract patient data into a Map
+                    Map<String, String> patientData = new HashMap<>();
+                    patientData.put("Id", patient.getIdElement().getIdPart());
+
+                    HumanName name = patient.getNameFirstRep();
+                    if (name != null) {
+                        patientData.put("Name", name.getGivenAsSingleString() + " " + name.getFamily());
+                    } else {
+                        patientData.put("Name", "N/A");
+                    }
+
+                    patientData.put("Gender", patient.hasGender() ? patient.getGender().toCode() : "N/A");
+                    patientData.put("BirthDate", patient.hasBirthDate() ? patient.getBirthDate().toString() : "N/A");
+
+                    if (patient.hasDeceasedDateTimeType()) {
+                        patientData.put("DeceasedDate", patient.getDeceasedDateTimeType().getValueAsString());
+                    } else {
+                        patientData.put("DeceasedDate", patient.hasDeceasedBooleanType() && patient.getDeceasedBooleanType().booleanValue() ? "Deceased" : "Alive");
+                    }
+
+                    Address address = patient.getAddressFirstRep();
+                    if (address != null) {
+                        if (!address.getLine().isEmpty()) {
+                            patientData.put("Address", String.join(", ",
+                                    address.getLine().stream().map(StringType::getValue).toList()));
+                        } else {
+                            patientData.put("Address", "N/A");
+                        }
+
+                        patientData.put("City", address.getCity() != null ? address.getCity() : "N/A");
+                        patientData.put("State", address.getState() != null ? address.getState() : "N/A");
+                        patientData.put("Zip", address.getPostalCode() != null ? address.getPostalCode() : "N/A");
+                    } else {
+                        patientData.put("Address", "N/A");
+                        patientData.put("City", "N/A");
+                        patientData.put("State", "N/A");
+                        patientData.put("Zip", "N/A");
+                    }
+
+                    Extension raceExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-race");
+                    patientData.put("Race", raceExtension != null && raceExtension.hasValue() ? raceExtension.getValue().toString() : "N/A");
+
+                    Extension ethnicityExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
+                    patientData.put("Ethnicity", ethnicityExtension != null && ethnicityExtension.hasValue() ? ethnicityExtension.getValue().toString() : "N/A");
+
+                    patientsList.add(patientData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Patient resources: " + e.getMessage());
+            e.printStackTrace();
+        }
 
         return patientsList;
     }
+
 
 
 

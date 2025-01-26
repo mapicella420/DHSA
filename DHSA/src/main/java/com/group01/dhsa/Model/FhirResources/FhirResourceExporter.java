@@ -22,4 +22,6 @@ public interface FhirResourceExporter {
      * @return Una lista di mappe contenenti i dati delle risorse corrispondenti.
      */
     List<Map<String, String>> searchResources(String searchTerm);
+
+    List<Map<String, String>> searchResources(String searchField, String searchValue);
 }

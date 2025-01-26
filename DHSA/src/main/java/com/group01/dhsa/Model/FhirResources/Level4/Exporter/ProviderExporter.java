@@ -18,9 +18,9 @@ public class ProviderExporter implements FhirResourceExporter {
 
     private static void setFhirServerUrl() {
         if (LoggedUser.getOrganization() != null) {
-            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")) {
                 FHIR_SERVER_URL = "http://localhost:8081/fhir";
-            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")) {
                 FHIR_SERVER_URL = "http://localhost:8080/fhir";
             }
         }
@@ -50,12 +50,16 @@ public class ProviderExporter implements FhirResourceExporter {
                 Map<String, String> providerData = new HashMap<>();
 
                 // Extract Practitioner ID
-                providerData.put("Id", practitioner.getIdentifierFirstRep() != null ? practitioner.getIdentifierFirstRep().getValue() : "N/A");
+                providerData.put("Id", practitioner.getIdElement().getIdPart());
+
+                // Extract Identifier
+                providerData.put("Identifier", practitioner.hasIdentifier() && !practitioner.getIdentifier().isEmpty() ?
+                        practitioner.getIdentifierFirstRep().getValue() : "N/A");
 
                 // Extract Name
-                HumanName name = practitioner.getNameFirstRep();
-                if (name != null) {
-                    providerData.put("Name", name.getGivenAsSingleString() + " " + name.getFamily());
+                if (practitioner.hasName() && !practitioner.getName().isEmpty()) {
+                    HumanName name = practitioner.getNameFirstRep();
+                    providerData.put("Name", String.join(" ", name.getGivenAsSingleString(), name.getFamily()));
                 } else {
                     providerData.put("Name", "N/A");
                 }
@@ -64,13 +68,13 @@ public class ProviderExporter implements FhirResourceExporter {
                 providerData.put("Gender", practitioner.hasGender() ? practitioner.getGender().toCode() : "N/A");
 
                 // Extract Address
-                Address address = practitioner.getAddressFirstRep();
-                if (address != null) {
+                if (practitioner.hasAddress() && !practitioner.getAddress().isEmpty()) {
+                    Address address = practitioner.getAddressFirstRep();
                     providerData.put("Address", address.getLine().isEmpty() ? "N/A" :
                             String.join(", ", address.getLine().stream().map(StringType::getValue).toList()));
-                    providerData.put("City", address.getCity() != null ? address.getCity() : "N/A");
-                    providerData.put("State", address.getState() != null ? address.getState() : "N/A");
-                    providerData.put("Zip", address.getPostalCode() != null ? address.getPostalCode() : "N/A");
+                    providerData.put("City", address.hasCity() ? address.getCity() : "N/A");
+                    providerData.put("State", address.hasState() ? address.getState() : "N/A");
+                    providerData.put("Zip", address.hasPostalCode() ? address.getPostalCode() : "N/A");
                 } else {
                     providerData.put("Address", "N/A");
                     providerData.put("City", "N/A");
@@ -78,12 +82,14 @@ public class ProviderExporter implements FhirResourceExporter {
                     providerData.put("Zip", "N/A");
                 }
 
-
                 // Extract Phone
-                ContactPoint phone = practitioner.getTelecomFirstRep();
-                providerData.put("Phone", phone != null ? phone.getValue() : "N/A");
+                if (practitioner.hasTelecom() && !practitioner.getTelecom().isEmpty()) {
+                    providerData.put("Phone", practitioner.getTelecomFirstRep().getValue());
+                } else {
+                    providerData.put("Phone", "N/A");
+                }
 
-                // Retrieve PractitionerRole for the Practitioner
+                // Extract PractitionerRole for the Practitioner
                 Bundle roleBundle = client.search()
                         .forResource(PractitionerRole.class)
                         .where(PractitionerRole.PRACTITIONER.hasId(practitioner.getIdElement().getIdPart()))
@@ -124,46 +130,133 @@ public class ProviderExporter implements FhirResourceExporter {
     @Override
     public List<Map<String, String>> searchResources(String searchTerm) {
         setFhirServerUrl();
+        List<Map<String, String>> results = new ArrayList<>();
+
         try {
-            // Inizializza il client FHIR
+            // Initialize the FHIR client
             FhirContext fhirContext = FhirContext.forR5();
             IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
-            // Esegui la ricerca basata sul nome del provider
+            // Perform search query for Practitioner resources
             Bundle bundle = client.search()
-                    .forResource("Practitioner")
+                    .forResource(Practitioner.class)
                     .where(new StringClientParam("name").matches().value(searchTerm))
                     .returnBundle(Bundle.class)
                     .execute();
 
-            // Converti i risultati in una lista di mappe
-            List<Map<String, String>> results = new ArrayList<>();
+            // Process all results
             for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
                 Practitioner practitioner = (Practitioner) entry.getResource();
-                Map<String, String> resourceData = new HashMap<>();
+                Map<String, String> providerData = new HashMap<>();
 
-                // Aggiungi i dettagli del provider
-                resourceData.put("Id", practitioner.getIdElement().getIdPart());
-                resourceData.put("Name", practitioner.getNameFirstRep().getNameAsSingleString());
-                resourceData.put("Gender", practitioner.hasGender() ? practitioner.getGender().toCode() : "N/A");
+                // Extract Practitioner data
+                providerData.put("Id", practitioner.getIdElement().getIdPart());
+                providerData.put("Identifier", practitioner.hasIdentifier() && !practitioner.getIdentifier().isEmpty() ?
+                        practitioner.getIdentifierFirstRep().getValue() : "N/A");
+                providerData.put("Name", practitioner.hasName() && !practitioner.getName().isEmpty() ?
+                        practitioner.getNameFirstRep().getNameAsSingleString() : "N/A");
+                providerData.put("Gender", practitioner.hasGender() ? practitioner.getGender().toCode() : "N/A");
 
-                // Specialità (se disponibile)
-                if (practitioner.hasQualification() && !practitioner.getQualification().isEmpty()) {
-                    resourceData.put("Specialty", practitioner.getQualificationFirstRep().getCode().getText());
-                } else {
-                    resourceData.put("Specialty", "N/A");
-                }
+                // Add to results
+                results.add(providerData);
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Practitioner resources: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-                // Aggiungi i dettagli del provider alla lista dei risultati
-                results.add(resourceData);
+        return results;
+    }
+
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        setFhirServerUrl();
+        List<Map<String, String>> results = new ArrayList<>();
+
+        try {
+            // Initialize the FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Adatta il nome del campo per l'API FHIR
+            if ("Id".equalsIgnoreCase(searchField)) {
+                searchField = "_id";
+            } else if ("Name".equalsIgnoreCase(searchField)) {
+                searchField = "name";
+            } else if ("Identifier".equalsIgnoreCase(searchField)) {
+                searchField = "identifier";
+            } else if ("Gender".equalsIgnoreCase(searchField)) {
+                searchField = "gender";
+            } else if ("City".equalsIgnoreCase(searchField)) {
+                searchField = "address-city";
+            } else if ("State".equalsIgnoreCase(searchField)) {
+                searchField = "address-state";
+            } else if ("Zip".equalsIgnoreCase(searchField)) {
+                searchField = "address-postalcode";
+            } else {
+                throw new IllegalArgumentException("Invalid search field: " + searchField);
             }
 
-            return results;
+            // Perform the search query
+            Bundle bundle = client.search()
+                    .forResource(Practitioner.class)
+                    .where(new StringClientParam(searchField).matches().value(searchValue))
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Practitioner practitioner = (Practitioner) entry.getResource();
+                    Map<String, String> providerData = new HashMap<>();
+
+                    // Extract Practitioner data
+                    providerData.put("Id", practitioner.getIdElement().getIdPart());
+                    providerData.put("Identifier", practitioner.hasIdentifier() && !practitioner.getIdentifier().isEmpty() ?
+                            practitioner.getIdentifierFirstRep().getValue() : "N/A");
+                    providerData.put("Name", practitioner.hasName() && !practitioner.getName().isEmpty() ?
+                            practitioner.getNameFirstRep().getNameAsSingleString() : "N/A");
+                    providerData.put("Gender", practitioner.hasGender() ? practitioner.getGender().toCode() : "N/A");
+
+                    // Extract Address
+                    if (practitioner.hasAddress() && !practitioner.getAddress().isEmpty()) {
+                        Address address = practitioner.getAddressFirstRep();
+                        providerData.put("Address", address.getLine().isEmpty() ? "N/A" :
+                                String.join(", ", address.getLine().stream().map(StringType::getValue).toList()));
+                        providerData.put("City", address.hasCity() ? address.getCity() : "N/A");
+                        providerData.put("State", address.hasState() ? address.getState() : "N/A");
+                        providerData.put("Zip", address.hasPostalCode() ? address.getPostalCode() : "N/A");
+                    } else {
+                        providerData.put("Address", "N/A");
+                        providerData.put("City", "N/A");
+                        providerData.put("State", "N/A");
+                        providerData.put("Zip", "N/A");
+                    }
+
+                    // Extract Phone
+                    if (practitioner.hasTelecom() && !practitioner.getTelecom().isEmpty()) {
+                        providerData.put("Phone", practitioner.getTelecomFirstRep().getValue());
+                    } else {
+                        providerData.put("Phone", "N/A");
+                    }
+
+                    // Add to results
+                    results.add(providerData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Error searching Provider resources: " + e.getMessage());
+            System.err.println("Error searching Practitioner resources: " + e.getMessage());
             e.printStackTrace();
-            return new ArrayList<>();
         }
+
+        return results;
     }
 
 }

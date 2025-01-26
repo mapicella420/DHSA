@@ -98,6 +98,11 @@ public class ConditionExporter implements FhirResourceExporter {
         return conditionsList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return null;
+    }
+
     private boolean matchesCondition(Condition condition, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

@@ -21,9 +21,9 @@ public class EncounterExporter implements FhirResourceExporter {
 
     private static void setFhirServerUrl() {
         if (LoggedUser.getOrganization() != null) {
-            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")) {
                 FHIR_SERVER_URL = "http://localhost:8081/fhir";
-            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")) {
                 FHIR_SERVER_URL = "http://localhost:8080/fhir";
             }
         }
@@ -52,15 +52,17 @@ public class EncounterExporter implements FhirResourceExporter {
                 // Extract relevant fields and store them in a Map
                 Map<String, String> encounterData = new HashMap<>();
 
-                // Extract Encounter ID
-                encounterData.put("Id", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
+                // Extract Encounter ID (from the 'id' field of the resource)
+                encounterData.put("id", encounter.getIdElement().getIdPart());
 
+                // Extract Identifier
+                encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
 
                 // Extract Type
                 if (!encounter.getType().isEmpty()) {
-                    CodeableConcept type = encounter.getType().get(0); // Primo elemento
+                    CodeableConcept type = encounter.getType().get(0); // First type
                     if (!type.getCoding().isEmpty()) {
-                        Coding coding = type.getCoding().get(0); // Primo Coding
+                        Coding coding = type.getCoding().get(0); // First Coding
                         encounterData.put("Type", coding.getDisplay() != null ? coding.getDisplay() : "N/A");
                     } else {
                         encounterData.put("Type", "N/A");
@@ -79,18 +81,19 @@ public class EncounterExporter implements FhirResourceExporter {
                 }
 
                 // Extract Subject (Patient Reference)
-                if (encounter.hasSubject()) {
-                    encounterData.put("Patient", encounter.getSubject().getReference());
-                } else {
-                    encounterData.put("Patient", "N/A");
-                }
+                encounterData.put("Patient", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
 
                 // Extract Service Provider (Organization Reference)
-                if (encounter.hasServiceProvider()) {
-                    encounterData.put("Organization", encounter.getServiceProvider().getReference());
-                } else {
-                    encounterData.put("Organization", "N/A");
+                encounterData.put("Organization", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
+
+                String practitioner = "N/A";
+                if (encounter.hasParticipant() && !encounter.getParticipant().isEmpty()) {
+                    Encounter.EncounterParticipantComponent participant = encounter.getParticipantFirstRep();
+                    if (participant.hasActor() && participant.getActor().getReference().startsWith("Practitioner")) {
+                        practitioner = participant.getActor().getReference();
+                    }
                 }
+                encounterData.put("Practitioner", practitioner);
 
                 // Extract Total Cost
                 if (encounter.hasExtension("http://hl7.org/fhir/StructureDefinition/total-claim-cost")) {
@@ -103,7 +106,6 @@ public class EncounterExporter implements FhirResourceExporter {
                 } else {
                     encounterData.put("TotalCost", "N/A");
                 }
-
 
                 // Add encounter data to the list
                 encountersList.add(encounterData);
@@ -140,8 +142,14 @@ public class EncounterExporter implements FhirResourceExporter {
                     // Check if the search term matches any relevant field
                     boolean matches = false;
 
-                    // Match Id
+                    // Match Id (from the 'id' field of the resource)
                     if (!matches && encounter.getIdElement().getIdPart().toLowerCase().contains(searchTerm.toLowerCase())) {
+                        matches = true;
+                    }
+
+                    // Match Identifier
+                    if (!matches && encounter.getIdentifierFirstRep() != null &&
+                            encounter.getIdentifierFirstRep().getValue().toLowerCase().contains(searchTerm.toLowerCase())) {
                         matches = true;
                     }
 
@@ -192,7 +200,10 @@ public class EncounterExporter implements FhirResourceExporter {
                         Map<String, String> encounterData = new HashMap<>();
 
                         // Extract Encounter ID
-                        encounterData.put("Id", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
+                        encounterData.put("Id", encounter.getIdElement().getIdPart());
+
+                        // Extract Identifier
+                        encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
 
                         // Extract Type
                         if (!encounter.getType().isEmpty()) {
@@ -252,6 +263,105 @@ public class EncounterExporter implements FhirResourceExporter {
         return encountersList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        setFhirServerUrl();
+        List<Map<String, String>> encountersList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Adatta il nome del campo per _id, che è richiesto dal server FHIR
+            if ("Id".equalsIgnoreCase(searchField)) {
+                searchField = "_id";
+            }
+
+            // Perform search query with the specified field and value
+            Bundle bundle = client.search()
+                    .forResource(Encounter.class)
+                    .where(new StringClientParam(searchField).matches().value(searchValue))
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Encounter encounter = (Encounter) entry.getResource();
+
+                    // Extract encounter data into a map
+                    Map<String, String> encounterData = new HashMap<>();
+
+                    // Extract Encounter ID
+                    encounterData.put("Id", encounter.getIdElement().getIdPart());
+
+                    // Extract Identifier
+                    encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
+
+                    // Extract Type
+                    if (!encounter.getType().isEmpty()) {
+                        CodeableConcept type = encounter.getType().get(0); // First type
+                        if (!type.getCoding().isEmpty()) {
+                            Coding coding = type.getCoding().get(0); // First Coding
+                            encounterData.put("Type", coding.getDisplay() != null ? coding.getDisplay() : "N/A");
+                        } else {
+                            encounterData.put("Type", "N/A");
+                        }
+                    } else {
+                        encounterData.put("Type", "N/A");
+                    }
+
+                    // Extract Start and End Dates
+                    if (encounter.hasActualPeriod()) {
+                        encounterData.put("Start", encounter.getActualPeriod().hasStart() ? encounter.getActualPeriod().getStart().toString() : "N/A");
+                        encounterData.put("End", encounter.getActualPeriod().hasEnd() ? encounter.getActualPeriod().getEnd().toString() : "N/A");
+                    } else {
+                        encounterData.put("Start", "N/A");
+                        encounterData.put("End", "N/A");
+                    }
+
+                    // Extract Subject (Patient Reference)
+                    encounterData.put("Patient", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
+
+                    // Extract Service Provider (Organization Reference)
+                    encounterData.put("Organization", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
+                    String practitioner = "N/A";
+                    if (encounter.hasParticipant() && !encounter.getParticipant().isEmpty()) {
+                        Encounter.EncounterParticipantComponent participant = encounter.getParticipantFirstRep();
+                        if (participant.hasActor() && participant.getActor().getReference().startsWith("Practitioner")) {
+                            practitioner = participant.getActor().getReference();
+                        }
+                    }
+                    encounterData.put("Practitioner", practitioner);
+                    // Extract Total Cost
+                    if (encounter.hasExtension("http://hl7.org/fhir/StructureDefinition/total-claim-cost")) {
+                        var extension = encounter.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/total-claim-cost").getValue();
+                        if (extension instanceof org.hl7.fhir.r5.model.Quantity) {
+                            encounterData.put("TotalCost", String.valueOf(((org.hl7.fhir.r5.model.Quantity) extension).getValue()));
+                        } else {
+                            encounterData.put("TotalCost", "N/A");
+                        }
+                    } else {
+                        encounterData.put("TotalCost", "N/A");
+                    }
+
+                    // Add encounter data to the list
+                    encountersList.add(encounterData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Encounter resources by field: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return encountersList;
+    }
 
 
 }

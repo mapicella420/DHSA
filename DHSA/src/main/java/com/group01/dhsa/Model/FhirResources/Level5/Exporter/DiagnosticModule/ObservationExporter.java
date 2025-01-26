@@ -101,6 +101,11 @@ public class ObservationExporter implements FhirResourceExporter {
         return observationsList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return List.of();
+    }
+
     private boolean matchesObservation(Observation observation, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

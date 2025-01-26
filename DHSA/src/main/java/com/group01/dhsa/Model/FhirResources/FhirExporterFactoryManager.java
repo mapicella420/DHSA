@@ -24,6 +24,10 @@ public class FhirExporterFactoryManager {
                 return new DeviceExporterFactory();
             case "organization":
                 return new OrganizationExporterFactory();
+            case "practitioner":
+                return new ProviderExporterFactory();
+            case "provider":
+                return new ProviderExporterFactory();
             case "encounter":
                 return new EncounterExporterFactory();
             case "allerg":

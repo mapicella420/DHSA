@@ -101,6 +101,11 @@ public class ImagingStudyExporter implements FhirResourceExporter {
         return imagingStudiesList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return null;
+    }
+
     private boolean matchesImagingStudy(ImagingStudy imagingStudy, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

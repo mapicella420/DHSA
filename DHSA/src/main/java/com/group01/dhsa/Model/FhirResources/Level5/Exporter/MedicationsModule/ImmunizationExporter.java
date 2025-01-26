@@ -101,6 +101,11 @@ public class ImmunizationExporter implements FhirResourceExporter {
         return immunizationsList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return List.of();
+    }
+
     private boolean matchesImmunization(Immunization immunization, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

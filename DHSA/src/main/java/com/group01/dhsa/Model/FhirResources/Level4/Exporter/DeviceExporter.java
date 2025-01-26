@@ -186,8 +186,10 @@ public class DeviceExporter implements FhirResourceExporter {
         return devicesList;
     }
 
-
-
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return null;
+    }
 
 
 }

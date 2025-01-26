@@ -101,6 +101,11 @@ public class MedicationExporter implements FhirResourceExporter {
         return medicationsList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return List.of();
+    }
+
     private boolean matchesMedication(MedicationRequest medicationRequest, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

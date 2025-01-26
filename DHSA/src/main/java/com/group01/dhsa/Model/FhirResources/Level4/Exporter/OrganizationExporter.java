@@ -278,7 +278,95 @@ public class OrganizationExporter implements FhirResourceExporter {
         return organizationsList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        setFhirServerUrl();
+        List<Map<String, String>> organizationsList = new ArrayList<>();
 
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
+            // Adatta il nome del campo per `_id`, che è richiesto dal server FHIR
+            if ("Id".equalsIgnoreCase(searchField)) {
+                searchField = "_id";
+            }
+
+            // Perform search query with the specified field and value
+            Bundle bundle = client.search()
+                    .forResource(Organization.class)
+                    .where(new StringClientParam(searchField).matches().value(searchValue))
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Organization organization = (Organization) entry.getResource();
+
+                    // Extract relevant fields into a map
+                    Map<String, String> organizationData = new HashMap<>();
+                    organizationData.put("Id", organization.getIdElement().getIdPart());
+                    organizationData.put("Name", organization.hasName() ? organization.getName() : "N/A");
+
+                    // Extract address
+                    Address address = organization.getContactFirstRep() != null ? organization.getContactFirstRep().getAddress() : null;
+                    if (address != null) {
+                        organizationData.put("Address", address.getLine().isEmpty() ? "N/A" :
+                                String.join(", ", address.getLine().stream().map(StringType::getValue).toList()));
+                        organizationData.put("City", address.getCity() != null ? address.getCity() : "N/A");
+                        organizationData.put("State", address.getState() != null ? address.getState() : "N/A");
+                        organizationData.put("Zip", address.getPostalCode() != null ? address.getPostalCode() : "N/A");
+                    } else {
+                        organizationData.put("Address", "N/A");
+                        organizationData.put("City", "N/A");
+                        organizationData.put("State", "N/A");
+                        organizationData.put("Zip", "N/A");
+                    }
+
+                    // Extract phone
+                    String phone = organization.getContactFirstRep() != null && !organization.getContactFirstRep().getTelecom().isEmpty()
+                            ? organization.getContactFirstRep().getTelecomFirstRep().getValue()
+                            : "N/A";
+                    organizationData.put("Phone", phone);
+
+                    // Extract geolocation extensions
+                    organizationData.put("Latitude", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat") != null
+                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat").getValue() instanceof org.hl7.fhir.r5.model.Quantity
+                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat").getValue()).getValue())
+                            : "N/A");
+
+                    organizationData.put("Longitude", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon") != null
+                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon").getValue() instanceof org.hl7.fhir.r5.model.Quantity
+                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon").getValue()).getValue())
+                            : "N/A");
+
+                    // Extract revenue and utilization extensions
+                    organizationData.put("Revenue", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue") != null
+                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue").getValue() instanceof org.hl7.fhir.r5.model.Quantity
+                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue").getValue()).getValue())
+                            : "N/A");
+
+                    organizationData.put("Utilization", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization") != null
+                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization").getValue() instanceof org.hl7.fhir.r5.model.Quantity
+                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization").getValue()).getValue())
+                            : "N/A");
+
+                    organizationsList.add(organizationData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Organization resources by field: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return organizationsList;
+    }
 
 }

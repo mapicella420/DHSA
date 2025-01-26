@@ -96,6 +96,11 @@ public class ProcedureExporter implements FhirResourceExporter {
         return proceduresList;
     }
 
+    @Override
+    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+        return List.of();
+    }
+
 
     private boolean matchesProcedure(Procedure procedure, String searchTerm) {
         setFhirServerUrl();

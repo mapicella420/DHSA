@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -47,17 +48,177 @@ public class PatientPanelController {
     private void initialize() {
         // Popola il menu a tendina con i tipi di risorse
         resourceTypeChoiceBox.getItems().addAll(
-                "AllergyIntolerance",  "Condition" ,"Observation", "Encounter",
+                "AllergyIntolerance", "Condition", "Observation", "Encounter",
                 "Procedure", "CarePlan", "ImagingStudy", "Immunization", "Medications"
         );
 
         progressBar.setVisible(false);
         statusLabel.setText("Status: Ready");
+
         searchField.textProperty().addListener((observable, oldValue, newValue) -> onSearch());
 
         // Listener per il cambio di risorsa
         resourceTypeChoiceBox.setOnAction(event -> onResourceTypeChange());
+
+        // Configura il menu contestuale per ogni riga della tabella
+        configureTableRowFactory();
     }
+
+    @FXML
+    private void configureTableRowFactory() {
+        clinicalDataTable.setRowFactory(tv -> {
+            TableRow<Map<String, String>> row = new TableRow<>();
+            ContextMenu dynamicContextMenu = new ContextMenu();
+
+            // Debug: Mostra che la factory viene configurata
+            System.out.println("[DEBUG] Configurazione RowFactory applicata alla tabella.");
+
+            // Configura il menu contestuale quando una riga è selezionata
+            row.setOnContextMenuRequested(event -> {
+                if (!row.isEmpty()) {
+                    // Ottieni l'elemento della riga selezionata
+                    Map<String, String> item = row.getItem();
+                    System.out.println("[DEBUG] Context menu richiesto per elemento: " + item);
+
+                    // Ricostruisci il ContextMenu
+                    dynamicContextMenu.getItems().clear();
+                    String resourceType = resourceTypeChoiceBox.getValue();
+                    System.out.println("[DEBUG] Tipo di risorsa selezionato: " + resourceType);
+
+                    if (resourceType != null && !resourceType.isEmpty()) {
+                        populateContextMenu(dynamicContextMenu, resourceType, item);
+                        if (!dynamicContextMenu.getItems().isEmpty()) {
+                            // Mostra il ContextMenu alla posizione del clic
+                            System.out.println("[DEBUG] Mostra ContextMenu con " + dynamicContextMenu.getItems().size() + " elementi.");
+                            dynamicContextMenu.show(row, event.getScreenX(), event.getScreenY());
+                        } else {
+                            System.out.println("[DEBUG] Nessun elemento da mostrare nel ContextMenu.");
+                        }
+                    } else {
+                        System.out.println("[DEBUG] Nessuna risorsa selezionata.");
+                    }
+                } else {
+                    System.out.println("[DEBUG] Context menu richiesto per riga vuota.");
+                }
+            });
+
+            // Debug: Per clic secondario
+            row.setOnMouseClicked(event -> {
+                if (event.isSecondaryButtonDown()) {
+                    System.out.println("[DEBUG] Clic secondario su riga: " + row.getItem());
+                    dynamicContextMenu.hide();
+                }
+            });
+
+            return row;
+        });
+    }
+
+
+    private void populateContextMenu(ContextMenu contextMenu, String resourceType, Map<String, String> item) {
+        System.out.println("[DEBUG] Popolamento ContextMenu per risorsa di tipo: " + resourceType);
+
+        switch (resourceType) {
+            case "Device":
+                // Device è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("ENCOUNTER"));
+                break;
+            case "Encounter":
+                // Encounter è associato a Organization e Patient
+                addDynamicMenuItem(contextMenu, "Organization", item.get("Service Provider"));
+                addDynamicMenuItem(contextMenu, "Practitioner", item.get("Participant"));
+                break;
+            case "Provider":
+                // Encounter è associato a Organization e Patient
+                addDynamicMenuItem(contextMenu, "Organization", item.get("Organization"));
+                break;
+            case "AllergyIntolerance":
+                // Allergy è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "CarePlan":
+                // CarePlan è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "Condition":
+                // Condition è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "Procedure":
+                // Procedure è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "ImagingStudy":
+                // ImagingStudy è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "Observation":
+                // Observation è associato a Patient (Subject) e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "Immunization":
+                // Immunization è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "MedicationRequest":
+                // MedicationRequest è associato a Patient e Encounter
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                break;
+            case "Organization":
+                // Organization non ha associazioni dirette nei dati forniti
+                statusLabel.setText("No linked resources available.");
+                break;
+            default:
+                statusLabel.setText("No linked resources available.");
+                break;
+        }
+    }
+
+    private void addDynamicMenuItem(ContextMenu contextMenu, String label, String reference) {
+        if (reference != null && !reference.isEmpty()) {
+            // Pulizia del riferimento
+            reference = cleanReference(reference);
+
+            // Debug: Mostra il riferimento
+            System.out.println("[DEBUG] Aggiunta elemento al menu: " + label + " -> " + reference);
+
+            MenuItem menuItem = new MenuItem(label + ": " + reference);
+            String finalReference = reference;
+            menuItem.setOnAction(event -> {
+                String[] parts = finalReference.split("/");
+                if (parts.length == 2) {
+                    String resourceType = parts[0];
+                    String resourceId = parts[1];
+                    System.out.println("[DEBUG] Azione selezionata: " + resourceType + " con ID " + resourceId);
+                    EventManager.getInstance().getEventObservable().notify(
+                            "linked_resource_selected",
+                            new File(resourceType + "_" + resourceId)
+                    );
+                } else {
+                    System.err.println("[ERROR] Formato riferimento non valido: " + finalReference);
+                }
+            });
+
+            contextMenu.getItems().add(menuItem);
+        } else {
+            System.out.println("[DEBUG] Riferimento nullo o vuoto per label: " + label);
+        }
+    }
+
+
+    private String cleanReference(String reference) {
+        if (reference == null || reference.isEmpty()) {
+            return reference;
+        }
+        // Rimuovi "Reference[" e "]"
+        if (reference.contains("Reference[")) {
+            reference = reference.replace("Reference[", "").replace("]", "").trim();
+        }
+        return reference;
+    }
+
+
+
 
     /**
      * Inizializza i listener per ricevere gli aggiornamenti dal model tramite l'Observer.
@@ -130,12 +291,13 @@ public class PatientPanelController {
 
     private void updateTable(List<Map<String, String>> resources) {
         Platform.runLater(() -> {
-            System.out.println("[DEBUG] Updating table with resources: " + resources); // Debug
+            System.out.println("[DEBUG] Aggiornamento tabella con risorse: " + resources);
 
             clinicalDataTable.getColumns().clear();
 
             if (resources.isEmpty()) {
                 statusLabel.setText("No resources found.");
+                System.out.println("[DEBUG] Nessuna risorsa trovata.");
                 return;
             }
 
@@ -148,17 +310,14 @@ public class PatientPanelController {
                 clinicalDataTable.getColumns().add(column);
             }
 
-            // Usa FilteredList per il filtraggio
             ObservableList<Map<String, String>> observableData = FXCollections.observableArrayList(resources);
             filteredData = new FilteredList<>(observableData, p -> true);
-
             clinicalDataTable.setItems(filteredData);
 
-            System.out.println("[DEBUG] Table updated successfully."); // Debug
+            System.out.println("[DEBUG] Configurazione del RowFactory dopo l'aggiornamento.");
+            configureTableRowFactory();
         });
     }
-
-
 
 
     @FXML
