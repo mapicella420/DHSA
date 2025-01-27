@@ -1,6 +1,7 @@
-package com.group01.dhsa.Model.CDAResources.AdapterPattern;
+package com.group01.dhsa.Model.CDAResources.AdapterPattern.Header;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.CodiceFiscaleCalculator;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Encounter;
@@ -14,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ComponentOfAdapter implements CdaSection <ComponentOf, Encounter>{
+public class ComponentOfAdapter implements CdaSection<ComponentOf, Encounter> {
 
 
     @Override

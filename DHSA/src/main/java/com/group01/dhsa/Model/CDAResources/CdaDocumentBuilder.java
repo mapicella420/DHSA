@@ -1,6 +1,10 @@
 package com.group01.dhsa.Model.CDAResources;
 
-import com.group01.dhsa.Model.CDAResources.AdapterPattern.*;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Body.*;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.AuthorAdapter;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.ComponentOfAdapter;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.LegalAuthenticatorAdapter;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.PatientAdapter;
 import com.group01.dhsa.Model.CDAResources.SectionModels.*;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.*;
@@ -9,7 +13,6 @@ import org.hl7.fhir.r5.model.Patient;
 import org.hl7.fhir.r5.model.Practitioner;
 
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -28,6 +31,7 @@ public class CdaDocumentBuilder {
     private ClinicalDocument clinicalDocument; // The main CDA document structure
     private ObjectFactory objectFactory;       // Factory for creating CDA elements
 
+    //Header
     /**
      * Constructor initializes the builder with a unique document ID.
      *
@@ -109,6 +113,7 @@ public class CdaDocumentBuilder {
         clinicalDocument.setComponentOf(componentOf);
     }
 
+    //Body
     /**
      * Adds the component section to the CDA document, which includes admission details.
      *
@@ -121,46 +126,6 @@ public class CdaDocumentBuilder {
         List<Component> list = clinicalDocument.getComponent();
         list.add(component);
         clinicalDocument.setComponent(list);
-    }
-
-    /**
-     * Builds the CDA document by serializing it to an XML file.
-     *
-     * @return The generated XML file
-     * @throws JAXBException If an error occurs during JAXB marshalling
-     * @throws IOException   If an error occurs while creating the temporary file
-     */
-    public File  build() throws JAXBException, IOException, TransformerException {
-
-        JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
-
-        // Configure the marshaller for pretty-printing the XML
-
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
-
-
-        // Create a temporary file to store the XML
-        StringWriter stringWriter = new StringWriter();
-
-
-        marshaller.marshal(clinicalDocument, stringWriter);
-
-
-        File tempFile = File.createTempFile("clinicalDocument", ".xml");
-
-        // Serialize the ClinicalDocument to the temporary file
-        marshaller.marshal(clinicalDocument, tempFile);
-
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
-
-
-        transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(stringWriter.toString())),
-                new StreamResult(tempFile));
-
-        return tempFile;
     }
 
     /**
@@ -263,6 +228,46 @@ public class CdaDocumentBuilder {
         List<Component> list = clinicalDocument.getComponent();
         list.add(component);
         clinicalDocument.setComponent(list);
+    }
+
+    /**
+     * Builds the CDA document by serializing it to an XML file.
+     *
+     * @return The generated XML file
+     * @throws JAXBException If an error occurs during JAXB marshalling
+     * @throws IOException   If an error occurs while creating the temporary file
+     */
+    public File  build() throws JAXBException, IOException, TransformerException {
+
+        JAXBContext context = JAXBContext.newInstance(ClinicalDocument.class);
+
+        // Configure the marshaller for pretty-printing the XML
+
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+
+
+        // Create a temporary file to store the XML
+        StringWriter stringWriter = new StringWriter();
+
+
+        marshaller.marshal(clinicalDocument, stringWriter);
+
+
+        File tempFile = File.createTempFile("clinicalDocument", ".xml");
+
+        // Serialize the ClinicalDocument to the temporary file
+        marshaller.marshal(clinicalDocument, tempFile);
+
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(javax.xml.transform.OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+
+
+        transformer.transform(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(stringWriter.toString())),
+                new StreamResult(tempFile));
+
+        return tempFile;
     }
 
 }

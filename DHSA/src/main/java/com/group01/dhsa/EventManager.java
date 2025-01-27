@@ -152,6 +152,11 @@ public class EventManager {
             eventObservable.notify("load_complete", null);
         });
 
+        PatientDataTransfer patientDataTransfer = new PatientDataTransfer(this.eventObservable);
+        eventObservable.subscribe("transfer", (eventType, file) -> {
+            String[] params = file.getName().replace(".xml", "").split(",");
+            patientDataTransfer.transferPatient(params[0], params[1], params[2]);
+        });
 
     }
 

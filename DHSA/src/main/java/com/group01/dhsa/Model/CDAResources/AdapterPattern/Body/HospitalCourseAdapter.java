@@ -1,13 +1,14 @@
-package com.group01.dhsa.Model.CDAResources.AdapterPattern;
+package com.group01.dhsa.Model.CDAResources.AdapterPattern.Body;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HospitalCourseAdapter implements CdaSection<Component, Encounter>{
+public class HospitalCourseAdapter implements CdaSection<Component, Encounter> {
 
 
     @Override

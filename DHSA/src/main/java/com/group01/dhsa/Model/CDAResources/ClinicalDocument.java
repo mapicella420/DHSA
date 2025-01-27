@@ -1,4 +1,4 @@
-package com.group01.dhsa.Model.CDAResources.SectionModels;
+package com.group01.dhsa.Model.CDAResources;
 
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.annotation.*;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ClinicalDocument {
 
-
+    //Header
     @XmlAttribute(name = "xsi:schemaLocation")
     private String schemaLocation = "urn:hl7-org:v3 CDA.xsd";
 
@@ -70,6 +70,7 @@ public class ClinicalDocument {
     @XmlElement(name = "componentOf")
     private ComponentOf componentOf;
 
+    //Body
     @XmlElement(name = "component")
     private List<Component> component;
 
@@ -77,6 +78,7 @@ public class ClinicalDocument {
     public ClinicalDocument() {
     }
 
+    //Construct with fixed values
     public ClinicalDocument(Integer idNumber) {
         this.typeId = new TypeId("POCD_HD000040", "2.16.840.1.113883.1.3");
         this.templateId = new TemplateId("2.16.840.1.113883.2.9.10.1.5","1.2");

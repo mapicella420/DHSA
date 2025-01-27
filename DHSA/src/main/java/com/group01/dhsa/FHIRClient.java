@@ -1,6 +1,7 @@
 package com.group01.dhsa;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.DateClientParam;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
@@ -57,7 +58,7 @@ public class FHIRClient {
         return instance;
     }
 
-    private static void setFhirServerUrl(String fhirServerUrl) {
+    public static void setFhirServerUrl(String fhirServerUrl) {
         FHIR_SERVER_URL = fhirServerUrl;
     }
 
@@ -931,6 +932,20 @@ public class FHIRClient {
                 .collect(Collectors.toList());
     }
 
+    public MethodOutcome createResource(Object object){
+        if (object instanceof Patient patient) {
+            return client.create().resource(patient).execute();
+        }else if (object instanceof Encounter encounter) {
+            return client.create().resource(encounter).execute();
+        }
+        return null;
+    }
 
+    public MethodOutcome updateResource(Object object){
+        if (object instanceof Encounter encounter) {
+            return client.update().resource(encounter).execute();
+        }
+        return null;
+    }
 }
 

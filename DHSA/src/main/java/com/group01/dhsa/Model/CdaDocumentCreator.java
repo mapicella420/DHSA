@@ -17,7 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * This class is responsible for creating a CDA document based on FHIR data.
@@ -96,6 +99,16 @@ public class CdaDocumentCreator {
 
         // Fetch encounter details from FHIR
         Encounter encounter = client.getEncounterById(encounterId);
+
+        if (encounter.getActualPeriod() != null){
+            if (encounter.getActualPeriod().hasStart() &&
+                    !encounter.getActualPeriod().hasEnd()){
+
+                Date endDate = new Date();
+                encounter.getActualPeriod().setEnd(endDate);
+                client.updateResource(encounter);
+            }
+        }
 
         // Add legal authenticator information to the CDA document
         documentBuilder.addLegalAuthenticatorSection(encounter);

@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model.CDAResources.SectionModels;
 
+import com.group01.dhsa.Model.CDAResources.ClinicalDocument;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import jakarta.xml.bind.annotation.*;
 

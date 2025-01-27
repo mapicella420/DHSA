@@ -1,5 +1,6 @@
-package com.group01.dhsa.Model.CDAResources.AdapterPattern;
+package com.group01.dhsa.Model.CDAResources.AdapterPattern.Header;
 
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.CodiceFiscaleCalculator;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
@@ -14,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LegalAuthenticatorAdapter implements CdaSection <LegalAuthenticator, Encounter> {
+public class LegalAuthenticatorAdapter implements CdaSection<LegalAuthenticator, Encounter> {
 
     @Override
     public LegalAuthenticator toCdaObject(Encounter fhirObject) {

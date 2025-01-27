@@ -1,5 +1,6 @@
-package com.group01.dhsa.Model.CDAResources.AdapterPattern;
+package com.group01.dhsa.Model.CDAResources.AdapterPattern.Header;
 
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.CodiceFiscaleCalculator;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Patient;

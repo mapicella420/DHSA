@@ -1,6 +1,7 @@
-package com.group01.dhsa.Model.CDAResources.AdapterPattern;
+package com.group01.dhsa.Model.CDAResources.AdapterPattern.Body;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
@@ -16,14 +17,12 @@ import org.hl7.fhir.r5.model.Patient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RelevantDiagnosticAdapter implements CdaSection<Component, Encounter> {
 

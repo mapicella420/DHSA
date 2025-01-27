@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.AuthorAdapter;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Practitioner;
 import org.junit.jupiter.api.AfterEach;
@@ -12,9 +13,6 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
 
 import java.io.StringWriter;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 

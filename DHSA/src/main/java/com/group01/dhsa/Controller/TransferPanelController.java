@@ -107,19 +107,33 @@ public class TransferPanelController {
         // Iscrizione agli eventi del modello
         eventManager.subscribe("cda_generated", this::onCdaGenerated);
         eventManager.subscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        eventManager.subscribe("transfer_complete", this::onTransferCompleted);
+        eventManager.subscribe("transfer_failed", this::onTransferFailed);
     }
-
 
 
     private void onCdaGenerated(String eventType, File file) {
         if (file != null) {
             this.cdaFile = file;
-            previewTransferButton.setDisable(false);
+            cdaStatus.setText("CDA generated successfully!");
+            if (labelTransfer.getText().equalsIgnoreCase("Transfer Completed"))
+                previewTransferButton.setDisable(false);
         }
     }
 
 
     private void onCdaGenerationFailed(String eventType, File file) {
+        cdaStatus.setText("Failed to generate CDA. Please try again.");
+    }
+
+    private void onTransferCompleted(String eventType, File file) {
+        labelTransfer.setText("Transfer Completed");
+        if (cdaStatus.getText().equalsIgnoreCase("CDA generated successfully!"))
+            previewTransferButton.setDisable(false);
+    }
+
+    private void onTransferFailed(String eventType, File file) {
+        labelTransfer.setText("Transfer Failed. Please try again.");
     }
 
 
@@ -146,8 +160,14 @@ public class TransferPanelController {
         previewTransferButton.setDisable(true);
         cdaStatus.setText("Generating CDA...");
 
-        EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
-//        uploadCda();
+        EventManager.getInstance().getEventObservable().notify("generate_cda",
+                new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+
+        //Using file name to pass params and retain present logic
+//        EventManager.getInstance().getEventObservable().notify("transfer",
+//                new File(patientIDMenu.getText() + "," + encounterIDMenu.getText() + "," +
+//                        organizationMenu.getText() + ".txt"));
+
     }
 
     @FXML

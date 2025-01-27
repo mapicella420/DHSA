@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Body.ClinicalHistoryAdapter;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
 import org.hl7.fhir.r5.model.Condition;
 import org.hl7.fhir.r5.model.Encounter;
