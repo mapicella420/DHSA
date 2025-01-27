@@ -936,5 +936,12 @@ public class FHIRClient {
         return client.transaction().withBundle(bundle).execute();
     }
 
+    public MethodOutcome updateResource(Object object){
+        if (object instanceof Encounter encounter) {
+            return client.update().resource(encounter).execute();
+        }
+        return null;
+    }
+
 }
 

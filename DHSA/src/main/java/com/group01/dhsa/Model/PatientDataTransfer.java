@@ -85,7 +85,7 @@ public class PatientDataTransfer {
             String fullId = existingPatient.getId();
             String normalizedId = fullId.substring(0, fullId.lastIndexOf("/_history"));
             normalizedId = normalizedId.substring(normalizedId.lastIndexOf("/") + 1);
-            
+
             uploadedPatientId = normalizedId;
         } else {
             Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
