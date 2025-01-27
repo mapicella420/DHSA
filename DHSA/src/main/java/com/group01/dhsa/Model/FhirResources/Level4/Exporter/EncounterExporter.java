@@ -2,9 +2,11 @@ package com.group01.dhsa.Model.FhirResources.Level4.Exporter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class EncounterExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Encounter.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -50,7 +53,7 @@ public class EncounterExporter implements FhirResourceExporter {
                 Map<String, String> encounterData = new HashMap<>();
 
                 // Extract Encounter ID (from the 'id' field of the resource)
-                encounterData.put("id", encounter.getIdElement().getIdPart());
+                encounterData.put("Encounter", encounter.getIdElement().getIdPart());
 
                 // Extract Identifier
                 encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
@@ -197,7 +200,7 @@ public class EncounterExporter implements FhirResourceExporter {
                         Map<String, String> encounterData = new HashMap<>();
 
                         // Extract Encounter ID
-                        encounterData.put("Id", encounter.getIdElement().getIdPart());
+                        encounterData.put("Encounter", encounter.getIdElement().getIdPart());
 
                         // Extract Identifier
                         encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
@@ -261,7 +264,11 @@ public class EncounterExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
         setFhirServerUrl();
         List<Map<String, String>> encountersList = new ArrayList<>();
 
@@ -270,80 +277,46 @@ public class EncounterExporter implements FhirResourceExporter {
             FhirContext fhirContext = FhirContext.forR5();
             IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
-            // Adatta il nome del campo per _id, che è richiesto dal server FHIR
-            if ("Id".equalsIgnoreCase(searchField)) {
-                searchField = "_id";
+            // Build the search query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(Encounter.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map search fields to FHIR API query parameters
+                switch (searchField) {
+                    case "encounter": // Search by Encounter ID
+                        query = query.where(new StringClientParam("_id").matches().value(searchValue));
+                        break;
+                    case "identifier": // Search by Identifier
+                        query = query.where(new StringClientParam("identifier").matches().value(searchValue));
+                        break;
+                    case "type": // Search by Type (Coding Display)
+                        query = query.where(new StringClientParam("type").matches().value(searchValue));
+                        break;
+                    case "patient": // Search by Subject (Patient Reference)
+                        query = query.where(new StringClientParam("subject").matches().value(searchValue));
+                        break;
+                    case "organization": // Search by Service Provider (Organization Reference)
+                        query = query.where(new StringClientParam("service-provider").matches().value(searchValue));
+                        break;
+                    case "periodstart": // Search by Start Date
+                        query = query.where(new StringClientParam("date").matches().value(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
             }
 
-            // Perform search query with the specified field and value
-            Bundle bundle = client.search()
-                    .forResource(Encounter.class)
-                    .where(new StringClientParam(searchField).matches().value(searchValue))
-                    .returnBundle(Bundle.class)
-                    .execute();
+            // Execute the query and fetch the bundle
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
 
             // Process all pages of the bundle
             while (bundle != null) {
                 for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
                     Encounter encounter = (Encounter) entry.getResource();
-
-                    // Extract encounter data into a map
-                    Map<String, String> encounterData = new HashMap<>();
-
-                    // Extract Encounter ID
-                    encounterData.put("Id", encounter.getIdElement().getIdPart());
-
-                    // Extract Identifier
-                    encounterData.put("Identifier", encounter.getIdentifierFirstRep() != null ? encounter.getIdentifierFirstRep().getValue() : "N/A");
-
-                    // Extract Type
-                    if (!encounter.getType().isEmpty()) {
-                        CodeableConcept type = encounter.getType().get(0); // First type
-                        if (!type.getCoding().isEmpty()) {
-                            Coding coding = type.getCoding().get(0); // First Coding
-                            encounterData.put("Type", coding.getDisplay() != null ? coding.getDisplay() : "N/A");
-                        } else {
-                            encounterData.put("Type", "N/A");
-                        }
-                    } else {
-                        encounterData.put("Type", "N/A");
-                    }
-
-                    // Extract Start and End Dates
-                    if (encounter.hasActualPeriod()) {
-                        encounterData.put("Start", encounter.getActualPeriod().hasStart() ? encounter.getActualPeriod().getStart().toString() : "N/A");
-                        encounterData.put("End", encounter.getActualPeriod().hasEnd() ? encounter.getActualPeriod().getEnd().toString() : "N/A");
-                    } else {
-                        encounterData.put("Start", "N/A");
-                        encounterData.put("End", "N/A");
-                    }
-
-                    // Extract Subject (Patient Reference)
-                    encounterData.put("Patient", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
-
-                    // Extract Service Provider (Organization Reference)
-                    encounterData.put("Organization", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
-                    String practitioner = "N/A";
-                    if (encounter.hasParticipant() && !encounter.getParticipant().isEmpty()) {
-                        Encounter.EncounterParticipantComponent participant = encounter.getParticipantFirstRep();
-                        if (participant.hasActor() && participant.getActor().getReference().startsWith("Practitioner")) {
-                            practitioner = participant.getActor().getReference();
-                        }
-                    }
-                    encounterData.put("Practitioner", practitioner);
-                    // Extract Total Cost
-                    if (encounter.hasExtension("http://hl7.org/fhir/StructureDefinition/total-claim-cost")) {
-                        var extension = encounter.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/total-claim-cost").getValue();
-                        if (extension instanceof org.hl7.fhir.r5.model.Quantity) {
-                            encounterData.put("TotalCost", String.valueOf(((org.hl7.fhir.r5.model.Quantity) extension).getValue()));
-                        } else {
-                            encounterData.put("TotalCost", "N/A");
-                        }
-                    } else {
-                        encounterData.put("TotalCost", "N/A");
-                    }
-
-                    // Add encounter data to the list
+                    Map<String, String> encounterData = convertResourceToMap(encounter);
                     encountersList.add(encounterData);
                 }
 
@@ -353,7 +326,7 @@ public class EncounterExporter implements FhirResourceExporter {
                         : null;
             }
         } catch (Exception e) {
-            System.err.println("Error searching Encounter resources by field: " + e.getMessage());
+            System.err.println("Error searching Encounter resources: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -370,7 +343,7 @@ public class EncounterExporter implements FhirResourceExporter {
         Map<String, String> encounterData = new HashMap<>();
 
         // ID
-        encounterData.put("Id", encounter.getIdElement().getIdPart());
+        encounterData.put("Encounter", encounter.getIdElement().getIdPart());
 
         // Meta
         if (encounter.hasMeta()) {
@@ -404,10 +377,10 @@ public class EncounterExporter implements FhirResourceExporter {
         }
 
         // Subject
-        encounterData.put("Subject", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
+        encounterData.put("Patient", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
 
         // Service Provider
-        encounterData.put("ServiceProvider", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
+        encounterData.put("Organization", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
 
         // Participant (Practitioner)
         if (encounter.hasParticipant() && !encounter.getParticipant().isEmpty()) {

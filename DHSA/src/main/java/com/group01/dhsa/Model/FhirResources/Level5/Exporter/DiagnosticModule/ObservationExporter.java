@@ -2,8 +2,11 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.DiagnosticModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
+import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Observation;
@@ -44,6 +47,7 @@ public class ObservationExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Observation.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -102,9 +106,78 @@ public class ObservationExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return List.of();
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> observationsList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Build the search query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(Observation.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map search fields to FHIR API query parameters
+                switch (searchField) {
+                    case "id":
+                        query = query.where(new StringClientParam("_id").matches().value(searchValue));
+                        break;
+                    case "status":
+                        query = query.where(new StringClientParam("status").matches().value(searchValue));
+                        break;
+                    case "code":
+                        query = query.where(new StringClientParam("code").matches().value(searchValue));
+                        break;
+                    case "subject":
+                        query = query.where(new StringClientParam("subject").matches().value(searchValue));
+                        break;
+                    case "encounter":
+                        query = query.where(new StringClientParam("encounter").matches().value(searchValue));
+                        break;
+                    case "effective":
+                        query = query.where(new StringClientParam("date").matches().value(searchValue));
+                        break;
+                    case "value":
+                        query = query.where(new StringClientParam("value-quantity").matches().value(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
+            }
+
+            // Execute the query and fetch the bundle
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Observation observation = (Observation) entry.getResource();
+                    Map<String, String> observationData = convertResourceToMap(observation);
+                    observationsList.add(observationData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Observation resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return observationsList;
     }
+
 
     @Override
     public Map<String, String> convertResourceToMap(Object resource) {
@@ -143,7 +216,7 @@ public class ObservationExporter implements FhirResourceExporter {
         }
 
         // Subject (Patient)
-        observationData.put("Subject", observation.hasSubject() ? observation.getSubject().getReference() : "N/A");
+        observationData.put("Patient", observation.hasSubject() ? observation.getSubject().getReference() : "N/A");
 
         // Encounter
         observationData.put("Encounter", observation.hasEncounter() ? observation.getEncounter().getReference() : "N/A");

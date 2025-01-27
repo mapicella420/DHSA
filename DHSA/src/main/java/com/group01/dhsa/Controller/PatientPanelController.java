@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -86,7 +87,7 @@ public class PatientPanelController {
                     System.out.println("[DEBUG] Tipo di risorsa selezionato: " + resourceType);
 
                     if (resourceType != null && !resourceType.isEmpty()) {
-                        populateContextMenu(dynamicContextMenu, resourceType, item);
+                        populateDynamicContextMenu(dynamicContextMenu, resourceType, item);
                         if (!dynamicContextMenu.getItems().isEmpty()) {
                             // Mostra il ContextMenu alla posizione del clic
                             System.out.println("[DEBUG] Mostra ContextMenu con " + dynamicContextMenu.getItems().size() + " elementi.");
@@ -115,107 +116,163 @@ public class PatientPanelController {
     }
 
 
-    private void populateContextMenu(ContextMenu contextMenu, String resourceType, Map<String, String> item) {
-        switch (resourceType) {
-            case "Device":
-                // Device è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("ENCOUNTER"));
-                break;
-            case "Encounter":
-                // Encounter è associato a Organization e Patient
-                addDynamicMenuItem(contextMenu, "Organization", item.get("ServiceProvider"));
-                addDynamicMenuItem(contextMenu, "Practitioner", item.get("Practitioner"));
+    /**
+     * Popola il menu contestuale dinamico in base al tipo di risorsa.
+     */
+    private void populateDynamicContextMenu(ContextMenu contextMenu, String resourceType, Map<String, String> item) {
+        // Estrai EncounterId, PatientId, OrganizationId e PractitionerId dalla riga selezionata
+        String encounterId = cleanReference(item.get("Encounter"));
+        String patientId = cleanReference(item.get("Patient"));
+        String organizationId = cleanReference(item.get("Organization"));
+        String practitionerId = cleanReference(item.get("Practitioner"));
 
-                break;
-            case "Provider":
-                // Encounter è associato a Organization e Patient
-                addDynamicMenuItem(contextMenu, "Organization", item.get("Organization"));
-                break;
-            case "AllergyIntolerance":
-                // Allergy è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "CarePlan":
-                // CarePlan è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "Condition":
-                // Condition è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "Procedure":
-                // Procedure è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "ImagingStudy":
-                // ImagingStudy è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "Observation":
-                // Observation è associato a Patient (Subject) e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "Immunization":
-                // Immunization è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "MedicationRequest":
-                // MedicationRequest è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
-                break;
-            case "Organization":
-                // Organization non ha associazioni dirette nei dati forniti
-                statusLabel.setText("No linked resources available.");
-                break;
-            default:
-                statusLabel.setText("No linked resources available.");
-                break;
+        // Gestione delle risorse specifiche
+        if ("Practitioner".equalsIgnoreCase(resourceType) || "Organization".equalsIgnoreCase(resourceType)) {
+            addDynamicMenuItem(contextMenu, resourceType, resourceType.equals("Practitioner") ? practitionerId : organizationId, null);
+            addDynamicMenuItem(contextMenu, resourceType, resourceType.equals("Organization") ? organizationId : practitionerId, null);
+            return;
         }
+
+        // Controlla i casi in cui EncounterId o PatientId non sono disponibili
+        boolean hasEncounterId = encounterId != null && !encounterId.isEmpty();
+        boolean hasPatientId = patientId != null && !patientId.isEmpty();
+
+        if (!hasEncounterId && !hasPatientId) {
+            System.err.println("[ERROR] Both Encounter ID and Patient ID are missing or empty.");
+            return;
+        }
+
+        // Per le altre risorse, aggiungi voci dinamiche
+        if ("Patient".equalsIgnoreCase(resourceType)) {
+            addLinkedResourcesToContextMenu(contextMenu, encounterId, patientId, organizationId, practitionerId);
+            return;
+        }
+
+        if ("Encounter".equalsIgnoreCase(resourceType)) {
+            addLinkedResourcesToContextMenu(contextMenu, encounterId, patientId, organizationId, practitionerId);
+            return;
+        }
+
+        // Aggiungi voce per il tipo di risorsa corrente
+        addDynamicMenuItem(contextMenu, resourceType, encounterId, patientId);
+
+        // Aggiungi voci per tutte le risorse collegate
+        addLinkedResourcesToContextMenu(contextMenu, encounterId, patientId, organizationId, practitionerId);
     }
 
-    private void addDynamicMenuItem(ContextMenu contextMenu, String label, String reference) {
-        if (reference != null && !reference.isEmpty()) {
-            // Pulizia del riferimento
-            reference = cleanReference(reference);
+    /**
+     * Aggiunge un elemento al menu contestuale dinamico.
+     */
+    private void addDynamicMenuItem(ContextMenu contextMenu, String label, String resourceId, String patientId) {
+        MenuItem menuItem = new MenuItem(label);
 
-            // Debug: Mostra il riferimento
-            System.out.println("[DEBUG] Aggiunta elemento al menu: " + label + " -> " + reference);
+        menuItem.setOnAction(event -> {
+            // Attiva la barra di progressione
+            progressBar.setVisible(true);
 
-            MenuItem menuItem = new MenuItem(label + ": " + reference);
-            String finalReference = reference;
-            menuItem.setOnAction(event -> {
-                String[] parts = finalReference.split("/");
-                if (parts.length == 2) {
-                    String resourceType = parts[0];
-                    String resourceId = parts[1];
-                    System.out.println("[DEBUG] Azione selezionata: " + resourceType + " con ID " + resourceId);
+            // Pulizia del resourceId per evitare duplicazioni
+            String cleanResourceId = resourceId != null ? resourceId.replace(label + "/", "").trim() : "N/A";
+            String cleanPatientId = patientId != null ? patientId.replace("Patient/", "").trim() : "N/A";
+
+            // Mostra i dettagli del contesto selezionato
+            System.out.println("[DEBUG] Menu selected - ResourceType: " + label +
+                    ", ResourceId: " + cleanResourceId +
+                    ", PatientId: " + cleanPatientId);
+
+            // Crea la stringa di dettagli della risorsa
+            StringBuilder resourceDetails = new StringBuilder(label + "_Combined");
+            if (!"N/A".equals(cleanResourceId)) {
+                resourceDetails.append("/").append(label).append("/").append(cleanResourceId);
+            }
+            if (!"N/A".equals(cleanPatientId)) {
+                resourceDetails.append("/Patient/").append(cleanPatientId);
+            }
+
+            System.out.println("[DEBUG] Resource details constructed: " + resourceDetails);
+
+            // Usa un Task per gestire l'operazione asincrona
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() throws Exception {
                     EventManager.getInstance().getEventObservable().notify(
                             "linked_resource_selected",
-                            new File(resourceType + "_" + resourceId)
+                            new File(resourceDetails.toString())
                     );
-                } else {
-                    System.err.println("[ERROR] Formato riferimento non valido: " + finalReference);
+                    return null;
                 }
-            });
 
-            contextMenu.getItems().add(menuItem);
-        } else {
-            System.out.println("[DEBUG] Riferimento nullo o vuoto per label: " + label);
+                @Override
+                protected void succeeded() {
+                    super.succeeded();
+                    Platform.runLater(() -> {
+                        progressBar.setVisible(false);
+                        if (EventManager.getInstance().getCurrentResources().isEmpty()) {
+                            statusLabel.setText("No linked resources found for " + label);
+                            statusLabel.setVisible(true);
+                        } else {
+                            statusLabel.setVisible(false);
+                        }
+                    });
+                }
+
+                @Override
+                protected void failed() {
+                    super.failed();
+                    Platform.runLater(() -> {
+                        progressBar.setVisible(false);
+                        statusLabel.setText("An error occurred during the operation.");
+                        statusLabel.setVisible(true);
+                    });
+                }
+            };
+
+            // Esegui il Task in un thread separato
+            new Thread(task).start();
+        });
+
+        contextMenu.getItems().add(menuItem);
+    }
+
+    /**
+     * Aggiunge le risorse collegate dinamicamente al menu contestuale.
+     */
+    private void addLinkedResourcesToContextMenu(ContextMenu contextMenu, String encounterId, String patientId,
+                                                 String organizationId, String practitionerId) {
+        List<String> linkedResources = List.of(
+                "AllergyIntolerance", "CarePlan", "Condition", "Device", "Encounter",
+                "ImagingStudy", "Immunization", "MedicationRequest", "Observation",
+                "Organization", "Patient", "Procedure"
+        );
+
+
+        // Aggiungi risorse collegate standard
+        for (String linkedResource : linkedResources) {
+            addDynamicMenuItem(contextMenu, linkedResource, encounterId, patientId);
+        }
+
+        // Aggiungi riferimenti specifici per Organization e Practitioner
+        if (organizationId != null && !organizationId.isEmpty()) {
+            addDynamicMenuItem(contextMenu, "Organization", organizationId, null);
+        }
+
+        if (practitionerId != null && !practitionerId.isEmpty()) {
+            addDynamicMenuItem(contextMenu, "Practitioner", practitionerId, null);
         }
     }
 
 
+    /**
+     * Rimuove prefissi e simboli inutili dal riferimento.
+     */
     private String cleanReference(String reference) {
         if (reference == null || reference.isEmpty()) {
             return reference;
         }
-        // Rimuovi "Reference[" e "]"
         if (reference.contains("Reference[")) {
             reference = reference.replace("Reference[", "").replace("]", "").trim();
         }
         return reference;
     }
-
 
 
 

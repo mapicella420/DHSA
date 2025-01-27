@@ -2,8 +2,10 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.AllergyIntolerance;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Extension;
@@ -41,6 +43,7 @@ public class AllergyExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(AllergyIntolerance.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -96,8 +99,84 @@ public class AllergyExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return null;
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> allergiesList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Retrieve all AllergyIntolerance resources from the FHIR server
+            Bundle bundle = client.search()
+                    .forResource(AllergyIntolerance.class)
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    AllergyIntolerance allergy = (AllergyIntolerance) entry.getResource();
+
+                    boolean matches = true;
+                    for (int i = 0; i < searchFields.length; i++) {
+                        String searchField = searchFields[i].toLowerCase();
+                        String searchValue = searchValues[i];
+
+                        // Handle each search field
+                        switch (searchField) {
+                            case "patient":
+                                if (!allergy.hasPatient() || !allergy.getPatient().getReference().contains(searchValue)) {
+                                    matches = false;
+                                }
+                                break;
+                            case "encounter":
+                                // Check if the extension contains the encounter reference
+                                if (!allergy.hasExtension("http://hl7.org/fhir/StructureDefinition/encounter-reference")) {
+                                    matches = false;
+                                } else {
+                                    String encounterReference = ((org.hl7.fhir.r5.model.Reference) allergy
+                                            .getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/encounter-reference")
+                                            .getValue())
+                                            .getReference();
+                                    if (!encounterReference.contains(searchValue)) {
+                                        matches = false;
+                                    }
+                                }
+                                break;
+                            default:
+                                System.err.println("[ERROR] Unsupported search field: " + searchField);
+                                matches = false;
+                        }
+
+                        // If any condition is not met, skip this resource
+                        if (!matches) {
+                            break;
+                        }
+                    }
+
+                    // If all conditions are satisfied, add the resource to the result list
+                    if (matches) {
+                        allergiesList.add(convertResourceToMap(allergy));
+                    }
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Allergy resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return allergiesList;
     }
 
     @Override

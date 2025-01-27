@@ -2,8 +2,10 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.MedicationsModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.MedicationRequest;
@@ -44,6 +46,7 @@ public class MedicationExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(MedicationRequest.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -102,9 +105,72 @@ public class MedicationExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return List.of();
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> medicationsList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Build the search query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(MedicationRequest.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map search fields to FHIR API query parameters
+                switch (searchField) {
+                    case "id":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("_id").exactly().code(searchValue));
+                        break;
+                    case "status":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.StringClientParam("status").matches().value(searchValue));
+                        break;
+                    case "medicationcode":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("medication-code").exactly().code(searchValue));
+                        break;
+                    case "patient":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("subject").hasId(searchValue));
+                        break;
+                    case "encounter":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("encounter").hasId(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
+            }
+
+            // Execute the query and fetch the bundle
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    MedicationRequest medicationRequest = (MedicationRequest) entry.getResource();
+                    Map<String, String> medicationData = convertResourceToMap(medicationRequest);
+                    medicationsList.add(medicationData);
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching MedicationRequest resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return medicationsList;
     }
+
 
     @Override
     public Map<String, String> convertResourceToMap(Object resource) {

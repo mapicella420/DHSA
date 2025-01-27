@@ -32,6 +32,8 @@ public class FhirExporterFactoryManager {
                 return new EncounterExporterFactory();
             case "allerg":
                 return new AllergyExporterFactory();
+            case "allergyintolerance":
+                return new AllergyExporterFactory();
             case "careplan":
                 return new CarePlanExporterFactory();
             case "condition":

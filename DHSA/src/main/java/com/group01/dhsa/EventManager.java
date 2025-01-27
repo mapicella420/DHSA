@@ -153,20 +153,95 @@ public class EventManager {
 
         // Listener per risorsa linkata selezionata
         eventObservable.subscribe("linked_resource_selected", (eventType, file) -> {
-            String resourceDetails = file.getName();
-            String[] parts = resourceDetails.split("_"); // Formato: "ResourceType_ResourceId"
-            if (parts.length == 2) {
-                String resourceType = parts[0];
-                String resourceId = parts[1];
-                fetchLinkedResource(resourceType, resourceId);
-            } else {
-                System.err.println("[ERROR] Invalid linked resource details: " + resourceDetails);
+            String resourceDetails = file.getPath(); // Usa getPath() per ottenere l'intero percorso come stringa
+            System.out.println("[DEBUG] Resource details received: " + resourceDetails);
+
+            try {
+                // Normalizza eventuali separatori di percorso (\\ o /)
+                resourceDetails = resourceDetails.replace("\\", "/");
+
+                // Estrarre il ResourceType e altre parti
+                String[] typeSplit = resourceDetails.split("_Combined");
+                if (typeSplit.length != 2) {
+                    System.err.println("[ERROR] Invalid resource format: " + resourceDetails);
+                    return;
+                }
+
+                String resourceType = typeSplit[0]; // ResourceType è prima di "_Combined"
+                String resourceSuffix = typeSplit[1]; // Tutto ciò che segue "_Combined"
+
+                // Cerca EncounterId, PatientId, PractitionerId e OrganizationId (se presenti)
+                String encounterId = null;
+                String patientId = null;
+                String practitionerId = null;
+                String organizationId = null;
+
+                if (resourceSuffix.contains("/Encounter/")) {
+                    String[] encounterSplit = resourceSuffix.split("/Encounter/");
+                    if (encounterSplit.length == 2) {
+                        resourceSuffix = encounterSplit[1]; // Riduci il suffix dopo Encounter
+                        encounterId = encounterSplit[1].split("/")[0].trim();
+                        encounterId = encounterId.replace("Encounter/", "").trim(); // Rimuove duplicati se presenti
+                    }
+                }
+
+                if (resourceSuffix.contains("/Patient/")) {
+                    String[] patientSplit = resourceSuffix.split("/Patient/");
+                    if (patientSplit.length == 2) {
+                        patientId = patientSplit[1].trim();
+                        patientId = patientId.replace("Patient/", "").trim(); // Rimuove duplicati se presenti
+                    }
+                }
+
+                if (resourceSuffix.contains("/Practitioner/")) {
+                    String[] practitionerSplit = resourceSuffix.split("/Practitioner/");
+                    if (practitionerSplit.length == 2) {
+                        practitionerId = practitionerSplit[1].trim();
+                        practitionerId = practitionerId.replace("Practitioner/", "").trim(); // Rimuove duplicati se presenti
+                    }
+                }
+
+                if (resourceSuffix.contains("/Organization/")) {
+                    String[] organizationSplit = resourceSuffix.split("/Organization/");
+                    if (organizationSplit.length == 2) {
+                        organizationId = organizationSplit[1].trim();
+                        organizationId = organizationId.replace("Organization/", "").trim(); // Rimuove duplicati se presenti
+                    }
+                }
+
+                // Debug per verificare i valori estratti
+                System.out.println("[DEBUG] Extracted ResourceType: " + resourceType +
+                        ", EncounterId: " + (encounterId != null ? encounterId : "N/A") +
+                        ", PatientId: " + (patientId != null ? patientId : "N/A") +
+                        ", PractitionerId: " + (practitionerId != null ? practitionerId : "N/A") +
+                        ", OrganizationId: " + (organizationId != null ? organizationId : "N/A"));
+
+                // Determina i parametri per fetchLinkedResource
+                if ("Practitioner".equalsIgnoreCase(resourceType) && practitionerId != null) {
+                    fetchLinkedResource(resourceType, new String[]{"Practitioner"}, new String[]{practitionerId});
+                } else if ("Organization".equalsIgnoreCase(resourceType) && organizationId != null) {
+                    fetchLinkedResource(resourceType, new String[]{"Organization"}, new String[]{organizationId});
+                } else if (encounterId != null && patientId != null) {
+                    fetchLinkedResource(resourceType, new String[]{"Encounter", "Patient"}, new String[]{encounterId, patientId});
+                } else if (encounterId != null) {
+                    fetchLinkedResource(resourceType, new String[]{"Encounter"}, new String[]{encounterId});
+                } else if (patientId != null) {
+                    fetchLinkedResource(resourceType, new String[]{"Patient"}, new String[]{patientId});
+                } else {
+                    System.err.println("[ERROR] No valid IDs found. Cannot process resource.");
+                }
+            } catch (Exception e) {
+                System.err.println("[ERROR] Exception while processing resource details: " + e.getMessage());
+                e.printStackTrace();
             }
         });
 
+
+
+
     }
 
-    private void fetchLinkedResource(String resourceType, String resourceId) {
+    private void fetchLinkedResource(String resourceType, String[] searchFields, String[] searchValues) {
         try {
             FhirResourceExporterFactory factory = FhirExporterFactoryManager.getFactory(resourceType);
             if (factory == null) {
@@ -175,22 +250,29 @@ public class EventManager {
             }
 
             FhirResourceExporter exporter = factory.createExporter();
-            List<Map<String, String>> results = exporter.searchResources("Id", resourceId);
+
+            // Esegui la ricerca
+            System.out.println("[DEBUG] Fetching resources for Type=" + resourceType +
+                    ", Fields=" + String.join(", ", searchFields) +
+                    ", Values=" + String.join(", ", searchValues));
+
+            List<Map<String, String>> results = exporter.searchResources(searchFields, searchValues);
             if (results.isEmpty()) {
-                System.out.println("[DEBUG] No resource found for Type=" + resourceType + ", ID=" + resourceId);
+                System.out.println("[DEBUG] No resource found for Type=" + resourceType +
+                        ", Fields=" + String.join(", ", searchFields) +
+                        ", Values=" + String.join(", ", searchValues));
             } else {
-                System.out.println("[DEBUG] Resource found: " + results);
-                EventManager.getInstance().setCurrentResources(results);
+                System.out.println("[DEBUG] Resources found: " + results);
+                setCurrentResources(results);
             }
 
             // Notifica che la ricerca è completata
-            EventManager.getInstance().getEventObservable().notify("search_complete", null);
+            eventObservable.notify("search_complete", null);
         } catch (Exception e) {
             System.err.println("[ERROR] Error fetching resource: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 
     private void loadCsvResources(File file) {
         try {

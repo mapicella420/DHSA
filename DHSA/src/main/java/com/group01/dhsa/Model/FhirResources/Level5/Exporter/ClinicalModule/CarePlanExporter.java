@@ -2,8 +2,10 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class CarePlanExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(CarePlan.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -241,8 +244,75 @@ public class CarePlanExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return null;
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> carePlansList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Build the query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(CarePlan.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map fields to FHIR API query parameters
+                switch (searchField) {
+                    case "id":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("_id").exactly().code(searchValue));
+                        break;
+                    case "patient":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("subject").hasId(searchValue));
+                        break;
+                    case "encounter":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("encounter").hasId(searchValue));
+                        break;
+                    case "status":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("status").exactly().code(searchValue));
+                        break;
+                    case "category":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("category").exactly().code(searchValue));
+                        break;
+                    case "start":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.DateClientParam("period-start").exactly().day(searchValue));
+                        break;
+                    case "stop":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.DateClientParam("period-end").exactly().day(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
+            }
+
+            // Execute the query and retrieve results
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    CarePlan carePlan = (CarePlan) entry.getResource();
+                    carePlansList.add(convertResourceToMap(carePlan));
+                }
+
+                // Retrieve the next page
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching CarePlan resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return carePlansList;
     }
 
     @Override

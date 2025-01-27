@@ -2,8 +2,10 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.MedicationsModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Immunization;
@@ -44,6 +46,7 @@ public class ImmunizationExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Immunization.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -102,8 +105,86 @@ public class ImmunizationExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return List.of();
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> immunizationsList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Perform a general search for Immunization resources
+            Bundle bundle = client.search()
+                    .forResource(Immunization.class)
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Immunization immunization = (Immunization) entry.getResource();
+
+                    boolean matches = true;
+
+                    // Check each search field
+                    for (int i = 0; i < searchFields.length; i++) {
+                        String searchField = searchFields[i].toLowerCase();
+                        String searchValue = searchValues[i];
+
+                        // Apply filtering logic for each field
+                        switch (searchField) {
+                            case "id":
+                                matches = matches && immunization.getIdElement().getIdPart().equalsIgnoreCase(searchValue);
+                                break;
+                            case "status":
+                                matches = matches && immunization.hasStatus() && immunization.getStatus().toCode().equalsIgnoreCase(searchValue);
+                                break;
+                            case "vaccinecode":
+                                matches = matches && immunization.hasVaccineCode() &&
+                                        immunization.getVaccineCode().getCodingFirstRep().getCode().equalsIgnoreCase(searchValue);
+                                break;
+                            case "patient":
+                                matches = matches && immunization.hasPatient() &&
+                                        immunization.getPatient().getReference().contains(searchValue);
+                                break;
+                            case "encounter":
+                                matches = matches && immunization.hasEncounter() &&
+                                        immunization.getEncounter().getReference().contains(searchValue);
+                                break;
+                            case "occurrence":
+                                matches = matches && immunization.hasOccurrenceDateTimeType() &&
+                                        immunization.getOccurrenceDateTimeType().getValueAsString().contains(searchValue);
+                                break;
+                            default:
+                                System.err.println("[ERROR] Unsupported search field: " + searchField);
+                                matches = false;
+                        }
+
+                        if (!matches) break; // Break early if a mismatch is found
+                    }
+
+                    // Add matching immunization to the results
+                    if (matches) {
+                        immunizationsList.add(convertResourceToMap(immunization));
+                    }
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Immunization resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return immunizationsList;
     }
 
     @Override

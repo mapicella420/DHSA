@@ -2,8 +2,10 @@ package com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Coding;
 import org.hl7.fhir.r5.model.Condition;
@@ -41,6 +43,7 @@ public class ConditionExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Condition.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -99,8 +102,75 @@ public class ConditionExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return null;
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> conditionsList = new ArrayList<>();
+
+        try {
+            // Initialize FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Build the query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(Condition.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map fields to FHIR API query parameters
+                switch (searchField) {
+                    case "id":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("_id").exactly().code(searchValue));
+                        break;
+                    case "patient":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("subject").hasId(searchValue));
+                        break;
+                    case "encounter":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.ReferenceClientParam("encounter").hasId(searchValue));
+                        break;
+                    case "onset":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.DateClientParam("onset-date").exactly().day(searchValue));
+                        break;
+                    case "abatement":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.DateClientParam("abatement-date").exactly().day(searchValue));
+                        break;
+                    case "clinicalstatus":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("clinical-status").exactly().code(searchValue));
+                        break;
+                    case "verificationstatus":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("verification-status").exactly().code(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
+            }
+
+            // Execute the query and retrieve results
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Condition condition = (Condition) entry.getResource();
+                    conditionsList.add(convertResourceToMap(condition));
+                }
+
+                // Retrieve the next page
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Condition resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return conditionsList;
     }
 
     @Override

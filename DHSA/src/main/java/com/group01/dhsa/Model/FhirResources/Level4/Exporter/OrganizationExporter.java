@@ -2,9 +2,11 @@ package com.group01.dhsa.Model.FhirResources.Level4.Exporter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class OrganizationExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Organization.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -48,7 +51,7 @@ public class OrganizationExporter implements FhirResourceExporter {
 
                 // Extract relevant fields and store them in a Map
                 Map<String, String> organizationData = new HashMap<>();
-                organizationData.put("Id", organization.getIdentifierFirstRep().getValue());
+                organizationData.put("Organization", organization.getIdElement().getIdPart());
                 organizationData.put("Name", organization.getName());
 
                 // Extract address
@@ -215,7 +218,7 @@ public class OrganizationExporter implements FhirResourceExporter {
                     // Add matching organization to the result list
                     if (matches) {
                         Map<String, String> organizationData = new HashMap<>();
-                        organizationData.put("Id", organization.getIdentifierFirstRep() != null ? organization.getIdentifierFirstRep().getValue() : "N/A");
+                        organizationData.put("Organization", organization.getIdElement() != null ? organization.getIdElement().getIdPart() : "N/A");
                         organizationData.put("Name", organization.hasName() ? organization.getName() : "N/A");
 
                         // Extract address
@@ -279,7 +282,11 @@ public class OrganizationExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
         setFhirServerUrl();
         List<Map<String, String>> organizationsList = new ArrayList<>();
 
@@ -288,71 +295,49 @@ public class OrganizationExporter implements FhirResourceExporter {
             FhirContext fhirContext = FhirContext.forR5();
             IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
-            // Adatta il nome del campo per `_id`, che è richiesto dal server FHIR
-            if ("Id".equalsIgnoreCase(searchField)) {
-                searchField = "_id";
+            // Build the search query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(Organization.class);
+
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map search fields to FHIR API query parameters
+                switch (searchField) {
+                    case "organization":
+                        query = query.where(new StringClientParam("_id").matches().value(searchValue));
+                        break;
+                    case "name":
+                        query = query.where(new StringClientParam("name").matches().value(searchValue));
+                        break;
+                    case "identifier":
+                        query = query.where(new StringClientParam("identifier").matches().value(searchValue));
+                        break;
+                    case "address":
+                        query = query.where(new StringClientParam("address").matches().value(searchValue));
+                        break;
+                    case "address-city":
+                        query = query.where(new StringClientParam("address-city").matches().value(searchValue));
+                        break;
+                    case "address-state":
+                        query = query.where(new StringClientParam("address-state").matches().value(searchValue));
+                        break;
+                    case "address-postalcode":
+                        query = query.where(new StringClientParam("address-postalcode").matches().value(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
             }
 
-            // Perform search query with the specified field and value
-            Bundle bundle = client.search()
-                    .forResource(Organization.class)
-                    .where(new StringClientParam(searchField).matches().value(searchValue))
-                    .returnBundle(Bundle.class)
-                    .execute();
+            // Execute the query and fetch the bundle
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
 
             // Process all pages of the bundle
             while (bundle != null) {
                 for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
                     Organization organization = (Organization) entry.getResource();
-
-                    // Extract relevant fields into a map
-                    Map<String, String> organizationData = new HashMap<>();
-                    organizationData.put("Id", organization.getIdElement().getIdPart());
-                    organizationData.put("Name", organization.hasName() ? organization.getName() : "N/A");
-
-                    // Extract address
-                    Address address = organization.getContactFirstRep() != null ? organization.getContactFirstRep().getAddress() : null;
-                    if (address != null) {
-                        organizationData.put("Address", address.getLine().isEmpty() ? "N/A" :
-                                String.join(", ", address.getLine().stream().map(StringType::getValue).toList()));
-                        organizationData.put("City", address.getCity() != null ? address.getCity() : "N/A");
-                        organizationData.put("State", address.getState() != null ? address.getState() : "N/A");
-                        organizationData.put("Zip", address.getPostalCode() != null ? address.getPostalCode() : "N/A");
-                    } else {
-                        organizationData.put("Address", "N/A");
-                        organizationData.put("City", "N/A");
-                        organizationData.put("State", "N/A");
-                        organizationData.put("Zip", "N/A");
-                    }
-
-                    // Extract phone
-                    String phone = organization.getContactFirstRep() != null && !organization.getContactFirstRep().getTelecom().isEmpty()
-                            ? organization.getContactFirstRep().getTelecomFirstRep().getValue()
-                            : "N/A";
-                    organizationData.put("Phone", phone);
-
-                    // Extract geolocation extensions
-                    organizationData.put("Latitude", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat") != null
-                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat").getValue() instanceof org.hl7.fhir.r5.model.Quantity
-                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lat").getValue()).getValue())
-                            : "N/A");
-
-                    organizationData.put("Longitude", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon") != null
-                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon").getValue() instanceof org.hl7.fhir.r5.model.Quantity
-                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/geolocation-lon").getValue()).getValue())
-                            : "N/A");
-
-                    // Extract revenue and utilization extensions
-                    organizationData.put("Revenue", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue") != null
-                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue").getValue() instanceof org.hl7.fhir.r5.model.Quantity
-                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-revenue").getValue()).getValue())
-                            : "N/A");
-
-                    organizationData.put("Utilization", organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization") != null
-                            && organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization").getValue() instanceof org.hl7.fhir.r5.model.Quantity
-                            ? String.valueOf(((org.hl7.fhir.r5.model.Quantity) organization.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/organization-utilization").getValue()).getValue())
-                            : "N/A");
-
+                    Map<String, String> organizationData = convertResourceToMap(organization);
                     organizationsList.add(organizationData);
                 }
 
@@ -362,7 +347,7 @@ public class OrganizationExporter implements FhirResourceExporter {
                         : null;
             }
         } catch (Exception e) {
-            System.err.println("Error searching Organization resources by field: " + e.getMessage());
+            System.err.println("Error searching Organization resources: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -379,7 +364,7 @@ public class OrganizationExporter implements FhirResourceExporter {
         Map<String, String> organizationData = new HashMap<>();
 
         // ID
-        organizationData.put("Id", organization.getIdElement().getIdPart());
+        organizationData.put("Organization", organization.getIdElement().getIdPart());
 
         // Meta
         if (organization.hasMeta()) {

@@ -30,7 +30,7 @@ public interface FhirResourceExporter {
      * @param searchValue Il valore da cercare.
      * @return Una lista di mappe contenenti i dati delle risorse corrispondenti.
      */
-    List<Map<String, String>> searchResources(String searchField, String searchValue);
+    List<Map<String, String>> searchResources(String[] searchField, String[] searchValue);
 
     /**
      * Converte una risorsa in una mappa.

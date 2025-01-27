@@ -2,9 +2,11 @@ package com.group01.dhsa.Model.FhirResources.Level4.Exporter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
@@ -40,6 +42,8 @@ public class PatientExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Patient.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
+
                     .execute();
 
             // Iterate over the bundle entries
@@ -49,7 +53,7 @@ public class PatientExporter implements FhirResourceExporter {
                 // Extract relevant fields and store them in a Map
                 Map<String, String> patientData = new HashMap<>();
                 patientData.put("Identifier", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
-                patientData.put("Id", patient.getIdPart() != null ? patient.getIdPart() : "N/A");
+                patientData.put("Patient", patient.getIdPart() != null ? patient.getIdPart() : "N/A");
 
                 // Name
                 HumanName name = patient.getNameFirstRep();
@@ -215,7 +219,7 @@ public class PatientExporter implements FhirResourceExporter {
                     if (matches) {
                         Map<String, String> patientData = new HashMap<>();
 
-                        patientData.put("Id", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
+                        patientData.put("Patient", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
 
                         HumanName name = patient.getNameFirstRep();
                         if (name != null) {
@@ -273,7 +277,11 @@ public class PatientExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
         setFhirServerUrl();
         List<Map<String, String>> patientsList = new ArrayList<>();
 
@@ -282,102 +290,43 @@ public class PatientExporter implements FhirResourceExporter {
             FhirContext fhirContext = FhirContext.forR5();
             IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
 
-            // Perform search query for Patient resources
-            Bundle bundle = null;
+            // Build the search query dynamically
+            IQuery<IBaseBundle> query = client.search().forResource(Patient.class);
 
-            // Dynamically create the query based on the searchField
-            switch (searchField.toLowerCase()) {
-                case "id":
-                    bundle = client.search()
-                            .forResource(Patient.class)
-                            .where(new StringClientParam("_id").matches().value(searchValue))
-                            .returnBundle(Bundle.class)
-                            .execute();
-                    break;
-                case "identifier":
-                    bundle = client.search()
-                            .forResource(Patient.class)
-                            .where(new StringClientParam("identifier").matches().value(searchValue))
-                            .returnBundle(Bundle.class)
-                            .execute();
-                    break;
-                case "name":
-                    bundle = client.search()
-                            .forResource(Patient.class)
-                            .where(new StringClientParam("name").matches().value(searchValue))
-                            .returnBundle(Bundle.class)
-                            .execute();
-                    break;
-                case "birthdate":
-                    bundle = client.search()
-                            .forResource(Patient.class)
-                            .where(new StringClientParam("birthdate").matches().value(searchValue))
-                            .returnBundle(Bundle.class)
-                            .execute();
-                    break;
-                case "gender":
-                    bundle = client.search()
-                            .forResource(Patient.class)
-                            .where(new StringClientParam("gender").matches().value(searchValue))
-                            .returnBundle(Bundle.class)
-                            .execute();
-                    break;
-                default:
-                    System.err.println("[ERROR] Invalid search field: " + searchField);
-                    return patientsList; // Return empty list if the field is invalid
+            for (int i = 0; i < searchFields.length; i++) {
+                String searchField = searchFields[i].toLowerCase();
+                String searchValue = searchValues[i];
+
+                // Map search fields to FHIR API query parameters
+                switch (searchField) {
+                    case "patient":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("_id").exactly().code(searchValue));
+                        break;
+                    case "identifier":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("identifier").exactly().code(searchValue));
+                        break;
+                    case "name":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.StringClientParam("name").matches().value(searchValue));
+                        break;
+                    case "gender":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.TokenClientParam("gender").exactly().code(searchValue));
+                        break;
+                    case "birthdate":
+                        query = query.where(new ca.uhn.fhir.rest.gclient.DateClientParam("birthdate").exactly().day(searchValue));
+                        break;
+                    default:
+                        System.err.println("[ERROR] Unsupported search field: " + searchField);
+                }
             }
+
+            // Execute the query and fetch the bundle
+            Bundle bundle = query.returnBundle(Bundle.class).execute();
 
             // Process all pages of the bundle
             while (bundle != null) {
                 for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
                     Patient patient = (Patient) entry.getResource();
-
-                    // Extract patient data into a Map
-                    Map<String, String> patientData = new HashMap<>();
-                    patientData.put("Id", patient.getIdElement().getIdPart());
-
-                    HumanName name = patient.getNameFirstRep();
-                    if (name != null) {
-                        patientData.put("Name", name.getGivenAsSingleString() + " " + name.getFamily());
-                    } else {
-                        patientData.put("Name", "N/A");
-                    }
-
-                    patientData.put("Gender", patient.hasGender() ? patient.getGender().toCode() : "N/A");
-                    patientData.put("BirthDate", patient.hasBirthDate() ? patient.getBirthDate().toString() : "N/A");
-
-                    if (patient.hasDeceasedDateTimeType()) {
-                        patientData.put("DeceasedDate", patient.getDeceasedDateTimeType().getValueAsString());
-                    } else {
-                        patientData.put("DeceasedDate", patient.hasDeceasedBooleanType() && patient.getDeceasedBooleanType().booleanValue() ? "Deceased" : "Alive");
-                    }
-
-                    Address address = patient.getAddressFirstRep();
-                    if (address != null) {
-                        if (!address.getLine().isEmpty()) {
-                            patientData.put("Address", String.join(", ",
-                                    address.getLine().stream().map(StringType::getValue).toList()));
-                        } else {
-                            patientData.put("Address", "N/A");
-                        }
-
-                        patientData.put("City", address.getCity() != null ? address.getCity() : "N/A");
-                        patientData.put("State", address.getState() != null ? address.getState() : "N/A");
-                        patientData.put("Zip", address.getPostalCode() != null ? address.getPostalCode() : "N/A");
-                    } else {
-                        patientData.put("Address", "N/A");
-                        patientData.put("City", "N/A");
-                        patientData.put("State", "N/A");
-                        patientData.put("Zip", "N/A");
-                    }
-
-                    Extension raceExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-race");
-                    patientData.put("Race", raceExtension != null && raceExtension.hasValue() ? raceExtension.getValue().toString() : "N/A");
-
-                    Extension ethnicityExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
-                    patientData.put("Ethnicity", ethnicityExtension != null && ethnicityExtension.hasValue() ? ethnicityExtension.getValue().toString() : "N/A");
-
-                    patientsList.add(patientData);
+                    patientsList.add(convertResourceToMap(patient));
                 }
 
                 // Retrieve the next page of the bundle
@@ -393,6 +342,7 @@ public class PatientExporter implements FhirResourceExporter {
         return patientsList;
     }
 
+
     @Override
     public Map<String, String> convertResourceToMap(Object resource) {
         if (!(resource instanceof Patient)) {
@@ -407,7 +357,7 @@ public class PatientExporter implements FhirResourceExporter {
                 patient.getIdentifierFirstRep().getValue() : "N/A");
 
         // ID
-        patientData.put("Id", patient.getIdElement().getIdPart() != null ?
+        patientData.put("Patient", patient.getIdElement().getIdPart() != null ?
                 patient.getIdElement().getIdPart() : "N/A");
 
         // Name

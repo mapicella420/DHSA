@@ -2,9 +2,11 @@ package com.group01.dhsa.Model.FhirResources.Level4.Exporter;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
+import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.Bundle;
 import org.hl7.fhir.r5.model.Device;
 
@@ -41,6 +43,7 @@ public class DeviceExporter implements FhirResourceExporter {
             Bundle bundle = client.search()
                     .forResource(Device.class)
                     .returnBundle(Bundle.class)
+                    .count(1000)
                     .execute();
 
             // Iterate over the bundle entries
@@ -49,19 +52,19 @@ public class DeviceExporter implements FhirResourceExporter {
 
                 // Extract relevant fields and store them in a Map
                 Map<String, String> deviceData = new HashMap<>();
-                deviceData.put("CODE", device.getIdentifierFirstRep() != null ? device.getIdentifierFirstRep().getValue() : "N/A");
-                deviceData.put("DESCRIPTION", device.getDefinition() != null && device.getDefinition().getConcept() != null
+                deviceData.put("Code", device.getIdentifierFirstRep() != null ? device.getIdentifierFirstRep().getValue() : "N/A");
+                deviceData.put("Description", device.getDefinition() != null && device.getDefinition().getConcept() != null
                         ? device.getDefinition().getConcept().getText() : "N/A");
 
                 // Extract UDI (Unique Device Identifier)
                 deviceData.put("UDI", device.hasUdiCarrier() ? device.getUdiCarrierFirstRep().getCarrierHRF() : "N/A");
 
                 // Extract Patient reference
-                deviceData.put("PATIENT", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient") != null
+                deviceData.put("Patient", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient") != null
                         ? device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient").getValue().toString() : "N/A");
 
                 // Extract Encounter reference
-                deviceData.put("ENCOUNTER", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter") != null
+                deviceData.put("Encounter", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter") != null
                         ? device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter").getValue().toString() : "N/A");
 
                 // Extract Status
@@ -187,8 +190,88 @@ public class DeviceExporter implements FhirResourceExporter {
     }
 
     @Override
-    public List<Map<String, String>> searchResources(String searchField, String searchValue) {
-        return null;
+    public List<Map<String, String>> searchResources(String[] searchFields, String[] searchValues) {
+        if (searchFields.length != searchValues.length) {
+            throw new IllegalArgumentException("The number of fields must match the number of values.");
+        }
+
+        setFhirServerUrl();
+        List<Map<String, String>> devicesList = new ArrayList<>();
+
+        try {
+            // Initialize the FHIR client
+            FhirContext fhirContext = FhirContext.forR5();
+            IGenericClient client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+
+            // Perform a general search for Device resources
+            Bundle bundle = client.search()
+                    .forResource(Device.class)
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            // Process all pages of the bundle
+            while (bundle != null) {
+                for (Bundle.BundleEntryComponent entry : bundle.getEntry()) {
+                    Device device = (Device) entry.getResource();
+
+                    boolean matches = true;
+
+                    // Apply filtering logic for each search field
+                    for (int i = 0; i < searchFields.length; i++) {
+                        String searchField = searchFields[i].toLowerCase();
+                        String searchValue = searchValues[i];
+
+                        switch (searchField) {
+                            case "id":
+                                matches = matches && device.getIdElement().getIdPart().equalsIgnoreCase(searchValue);
+                                break;
+                            case "code":
+                                matches = matches && device.hasIdentifier() &&
+                                        device.getIdentifierFirstRep().getValue().equalsIgnoreCase(searchValue);
+                                break;
+                            case "description":
+                                matches = matches && device.hasDefinition() &&
+                                        device.getDefinition().getConcept().getText().equalsIgnoreCase(searchValue);
+                                break;
+                            case "udi":
+                                matches = matches && device.hasUdiCarrier() &&
+                                        device.getUdiCarrierFirstRep().getCarrierHRF().equalsIgnoreCase(searchValue);
+                                break;
+                            case "patient":
+                                matches = matches && hasExtensionReference(device, "http://hl7.org/fhir/StructureDefinition/device-patient", searchValue);
+                                break;
+                            case "encounter":
+                                matches = matches && hasExtensionReference(device, "http://hl7.org/fhir/StructureDefinition/device-encounter", searchValue);
+                                break;
+                            case "status":
+                                matches = matches && device.hasStatus() &&
+                                        device.getStatus().toCode().equalsIgnoreCase(searchValue);
+                                break;
+                            default:
+                                System.err.println("[ERROR] Unsupported search field: " + searchField);
+                                matches = false;
+                        }
+
+                        if (!matches) break; // Stop further checks if one condition is false
+                    }
+
+                    // Add matching device to the results
+                    if (matches) {
+                        devicesList.add(convertResourceToMap(device));
+                    }
+                }
+
+                // Retrieve the next page of the bundle
+                bundle = bundle.getLink(Bundle.LINK_NEXT) != null
+                        ? client.loadPage().next(bundle).execute()
+                        : null;
+            }
+        } catch (Exception e) {
+            System.err.println("Error searching Device resources: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return devicesList;
     }
 
     @Override
@@ -217,16 +300,16 @@ public class DeviceExporter implements FhirResourceExporter {
 
         // Patient Reference
         if (device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient") != null) {
-            deviceData.put("PATIENT", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient").getValue().toString());
+            deviceData.put("Patient", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient").getValue().toString());
         } else {
-            deviceData.put("PATIENT", "N/A");
+            deviceData.put("Patient", "N/A");
         }
 
         // Encounter Reference
         if (device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter") != null) {
-            deviceData.put("ENCOUNTER", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter").getValue().toString());
+            deviceData.put("Encounter", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter").getValue().toString());
         } else {
-            deviceData.put("ENCOUNTER", "N/A");
+            deviceData.put("Encounter", "N/A");
         }
 
         // Status
@@ -269,6 +352,13 @@ public class DeviceExporter implements FhirResourceExporter {
         return deviceData;
     }
 
+    private boolean hasExtensionReference(Device device, String extensionUrl, String referenceValue) {
+        return device.getExtension().stream()
+                .filter(extension -> extension.getUrl().equals(extensionUrl))
+                .anyMatch(extension -> extension.hasValue() &&
+                        extension.getValue() instanceof org.hl7.fhir.r5.model.Reference &&
+                        ((org.hl7.fhir.r5.model.Reference) extension.getValue()).getReference().contains(referenceValue));
+    }
 
 
 }
