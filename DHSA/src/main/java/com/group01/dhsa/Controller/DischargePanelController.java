@@ -4,7 +4,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
-import com.group01.dhsa.Model.CdaDataExtractor;
 import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
@@ -22,18 +21,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.bson.Document;
 import org.hl7.fhir.r5.model.*;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class DischargePanelController {
 
@@ -311,12 +301,12 @@ public class DischargePanelController {
 
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
-        return checkDicom(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
+        return checkCda(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
                     !encounter.getType().getFirst().getCodingFirstRep()
                             .getDisplay().equals("Death Certification");
     }
 
-    private boolean checkDicom(String encounterId){
+    private boolean checkCda(String encounterId){
         setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);

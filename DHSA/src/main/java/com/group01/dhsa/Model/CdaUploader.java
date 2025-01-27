@@ -54,6 +54,8 @@ public class CdaUploader implements EventListener {
     public void handleEvent(String eventType, File file) {
         if ("cda_upload".equals(eventType)) {
             uploadCdaToMongo(file); // Upload the CDA file to MongoDB
+        } else if ("cda_upload_to_other_mongo".equals(eventType)) {
+            uploadCdaToOtherMongo(file);
         }
     }
 
@@ -98,6 +100,49 @@ public class CdaUploader implements EventListener {
             System.err.println("[ERROR] Error uploading CDA: " + e.getMessage());
         }
     }
+
+    private void uploadCdaToOtherMongo(File file) {
+        try {
+            // Leggi il contenuto del file CDA
+            String xmlContent = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
+
+            // Analizza l'XML per estrarre informazioni
+            Map<String, String> patientData = new HashMap<>();
+            extractPatientInfo(xmlContent, patientData);
+
+            if (!patientData.containsKey("patientGiven") || !patientData.containsKey("patientFamily")) {
+                System.err.println("[ERROR] Patient name not found in CDA document: " + file.getName());
+                return;
+            }
+
+            String patientName = patientData.get("patientGiven") + " " + patientData.get("patientFamily");
+
+            // Crea il documento MongoDB
+            Document xmlDocument = new Document() // Utilizza org.bson.Document
+                    .append("_id", new ObjectId())
+                    .append("xmlContent", xmlContent)
+                    .append("patientName", patientName)
+                    .append("patientData", patientData);
+
+            if (LoggedUser.getOrganization().equals("My Hospital")) {
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+
+            } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+                MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+            }
+            // Connessione a MongoDB e salvataggio del documento
+            try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
+                MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+                MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+
+                collection.insertOne(xmlDocument); // Inserisci il documento nella collezione
+                System.out.println("[DEBUG] CDA document saved: " + xmlDocument);
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] Error uploading CDA: " + e.getMessage());
+        }
+    }
+
 
     private void extractPatientInfo(String xmlContent, Map<String, String> data) {
         try {

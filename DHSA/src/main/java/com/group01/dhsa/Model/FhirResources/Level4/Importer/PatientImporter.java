@@ -17,14 +17,15 @@ import org.hl7.fhir.r5.model.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.UUID;
 
 public class PatientImporter implements FhirResourceImporter {
     private static String FHIR_SERVER_URL = "http://localhost:8080/fhir";
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String MONGO_DB_NAME = "data_app";
     private static final String MONGO_COLLECTION_NAME = "users";
-    private static final String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
+    private static  String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
 
     private static void setFhirServerUrl() {
         if (LoggedUser.getOrganization() != null) {
@@ -35,9 +36,30 @@ public class PatientImporter implements FhirResourceImporter {
             }
         }
     }
+
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
+
+    public static void setCredentialsFilePath() {
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials-other.txt";
+        }
+    }
+
     @Override
     public void importCsvToFhir(String csvFilePath) {
+        setMongoUri();
         setFhirServerUrl();
+        setCredentialsFilePath();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(MONGO_DB_NAME);
             MongoCollection<Document> usersCollection = database.getCollection(MONGO_COLLECTION_NAME);
@@ -90,14 +112,16 @@ public class PatientImporter implements FhirResourceImporter {
                 // Controlla se l'username esiste già
                 if (userExistsByUsername(usersCollection, username)) {
                     System.out.println("Username " + username + " già esistente. Skipping.");
-                    //continue;
+                    continue;
                 }
 
                 // Salva l'utente su MongoDB
                 Document userDocument = new Document("username", username)
                         .append("passwordHash", BCrypt.hashpw(password, BCrypt.gensalt()))
                         .append("fhirID", patientId)
-                        .append("role", "patient");
+                        .append("organization", LoggedUser.getOrganization())
+                        .append("role", "patient")
+                        .append("createdAt", new Date());
                 usersCollection.insertOne(userDocument);
 
                 // Salva le credenziali nel file .txt

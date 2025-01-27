@@ -1,6 +1,7 @@
 package com.group01.dhsa;
 
 import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.DateClientParam;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
@@ -32,7 +33,7 @@ public class FHIRClient {
      * The FhirContext is used to configure the client for FHIR R5 resources.
      */
     private FHIRClient() {
-        String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+        FHIR_SERVER_URL = "http://localhost:8080/fhir";
         FhirContext fhirContext = FhirContext.forR5();
         this.client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
     }
@@ -57,9 +58,14 @@ public class FHIRClient {
         return instance;
     }
 
-    private static void setFhirServerUrl(String fhirServerUrl) {
+    public static void setFhirServerUrl(String fhirServerUrl) {
         FHIR_SERVER_URL = fhirServerUrl;
+        if (instance != null) {
+            FhirContext fhirContext = FhirContext.forR5();
+            instance.client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+        }
     }
+
 
     public static void removeClient() {
         instance = null;
@@ -114,7 +120,7 @@ public class FHIRClient {
         Bundle bundle = client.search()
                 .forResource(ImagingStudy.class)
                 .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
-                .count(100) // Limita il numero di risultati
+                .count(20) // Limita il numero di risultati
                 .returnBundle(Bundle.class)
                 .execute();
 
@@ -322,11 +328,6 @@ public class FHIRClient {
             return null;
         }
     }
-
-
-
-
-
 
 
     /**
@@ -806,36 +807,18 @@ public class FHIRClient {
 
 
     public List<AllergyIntolerance> getAllergiesForPatient(String patientId) {
-        System.out.println("[DEBUG] Fetching AllergyIntolerance for patient ID: " + patientId);
-
-        // Esegui la query
         Bundle bundle = client.search()
                 .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
                 .returnBundle(Bundle.class)
                 .execute();
-
-// Filtra le risorse localmente
-        List<AllergyIntolerance> allergies = bundle.getEntry().stream()
-                .map(entry -> (AllergyIntolerance) entry.getResource())
-                .filter(allergy -> allergy.getPatient().getReference().equals("Patient/" + patientId))
-                .toList();
-
-        System.out.println("[DEBUG] Filtered AllergyIntolerance: " + allergies);
-
-
-        System.out.println("[DEBUG] AllergyIntolerance fetch bundle: " + bundle);
-
-        if (!bundle.hasEntry() || bundle.getEntry().isEmpty()) {
-            System.err.println("[ERROR] No AllergyIntolerance resources found for patient ID: " + patientId);
-            return List.of();
-        }
-
-        // Converte i risultati in una lista di AllergyIntolerance
+        Set<String> uniqueAllergies = new HashSet<>();
         return bundle.getEntry().stream()
                 .map(entry -> (AllergyIntolerance) entry.getResource())
-                .collect(Collectors.toList());
+                .filter(allergyIntolerance -> uniqueAllergies.add(allergyIntolerance.getCode()
+                        .getCodingFirstRep().getDisplay()))
+                .toList();
     }
-
 
 
     /**
@@ -949,6 +932,29 @@ public class FHIRClient {
                 .collect(Collectors.toList());
     }
 
+    public Bundle transaction (Bundle bundle) {
+        return client.transaction().withBundle(bundle).execute();
+    }
 
+    public MethodOutcome updateResource(Object object){
+        if (object instanceof Encounter encounter) {
+            return client.update().resource(encounter).execute();
+        }
+        return null;
+    }
+
+    public List<AllergyIntolerance> getPreviousAllergiesForPatient(String patientId, DateTimeType date) {
+        Bundle bundle = client.search()
+                .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueAllergies = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergyIntolerance -> uniqueAllergies.add(allergyIntolerance.getCode()
+                        .getCodingFirstRep().getDisplay()))
+                .toList();
+    }
 }
 

@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model.CDAResources.AdapterPattern;
 
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.Model.CDAResources.AdapterPattern.Header.ComponentOfAdapter;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.ComponentOf;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.EncompassingEncounter;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.Id;

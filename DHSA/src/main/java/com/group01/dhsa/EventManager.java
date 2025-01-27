@@ -235,6 +235,14 @@ public class EventManager {
                 e.printStackTrace();
             }
         });
+        PatientDataTransfer patientDataTransfer = new PatientDataTransfer(this.eventObservable);
+        eventObservable.subscribe("transfer", (eventType, file) -> {
+            System.out.println("[DEBUG] Transfer event.:" + file.getName());
+            String[] params = file.getName().replace(".txt", "").split(",");
+            patientDataTransfer.transferPatient(params[0], params[1], params[2]);
+        });
+
+        eventObservable.subscribe("cda_upload_to_other_mongo", cdaUploader);
 
 
 
@@ -322,6 +330,7 @@ public class EventManager {
             e.printStackTrace();
             eventObservable.notify("error", null);
         }
+
     }
 
 
@@ -344,7 +353,7 @@ public class EventManager {
                     .map(doc -> {
                         Map<String, String> map = new HashMap<>();
                         // Aggiungi solo i campi che corrispondono alle colonne della tabella
-                        map.put("ID", String.valueOf(doc.get("id"))); // ID
+                        map.put("ID", String.valueOf(doc.get("_id"))); // ID
                         map.put("FileName", doc.getString("fileName")); // File Name
                         map.put("PatientID", doc.getString("patientId")); // Patient ID
                         map.put("StudyID", doc.getString("studyID")); // Study ID
@@ -362,6 +371,7 @@ public class EventManager {
             eventObservable.notify("error", null);
         }
     }
+
 
 
     private void loadResources(String resourceType) {

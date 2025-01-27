@@ -28,7 +28,8 @@ import java.util.List;
 
 public class TransferPanelController {
 
-    public Button previewButton;
+    @FXML
+    public Button previewTransferButton;
     @FXML
     private Button backButton;
 
@@ -62,6 +63,21 @@ public class TransferPanelController {
     @FXML
     private MenuButton organizationMenu;
 
+    @FXML
+    private StackPane stackPaneCDA;
+
+    @FXML
+    private Button backButton2;
+
+    @FXML
+    private Label cdaStatus;
+
+    @FXML
+    private MenuItem menuItemMy;
+
+    @FXML
+    private MenuItem menuItemOther;
+
     private EventObservable eventManager;
     private File cdaFile;
     private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
@@ -90,19 +106,34 @@ public class TransferPanelController {
         // Iscrizione agli eventi del modello
         eventManager.subscribe("cda_generated", this::onCdaGenerated);
         eventManager.subscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        eventManager.subscribe("transfer_complete", this::onTransferCompleted);
+        eventManager.subscribe("transfer_failed", this::onTransferFailed);
     }
 
 
-    // Metodo per gestire la generazione completata della CDA
     private void onCdaGenerated(String eventType, File file) {
         if (file != null) {
             this.cdaFile = file;
-            previewButton.setDisable(false);
+            cdaStatus.setText("CDA generated successfully!");
+            if (labelTransfer.getText().equalsIgnoreCase("Transfer Completed"))
+                previewTransferButton.setDisable(false);
+            uploadCda();
         }
     }
 
-    // Metodo per gestire il fallimento nella generazione della CDA
+
     private void onCdaGenerationFailed(String eventType, File file) {
+        cdaStatus.setText("Failed to generate CDA. Please try again.");
+    }
+
+    private void onTransferCompleted(String eventType, File file) {
+        labelTransfer.setText("Transfer Completed");
+        if (cdaStatus.getText().equalsIgnoreCase("CDA generated successfully!"))
+            previewTransferButton.setDisable(false);
+    }
+
+    private void onTransferFailed(String eventType, File file) {
+        labelTransfer.setText("Transfer Failed. Please try again.");
     }
 
 
@@ -124,8 +155,18 @@ public class TransferPanelController {
 
     @FXML
     void transferSelectedPatient() {
+        stackPaneDischarge.setVisible(false);
+        stackPaneCDA.setVisible(true);
+        previewTransferButton.setDisable(true);
+        cdaStatus.setText("Generating CDA...");
 
-        //EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+        EventManager.getInstance().getEventObservable().notify("generate_cda",
+                new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
+
+        //Using file name to pass params and retain present logic
+        EventManager.getInstance().getEventObservable().notify("transfer",
+                new File(patientIDMenu.getText() + "," + encounterIDMenu.getText() + "," +
+                        organizationMenu.getText() + ".txt"));
 
     }
 
@@ -198,6 +239,15 @@ public class TransferPanelController {
                 organizationMenu.getText().equals("Select Organization"));
 
         organizationMenu.setDisable(false);
+
+        MenuItem item1 = new MenuItem();
+        item1.setText("My Hospital");
+        item1.setOnAction(this::switchSelectedOrganization);
+        MenuItem item2 = new MenuItem();
+        item2.setText("Other Hospital");
+        item2.setOnAction(this::switchSelectedOrganization);
+        organizationMenu.getItems().add(item1);
+        organizationMenu.getItems().add(item2);
     }
 
     @FXML
@@ -214,9 +264,17 @@ public class TransferPanelController {
             organizationMenu.setText(caller.getText());
             caller.setText(oldCaller);
         }
-        transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
-                encounterIDMenu.getText().equals("Encounter ID") ||
-                organizationMenu.getText().equals("Select Organization"));
+
+        if (LoggedUser.getOrganization() != null) {
+            if (!LoggedUser.getOrganization().equals(organizationMenu.getText())) {
+                transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
+                        encounterIDMenu.getText().equals("Encounter ID") ||
+                        organizationMenu.getText().equals("Select Organization"));
+            } else {
+                transferPatientButton.setDisable(true);
+            }
+        }
+
     }
 
     @FXML
@@ -229,6 +287,10 @@ public class TransferPanelController {
         encounterIDMenu.setDisable(true);
         encounterIDMenu.setText("Encounter ID");
         encounterIDMenu.getItems().clear();
+
+        organizationMenu.setDisable(true);
+        organizationMenu.setText("Select Organization");
+        organizationMenu.getItems().clear();
 
         String surname = lastNameField.getText();
         String name = firstNameField.getText();
@@ -278,12 +340,12 @@ public class TransferPanelController {
 
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
-        return checkDicom(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
+        return checkCda(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
                     !encounter.getType().getFirst().getCodingFirstRep()
                             .getDisplay().equals("Death Certification");
     }
 
-    private boolean checkDicom(String encounterId){
+    private boolean checkCda(String encounterId){
         setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
@@ -310,16 +372,55 @@ public class TransferPanelController {
         return true;
     }
 
-
-    @FXML
     void uploadCda() {
         try {
             EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
+            EventManager.getInstance().getEventObservable().notify("cda_upload_to_other_mongo",
+                    this.cdaFile);
+
+            cdaStatus.setText("CDA uploaded successfully!");
         } catch (Exception e) {
+            cdaStatus.setText("Error uploading CDA: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
 
+    @FXML
+    void switchPanel() {
+        stackPaneDischarge.setVisible(true);
+        stackPaneCDA.setVisible(false);
+    }
+
+    @FXML
+    void downloadPDF(ActionEvent event) {
+        try {
+            if (cdaFile != null && cdaFile.exists()) {
+                // Ottieni la finestra corrente
+                Stage currentStage = (Stage) previewTransferButton.getScene().getWindow();
+
+                // Cambia schermata usando ChangeScreen
+                ChangeScreen screenChanger = new ChangeScreen();
+                Object controller = screenChanger.switchScreen(
+                        "/com/group01/dhsa/View/CdaPreviewScreen.fxml",
+                        currentStage,
+                        "Preview CDA Document"
+                );
+
+                // Imposta il file CDA nel controller della schermata di anteprima
+                if (controller instanceof CdaPreviewController) {
+                    ((CdaPreviewController) controller).setCdaFile(cdaFile);
+                    System.out.println("[DEBUG] CDA file passed to CdaPreviewController.");
+                } else {
+                    System.err.println("[ERROR] The controller is not an instance of CdaPreviewController.");
+                }
+            } else {
+                cdaStatus.setText("No CDA file available to preview.");
+            }
+        } catch (Exception e) {
+            cdaStatus.setText("Error opening CDA preview: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
 }

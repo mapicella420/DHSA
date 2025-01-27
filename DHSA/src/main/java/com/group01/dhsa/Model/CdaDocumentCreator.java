@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model;
 
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
@@ -17,7 +18,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * This class is responsible for creating a CDA document based on FHIR data.
@@ -96,6 +100,23 @@ public class CdaDocumentCreator {
 
         // Fetch encounter details from FHIR
         Encounter encounter = client.getEncounterById(encounterId);
+
+        if (encounter.getActualPeriod() != null){
+            if (encounter.getActualPeriod().hasStart() &&
+                    !encounter.getActualPeriod().hasEnd()){
+
+                Date endDate = new Date();
+                encounter.getActualPeriod().setEnd(endDate);
+                try{
+                    MethodOutcome meth = client.updateResource(encounter);
+                    if (meth == null){
+                        throw new NullPointerException("MethodOutcome is null");
+                    }
+                } catch (Exception e){
+                    System.out.println("Update not completed: " + e);
+                }
+            }
+        }
 
         // Add legal authenticator information to the CDA document
         documentBuilder.addLegalAuthenticatorSection(encounter);

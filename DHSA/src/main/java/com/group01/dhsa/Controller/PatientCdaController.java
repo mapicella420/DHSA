@@ -1,5 +1,6 @@
 package com.group01.dhsa.Controller;
 
+import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -62,14 +63,24 @@ public class PatientCdaController  implements DataReceiver{
     private final ObservableList<Document> cdaDocuments = FXCollections.observableArrayList();
     private FilteredList<Document> filteredList;
 
-    private static final String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+    private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String DATABASE_NAME = "medicalData";
     private static final String COLLECTION_NAME = "cdaDocuments";
 
     private Document selectedDocument = null; // Documento selezionato
 
+    public static void setMongoUri() {
+        if (LoggedUser.getOrganization().equals("My Hospital")){
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
+
+        } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
+            MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
+        }
+    }
+
     @FXML
     public void initialize() {
+        setMongoUri();
         System.out.println("[DEBUG] Initializing PatientCdaController...");
 
         // Configura le colonne della tabella
@@ -317,6 +328,7 @@ public class PatientCdaController  implements DataReceiver{
 
     @FXML
     private void onViewDetailsClick() {
+        setMongoUri();
         if (selectedDocument != null) {
             if (!selectedDocument.containsKey("_id") || selectedDocument.get("_id") == null) {
                 showAlert("Error", "Invalid Document", "The selected document does not have a valid ID.");
@@ -387,6 +399,7 @@ public class PatientCdaController  implements DataReceiver{
 
     @Override
     public void receiveData(Map<String, Object> data) {
+        setMongoUri();
         if (data != null && data.containsKey("patientName")) {
             this.patientName = (String) data.get("patientName");
             loadCdaDocuments();
