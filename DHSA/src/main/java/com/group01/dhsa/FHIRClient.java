@@ -120,7 +120,7 @@ public class FHIRClient {
         Bundle bundle = client.search()
                 .forResource(ImagingStudy.class)
                 .where(new ReferenceClientParam("patient").hasId(patient.getIdPart())) // Filtra per ID paziente
-                .count(100) // Limita il numero di risultati
+                .count(20) // Limita il numero di risultati
                 .returnBundle(Bundle.class)
                 .execute();
 

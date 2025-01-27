@@ -11,7 +11,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -341,12 +340,12 @@ public class TransferPanelController {
 
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
-        return checkDicom(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
+        return checkCda(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
                     !encounter.getType().getFirst().getCodingFirstRep()
                             .getDisplay().equals("Death Certification");
     }
 
-    private boolean checkDicom(String encounterId){
+    private boolean checkCda(String encounterId){
         setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);

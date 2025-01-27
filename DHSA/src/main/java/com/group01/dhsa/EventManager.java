@@ -154,6 +154,7 @@ public class EventManager {
 
         PatientDataTransfer patientDataTransfer = new PatientDataTransfer(this.eventObservable);
         eventObservable.subscribe("transfer", (eventType, file) -> {
+            System.out.println("[DEBUG] Transfer event.:" + file.getName());
             String[] params = file.getName().replace(".txt", "").split(",");
             patientDataTransfer.transferPatient(params[0], params[1], params[2]);
         });

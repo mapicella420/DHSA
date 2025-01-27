@@ -76,7 +76,8 @@ public class PatientDataTransfer {
         //Search if it's already present
         sendData(organization);
         Patient existingPatient = fhirClient.getPatientById(patientId);
-
+        System.out.println(" [DEBUG ]"+encounterId);
+        retriveData();
         Encounter oldEncounter = fhirClient.getEncounterById(encounterId);
 
         if (existingPatient != null) {
@@ -130,6 +131,7 @@ public class PatientDataTransfer {
 
                 credentialsWriter.write("ID FHIR: " + patientId + ", Username: " + username + ", Password: " + password);
                 credentialsWriter.newLine();
+                credentialsWriter.close();
             }
 
         } catch (IOException e) {
