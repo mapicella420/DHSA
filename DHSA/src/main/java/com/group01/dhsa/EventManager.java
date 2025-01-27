@@ -154,9 +154,11 @@ public class EventManager {
 
         PatientDataTransfer patientDataTransfer = new PatientDataTransfer(this.eventObservable);
         eventObservable.subscribe("transfer", (eventType, file) -> {
-            String[] params = file.getName().replace(".xml", "").split(",");
+            String[] params = file.getName().replace(".txt", "").split(",");
             patientDataTransfer.transferPatient(params[0], params[1], params[2]);
         });
+
+        eventObservable.subscribe("cda_upload_to_other_mongo", cdaUploader);
 
     }
 

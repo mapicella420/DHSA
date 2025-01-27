@@ -118,6 +118,7 @@ public class TransferPanelController {
             cdaStatus.setText("CDA generated successfully!");
             if (labelTransfer.getText().equalsIgnoreCase("Transfer Completed"))
                 previewTransferButton.setDisable(false);
+            uploadCda();
         }
     }
 
@@ -164,9 +165,9 @@ public class TransferPanelController {
                 new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
 
         //Using file name to pass params and retain present logic
-//        EventManager.getInstance().getEventObservable().notify("transfer",
-//                new File(patientIDMenu.getText() + "," + encounterIDMenu.getText() + "," +
-//                        organizationMenu.getText() + ".txt"));
+        EventManager.getInstance().getEventObservable().notify("transfer",
+                new File(patientIDMenu.getText() + "," + encounterIDMenu.getText() + "," +
+                        organizationMenu.getText() + ".txt"));
 
     }
 
@@ -241,10 +242,10 @@ public class TransferPanelController {
         organizationMenu.setDisable(false);
 
         MenuItem item1 = new MenuItem();
-        item1.setText("My Organization");
+        item1.setText("My Hospital");
         item1.setOnAction(this::switchSelectedOrganization);
         MenuItem item2 = new MenuItem();
-        item2.setText("Other Organization");
+        item2.setText("Other Hospital");
         item2.setOnAction(this::switchSelectedOrganization);
         organizationMenu.getItems().add(item1);
         organizationMenu.getItems().add(item2);
@@ -264,9 +265,17 @@ public class TransferPanelController {
             organizationMenu.setText(caller.getText());
             caller.setText(oldCaller);
         }
-        transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
-                encounterIDMenu.getText().equals("Encounter ID") ||
-                organizationMenu.getText().equals("Select Organization"));
+
+        if (LoggedUser.getOrganization() != null) {
+            if (!LoggedUser.getOrganization().equals(organizationMenu.getText())) {
+                transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
+                        encounterIDMenu.getText().equals("Encounter ID") ||
+                        organizationMenu.getText().equals("Select Organization"));
+            } else {
+                transferPatientButton.setDisable(true);
+            }
+        }
+
     }
 
     @FXML
@@ -367,7 +376,8 @@ public class TransferPanelController {
     void uploadCda() {
         try {
             EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
-
+            EventManager.getInstance().getEventObservable().notify("cda_upload_to_other_mongo",
+                    this.cdaFile);
 
             cdaStatus.setText("CDA uploaded successfully!");
         } catch (Exception e) {

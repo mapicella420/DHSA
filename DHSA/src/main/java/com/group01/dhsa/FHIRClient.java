@@ -33,7 +33,7 @@ public class FHIRClient {
      * The FhirContext is used to configure the client for FHIR R5 resources.
      */
     private FHIRClient() {
-        String FHIR_SERVER_URL = "http://localhost:8080/fhir";
+        FHIR_SERVER_URL = "http://localhost:8080/fhir";
         FhirContext fhirContext = FhirContext.forR5();
         this.client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
     }
@@ -60,7 +60,12 @@ public class FHIRClient {
 
     public static void setFhirServerUrl(String fhirServerUrl) {
         FHIR_SERVER_URL = fhirServerUrl;
+        if (instance != null) {
+            FhirContext fhirContext = FhirContext.forR5();
+            instance.client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
+        }
     }
+
 
     public static void removeClient() {
         instance = null;
@@ -323,11 +328,6 @@ public class FHIRClient {
             return null;
         }
     }
-
-
-
-
-
 
 
     /**
@@ -932,13 +932,8 @@ public class FHIRClient {
                 .collect(Collectors.toList());
     }
 
-    public MethodOutcome createResource(Object object){
-        if (object instanceof Patient patient) {
-            return client.create().resource(patient).execute();
-        }else if (object instanceof Encounter encounter) {
-            return client.create().resource(encounter).execute();
-        }
-        return null;
+    public Bundle transaction (Bundle bundle) {
+        return client.transaction().withBundle(bundle).execute();
     }
 
     public MethodOutcome updateResource(Object object){
@@ -946,6 +941,20 @@ public class FHIRClient {
             return client.update().resource(encounter).execute();
         }
         return null;
+    }
+
+    public List<AllergyIntolerance> getPreviousAllergiesForPatient(String patientId, DateTimeType date) {
+        Bundle bundle = client.search()
+                .forResource(AllergyIntolerance.class)
+                .where(new ReferenceClientParam("patient").hasId(patientId))
+                .returnBundle(Bundle.class)
+                .execute();
+        Set<String> uniqueAllergies = new HashSet<>();
+        return bundle.getEntry().stream()
+                .map(entry -> (AllergyIntolerance) entry.getResource())
+                .filter(allergyIntolerance -> uniqueAllergies.add(allergyIntolerance.getCode()
+                        .getCodingFirstRep().getDisplay()))
+                .toList();
     }
 }
 

@@ -1,5 +1,6 @@
 package com.group01.dhsa.Model;
 
+import ca.uhn.fhir.rest.api.MethodOutcome;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
@@ -106,7 +107,14 @@ public class CdaDocumentCreator {
 
                 Date endDate = new Date();
                 encounter.getActualPeriod().setEnd(endDate);
-                client.updateResource(encounter);
+                try{
+                    MethodOutcome meth = client.updateResource(encounter);
+                    if (meth == null){
+                        throw new NullPointerException("MethodOutcome is null");
+                    }
+                } catch (Exception e){
+                    System.out.println("Update not completed: " + e);
+                }
             }
         }
 
