@@ -1,6 +1,5 @@
 package com.group01.dhsa;
 
-import com.group01.dhsa.Model.FhirExporter;
 import com.group01.dhsa.Model.MongoInitializer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,9 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.File;
-
-public class MyHL7CdaConverter extends Application {
+public class MyHL7CdaCreator extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {

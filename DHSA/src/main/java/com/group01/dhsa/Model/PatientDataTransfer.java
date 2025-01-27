@@ -76,19 +76,17 @@ public class PatientDataTransfer {
         //Search if it's already present
         sendData(organization);
         Patient existingPatient = fhirClient.getPatientById(patientId);
-        System.out.println(" [DEBUG ]"+encounterId);
+
         retriveData();
         Encounter oldEncounter = fhirClient.getEncounterById(encounterId);
 
+        String uploadedPatientId = "";
         if (existingPatient != null) {
-            Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
-            patientEntry.setResource(existingPatient);
-
-            patientEntry.getRequest()
-                    .setMethod(Bundle.HTTPVerb.PUT)
-                    .setUrl("Patient/" + patientId);
-
-            transactionBundle.addEntry(patientEntry);
+            String fullId = existingPatient.getId();
+            String normalizedId = fullId.substring(0, fullId.lastIndexOf("/_history"));
+            normalizedId = normalizedId.substring(normalizedId.lastIndexOf("/") + 1);
+            
+            uploadedPatientId = normalizedId;
         } else {
             Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
             patientEntry.setResource(patient);
@@ -98,11 +96,12 @@ public class PatientDataTransfer {
                     .setUrl("Patient/" + patientId);
 
             transactionBundle.addEntry(patientEntry);
+            sendData(organization);
+            Bundle response = fhirClient.transaction(transactionBundle);
+             uploadedPatientId = response.getEntry().getFirst()
+                    .getResponse().getLocation().split("/")[1];
         }
-        sendData(organization);
-        Bundle response = fhirClient.transaction(transactionBundle);
-        String uploadedPatientId = response.getEntry().getFirst()
-                .getResponse().getLocation().split("/")[1];
+
 
         //Uploading new patient credentials
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
@@ -249,7 +248,7 @@ public class PatientDataTransfer {
                 .setUrl("Encounter");
         transactionBundle.addEntry(encounterEntry);
 
-        response = fhirClient.transaction(transactionBundle);
+        Bundle response = fhirClient.transaction(transactionBundle);
         String uploadedEncounterId = response.getEntry().getFirst()
                 .getResponse().getLocation().split("/")[1];
 

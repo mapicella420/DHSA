@@ -115,8 +115,6 @@ public class TransferPanelController {
         if (file != null) {
             this.cdaFile = file;
             cdaStatus.setText("CDA generated successfully!");
-            if (labelTransfer.getText().equalsIgnoreCase("Transfer Completed"))
-                previewTransferButton.setDisable(false);
             uploadCda();
         }
     }
@@ -128,8 +126,7 @@ public class TransferPanelController {
 
     private void onTransferCompleted(String eventType, File file) {
         labelTransfer.setText("Transfer Completed");
-        if (cdaStatus.getText().equalsIgnoreCase("CDA generated successfully!"))
-            previewTransferButton.setDisable(false);
+        previewTransferButton.setDisable(false);
     }
 
     private void onTransferFailed(String eventType, File file) {
