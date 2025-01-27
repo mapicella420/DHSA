@@ -259,4 +259,61 @@ public class ProviderExporter implements FhirResourceExporter {
         return results;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Practitioner)) {
+            throw new IllegalArgumentException("Resource is not of type Practitioner");
+        }
+
+        Practitioner practitioner = (Practitioner) resource;
+        Map<String, String> providerData = new HashMap<>();
+
+        // ID
+        providerData.put("Id", practitioner.getIdElement().getIdPart());
+
+        // Meta
+        if (practitioner.hasMeta()) {
+            providerData.put("VersionId", practitioner.getMeta().hasVersionId() ? practitioner.getMeta().getVersionId() : "N/A");
+            providerData.put("LastUpdated", practitioner.getMeta().hasLastUpdated() ? practitioner.getMeta().getLastUpdated().toString() : "N/A");
+            providerData.put("Source", practitioner.getMeta().hasSource() ? practitioner.getMeta().getSource() : "N/A");
+        } else {
+            providerData.put("VersionId", "N/A");
+            providerData.put("LastUpdated", "N/A");
+            providerData.put("Source", "N/A");
+        }
+
+        // Identifier
+        providerData.put("Identifier", practitioner.hasIdentifier() && !practitioner.getIdentifier().isEmpty() ?
+                practitioner.getIdentifierFirstRep().getValue() : "N/A");
+
+        // Name
+        if (practitioner.hasName() && !practitioner.getName().isEmpty()) {
+            HumanName name = practitioner.getNameFirstRep();
+            providerData.put("Name", String.join(" ", name.getGivenAsSingleString(), name.getFamily()));
+        } else {
+            providerData.put("Name", "N/A");
+        }
+
+        // Gender
+        providerData.put("Gender", practitioner.hasGender() ? practitioner.getGender().toCode() : "N/A");
+
+        // Address
+        if (practitioner.hasAddress() && !practitioner.getAddress().isEmpty()) {
+            Address address = practitioner.getAddressFirstRep();
+            providerData.put("Address", address.hasLine() ? String.join(", ", address.getLine().stream().map(StringType::getValue).toList()) : "N/A");
+            providerData.put("City", address.hasCity() ? address.getCity() : "N/A");
+            providerData.put("State", address.hasState() ? address.getState() : "N/A");
+            providerData.put("Zip", address.hasPostalCode() ? address.getPostalCode() : "N/A");
+        } else {
+            providerData.put("Address", "N/A");
+            providerData.put("City", "N/A");
+            providerData.put("State", "N/A");
+            providerData.put("Zip", "N/A");
+        }
+
+        // Return the map
+        return providerData;
+    }
+
+
 }

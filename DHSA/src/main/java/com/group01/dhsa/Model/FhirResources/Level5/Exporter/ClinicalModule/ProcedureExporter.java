@@ -101,6 +101,76 @@ public class ProcedureExporter implements FhirResourceExporter {
         return List.of();
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Procedure)) {
+            throw new IllegalArgumentException("Resource is not of type Procedure");
+        }
+
+        Procedure procedure = (Procedure) resource;
+        Map<String, String> procedureData = new HashMap<>();
+
+        // Meta information
+        if (procedure.hasMeta()) {
+            procedureData.put("VersionId", procedure.getMeta().hasVersionId() ? procedure.getMeta().getVersionId() : "N/A");
+            procedureData.put("LastUpdated", procedure.getMeta().hasLastUpdated() ? procedure.getMeta().getLastUpdated().toString() : "N/A");
+            procedureData.put("Source", procedure.getMeta().hasSource() ? procedure.getMeta().getSource() : "N/A");
+        } else {
+            procedureData.put("VersionId", "N/A");
+            procedureData.put("LastUpdated", "N/A");
+            procedureData.put("Source", "N/A");
+        }
+
+        // Identifier
+        procedureData.put("Id", procedure.getIdElement().getIdPart());
+
+        // Subject (Patient)
+        procedureData.put("Patient", procedure.hasSubject() ? procedure.getSubject().getReference() : "N/A");
+
+        // Encounter
+        procedureData.put("Encounter", procedure.hasEncounter() ? procedure.getEncounter().getReference() : "N/A");
+
+        // Occurrence DateTime
+        procedureData.put("Date", procedure.hasOccurrenceDateTimeType() ? procedure.getOccurrenceDateTimeType().getValueAsString() : "N/A");
+
+        // Code and Description
+        if (procedure.hasCode() && !procedure.getCode().getCoding().isEmpty()) {
+            Coding coding = procedure.getCode().getCodingFirstRep();
+            procedureData.put("Code", coding.hasCode() ? coding.getCode() : "N/A");
+            procedureData.put("Description", coding.hasDisplay() ? coding.getDisplay() : "N/A");
+        } else {
+            procedureData.put("Code", "N/A");
+            procedureData.put("Description", "N/A");
+        }
+
+        // ReasonCode and ReasonDescription
+        if (!procedure.getReason().isEmpty() && procedure.getReasonFirstRep().hasConcept()) {
+            procedureData.put("ReasonCode", procedure.getReasonFirstRep().getConcept().hasCoding() ? procedure.getReasonFirstRep().getConcept().getCodingFirstRep().getCode() : "N/A");
+            procedureData.put("ReasonDescription", procedure.getReasonFirstRep().getConcept().hasText() ? procedure.getReasonFirstRep().getConcept().getText() : "N/A");
+        } else {
+            procedureData.put("ReasonCode", "N/A");
+            procedureData.put("ReasonDescription", "N/A");
+        }
+
+        // BaseCost
+        if (procedure.hasExtension("http://hl7.org/fhir/StructureDefinition/base-cost")) {
+            var baseCostExtension = procedure.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/base-cost");
+            if (baseCostExtension != null && baseCostExtension.getValue() instanceof org.hl7.fhir.r5.model.Quantity) {
+                org.hl7.fhir.r5.model.Quantity baseCostQuantity = (org.hl7.fhir.r5.model.Quantity) baseCostExtension.getValue();
+                procedureData.put("BaseCost", String.valueOf(baseCostQuantity.getValue()));
+            } else {
+                procedureData.put("BaseCost", "N/A");
+            }
+        } else {
+            procedureData.put("BaseCost", "N/A");
+        }
+
+        // Status
+        procedureData.put("Status", procedure.hasStatus() ? procedure.getStatus().toCode() : "N/A");
+
+        return procedureData;
+    }
+
 
     private boolean matchesProcedure(Procedure procedure, String searchTerm) {
         setFhirServerUrl();

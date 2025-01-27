@@ -23,5 +23,20 @@ public interface FhirResourceExporter {
      */
     List<Map<String, String>> searchResources(String searchTerm);
 
+    /**
+     * Cerca risorse in base a un campo specifico e un valore.
+     *
+     * @param searchField Il campo da cercare.
+     * @param searchValue Il valore da cercare.
+     * @return Una lista di mappe contenenti i dati delle risorse corrispondenti.
+     */
     List<Map<String, String>> searchResources(String searchField, String searchValue);
+
+    /**
+     * Converte una risorsa in una mappa.
+     *
+     * @param resource La risorsa FHIR da convertire.
+     * @return Una mappa contenente i dati della risorsa.
+     */
+    Map<String, String> convertResourceToMap(Object resource);
 }

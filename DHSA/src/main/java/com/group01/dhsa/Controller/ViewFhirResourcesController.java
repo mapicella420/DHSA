@@ -218,6 +218,7 @@ public class ViewFhirResourcesController {
                 addDynamicMenuItem(contextMenu, "Organization", item.get("Organization"));
                 addDynamicMenuItem(contextMenu, "Patient", item.get("Patient"));
                 addDynamicMenuItem(contextMenu, "Practitioner", item.get("Practitioner"));
+
                 break;
             case "Provider":
                 // Encounter è associato a Organization e Patient
@@ -232,6 +233,7 @@ public class ViewFhirResourcesController {
                 // CarePlan è associato a Patient e Encounter
                 addDynamicMenuItem(contextMenu, "Patient", item.get("Patient"));
                 addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
+
                 break;
             case "Condition":
                 // Condition è associato a Patient e Encounter

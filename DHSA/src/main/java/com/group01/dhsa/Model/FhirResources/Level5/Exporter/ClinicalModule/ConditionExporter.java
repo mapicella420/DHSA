@@ -103,6 +103,69 @@ public class ConditionExporter implements FhirResourceExporter {
         return null;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Condition)) {
+            throw new IllegalArgumentException("Resource is not of type Condition");
+        }
+
+        Condition condition = (Condition) resource;
+        Map<String, String> conditionData = new HashMap<>();
+
+        // ID
+        conditionData.put("Id", condition.getIdElement().getIdPart());
+
+        // Meta
+        if (condition.hasMeta()) {
+            conditionData.put("VersionId", condition.getMeta().hasVersionId() ? condition.getMeta().getVersionId() : "N/A");
+            conditionData.put("LastUpdated", condition.getMeta().hasLastUpdated() ? condition.getMeta().getLastUpdated().toString() : "N/A");
+            conditionData.put("Source", condition.getMeta().hasSource() ? condition.getMeta().getSource() : "N/A");
+        } else {
+            conditionData.put("VersionId", "N/A");
+            conditionData.put("LastUpdated", "N/A");
+            conditionData.put("Source", "N/A");
+        }
+
+        // Subject (Patient reference)
+        conditionData.put("Patient", condition.hasSubject() ? condition.getSubject().getReference() : "N/A");
+
+        // Encounter
+        conditionData.put("Encounter", condition.hasEncounter() ? condition.getEncounter().getReference() : "N/A");
+
+        // Onset DateTime
+        conditionData.put("Onset", condition.hasOnsetDateTimeType() ? condition.getOnsetDateTimeType().getValueAsString() : "N/A");
+
+        // Abatement DateTime
+        conditionData.put("Abatement", condition.hasAbatementDateTimeType() ? condition.getAbatementDateTimeType().getValueAsString() : "N/A");
+
+        // Code and Description
+        if (condition.hasCode() && !condition.getCode().getCoding().isEmpty()) {
+            Coding coding = condition.getCode().getCodingFirstRep();
+            conditionData.put("Code", coding.hasCode() ? coding.getCode() : "N/A");
+            conditionData.put("Description", coding.hasDisplay() ? coding.getDisplay() : "N/A");
+        } else {
+            conditionData.put("Code", "N/A");
+            conditionData.put("Description", "N/A");
+        }
+
+        // Clinical Status
+        if (condition.hasClinicalStatus()) {
+            conditionData.put("ClinicalStatus", condition.getClinicalStatus().getCodingFirstRep().getCode());
+        } else {
+            conditionData.put("ClinicalStatus", "N/A");
+        }
+
+        // Verification Status
+        if (condition.hasVerificationStatus()) {
+            conditionData.put("VerificationStatus", condition.getVerificationStatus().getCodingFirstRep().getCode());
+        } else {
+            conditionData.put("VerificationStatus", "N/A");
+        }
+
+        return conditionData;
+    }
+
+
     private boolean matchesCondition(Condition condition, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

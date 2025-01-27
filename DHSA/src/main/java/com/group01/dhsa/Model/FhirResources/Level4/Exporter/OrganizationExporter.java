@@ -369,4 +369,85 @@ public class OrganizationExporter implements FhirResourceExporter {
         return organizationsList;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Organization)) {
+            throw new IllegalArgumentException("Resource is not of type Organization");
+        }
+
+        Organization organization = (Organization) resource;
+        Map<String, String> organizationData = new HashMap<>();
+
+        // ID
+        organizationData.put("Id", organization.getIdElement().getIdPart());
+
+        // Meta
+        if (organization.hasMeta()) {
+            organizationData.put("VersionId", organization.getMeta().hasVersionId() ? organization.getMeta().getVersionId() : "N/A");
+            organizationData.put("LastUpdated", organization.getMeta().hasLastUpdated() ? organization.getMeta().getLastUpdated().toString() : "N/A");
+            organizationData.put("Source", organization.getMeta().hasSource() ? organization.getMeta().getSource() : "N/A");
+        } else {
+            organizationData.put("VersionId", "N/A");
+            organizationData.put("LastUpdated", "N/A");
+            organizationData.put("Source", "N/A");
+        }
+
+        // Extensions
+        organizationData.put("Latitude", getExtensionValue(organization, "http://hl7.org/fhir/StructureDefinition/geolocation-lat"));
+        organizationData.put("Longitude", getExtensionValue(organization, "http://hl7.org/fhir/StructureDefinition/geolocation-lon"));
+        organizationData.put("Revenue", getExtensionValue(organization, "http://hl7.org/fhir/StructureDefinition/organization-revenue"));
+        organizationData.put("Utilization", getExtensionValue(organization, "http://hl7.org/fhir/StructureDefinition/organization-utilization"));
+
+        // Identifier
+        organizationData.put("Identifier", organization.hasIdentifier() && !organization.getIdentifier().isEmpty()
+                ? organization.getIdentifierFirstRep().getValue() : "N/A");
+
+        // Name
+        organizationData.put("Name", organization.hasName() ? organization.getName() : "N/A");
+
+        // Contact (Telecom and Address)
+        if (organization.hasContact() && !organization.getContact().isEmpty()) {
+            ContactPoint telecom = organization.getContactFirstRep().hasTelecom() ? organization.getContactFirstRep().getTelecomFirstRep() : null;
+            Address address = organization.getContactFirstRep().hasAddress() ? organization.getContactFirstRep().getAddress() : null;
+
+            // Telecom
+            organizationData.put("Phone", telecom != null && telecom.hasValue() ? telecom.getValue() : "N/A");
+
+            // Address
+            if (address != null) {
+                organizationData.put("Address", address.hasLine() ? String.join(", ", address.getLine().stream().map(StringType::getValue).toList()) : "N/A");
+                organizationData.put("City", address.hasCity() ? address.getCity() : "N/A");
+                organizationData.put("State", address.hasState() ? address.getState() : "N/A");
+                organizationData.put("PostalCode", address.hasPostalCode() ? address.getPostalCode() : "N/A");
+            } else {
+                organizationData.put("Address", "N/A");
+                organizationData.put("City", "N/A");
+                organizationData.put("State", "N/A");
+                organizationData.put("PostalCode", "N/A");
+            }
+        } else {
+            organizationData.put("Phone", "N/A");
+            organizationData.put("Address", "N/A");
+            organizationData.put("City", "N/A");
+            organizationData.put("State", "N/A");
+            organizationData.put("PostalCode", "N/A");
+        }
+
+        return organizationData;
+    }
+
+    /**
+     * Utility method to extract the value of an extension as a String.
+     */
+    private String getExtensionValue(Organization organization, String url) {
+        if (organization.hasExtension(url)) {
+            var extension = organization.getExtensionByUrl(url).getValue();
+            if (extension instanceof org.hl7.fhir.r5.model.Quantity) {
+                return String.valueOf(((org.hl7.fhir.r5.model.Quantity) extension).getValue());
+            }
+        }
+        return "N/A";
+    }
+
+
 }

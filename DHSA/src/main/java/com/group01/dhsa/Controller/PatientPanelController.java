@@ -116,8 +116,6 @@ public class PatientPanelController {
 
 
     private void populateContextMenu(ContextMenu contextMenu, String resourceType, Map<String, String> item) {
-        System.out.println("[DEBUG] Popolamento ContextMenu per risorsa di tipo: " + resourceType);
-
         switch (resourceType) {
             case "Device":
                 // Device è associato a Patient e Encounter
@@ -125,8 +123,9 @@ public class PatientPanelController {
                 break;
             case "Encounter":
                 // Encounter è associato a Organization e Patient
-                addDynamicMenuItem(contextMenu, "Organization", item.get("Service Provider"));
-                addDynamicMenuItem(contextMenu, "Practitioner", item.get("Participant"));
+                addDynamicMenuItem(contextMenu, "Organization", item.get("ServiceProvider"));
+                addDynamicMenuItem(contextMenu, "Practitioner", item.get("Practitioner"));
+
                 break;
             case "Provider":
                 // Encounter è associato a Organization e Patient
@@ -134,35 +133,35 @@ public class PatientPanelController {
                 break;
             case "AllergyIntolerance":
                 // Allergy è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "CarePlan":
                 // CarePlan è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "Condition":
                 // Condition è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "Procedure":
                 // Procedure è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "ImagingStudy":
                 // ImagingStudy è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "Observation":
                 // Observation è associato a Patient (Subject) e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "Immunization":
                 // Immunization è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "MedicationRequest":
                 // MedicationRequest è associato a Patient e Encounter
-                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter Reference"));
+                addDynamicMenuItem(contextMenu, "Encounter", item.get("Encounter"));
                 break;
             case "Organization":
                 // Organization non ha associazioni dirette nei dati forniti

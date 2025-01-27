@@ -106,6 +106,64 @@ public class ObservationExporter implements FhirResourceExporter {
         return List.of();
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Observation)) {
+            throw new IllegalArgumentException("Resource is not of type Observation");
+        }
+
+        Observation observation = (Observation) resource;
+        Map<String, String> observationData = new HashMap<>();
+
+        // Meta information
+        if (observation.hasMeta()) {
+            observationData.put("VersionId", observation.getMeta().hasVersionId() ? observation.getMeta().getVersionId() : "N/A");
+            observationData.put("LastUpdated", observation.getMeta().hasLastUpdated() ? observation.getMeta().getLastUpdated().toString() : "N/A");
+            observationData.put("Source", observation.getMeta().hasSource() ? observation.getMeta().getSource() : "N/A");
+        } else {
+            observationData.put("VersionId", "N/A");
+            observationData.put("LastUpdated", "N/A");
+            observationData.put("Source", "N/A");
+        }
+
+        // Identifier
+        observationData.put("Id", observation.getIdentifierFirstRep() != null ? observation.getIdentifierFirstRep().getValue() : "N/A");
+
+        // Status
+        observationData.put("Status", observation.hasStatus() ? observation.getStatus().toCode() : "N/A");
+
+        // Code
+        if (observation.hasCode()) {
+            Coding coding = observation.getCode().getCodingFirstRep();
+            observationData.put("Code", coding.hasCode() ? coding.getCode() : "N/A");
+            observationData.put("CodeText", observation.getCode().hasText() ? observation.getCode().getText() : "N/A");
+        } else {
+            observationData.put("Code", "N/A");
+            observationData.put("CodeText", "N/A");
+        }
+
+        // Subject (Patient)
+        observationData.put("Subject", observation.hasSubject() ? observation.getSubject().getReference() : "N/A");
+
+        // Encounter
+        observationData.put("Encounter", observation.hasEncounter() ? observation.getEncounter().getReference() : "N/A");
+
+        // Effective DateTime
+        observationData.put("EffectiveDateTime", observation.hasEffectiveDateTimeType() ? observation.getEffectiveDateTimeType().getValueAsString() : "N/A");
+
+        // ValueQuantity
+        if (observation.hasValueQuantity()) {
+            observationData.put("Value", String.valueOf(observation.getValueQuantity().getValue()));
+            observationData.put("Unit", observation.getValueQuantity().hasUnit() ? observation.getValueQuantity().getUnit() : "N/A");
+        } else {
+            observationData.put("Value", "N/A");
+            observationData.put("Unit", "N/A");
+        }
+
+        return observationData;
+    }
+
+
     private boolean matchesObservation(Observation observation, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

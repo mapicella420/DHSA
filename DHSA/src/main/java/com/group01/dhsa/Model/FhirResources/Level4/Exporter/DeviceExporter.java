@@ -191,5 +191,84 @@ public class DeviceExporter implements FhirResourceExporter {
         return null;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Device)) {
+            throw new IllegalArgumentException("Resource is not of type Device");
+        }
+
+        Device device = (Device) resource;
+        Map<String, String> deviceData = new HashMap<>();
+
+        // Device Identifier (CODE)
+        deviceData.put("CODE", device.hasIdentifier() && !device.getIdentifier().isEmpty()
+                ? device.getIdentifierFirstRep().getValue()
+                : "N/A");
+
+        // Description
+        deviceData.put("DESCRIPTION", device.hasDefinition() && device.getDefinition().hasConcept() && device.getDefinition().getConcept().hasText()
+                ? device.getDefinition().getConcept().getText()
+                : "N/A");
+
+        // UDI (Unique Device Identifier)
+        deviceData.put("UDI", device.hasUdiCarrier() && !device.getUdiCarrier().isEmpty()
+                ? device.getUdiCarrierFirstRep().getCarrierHRF()
+                : "N/A");
+
+        // Patient Reference
+        if (device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient") != null) {
+            deviceData.put("PATIENT", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-patient").getValue().toString());
+        } else {
+            deviceData.put("PATIENT", "N/A");
+        }
+
+        // Encounter Reference
+        if (device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter") != null) {
+            deviceData.put("ENCOUNTER", device.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/device-encounter").getValue().toString());
+        } else {
+            deviceData.put("ENCOUNTER", "N/A");
+        }
+
+        // Status
+        deviceData.put("STATUS", device.hasStatus() ? device.getStatus().toCode() : "N/A");
+
+        // Manufacturer
+        deviceData.put("MANUFACTURER", device.hasManufacturer() ? device.getManufacturer() : "N/A");
+
+        // Model Number
+        deviceData.put("MODEL_NUMBER", device.hasModelNumber() ? device.getModelNumber() : "N/A");
+
+        // Serial Number
+        deviceData.put("SERIAL_NUMBER", device.hasSerialNumber() ? device.getSerialNumber() : "N/A");
+
+        // Version
+        deviceData.put("VERSION", device.hasVersion() && !device.getVersion().isEmpty()
+                ? device.getVersionFirstRep().getValue()
+                : "N/A");
+
+        // Lot Number
+        deviceData.put("LOT_NUMBER", device.hasLotNumber() ? device.getLotNumber() : "N/A");
+
+        // Expiration Date
+        deviceData.put("EXPIRATION_DATE", device.hasExpirationDate() ? device.getExpirationDateElement().toHumanDisplay() : "N/A");
+
+        // Manufacture Date
+        deviceData.put("MANUFACTURE_DATE", device.hasManufactureDate() ? device.getManufactureDateElement().toHumanDisplay() : "N/A");
+
+        // Owner
+        deviceData.put("OWNER", device.hasOwner() ? device.getOwner().getReference() : "N/A");
+
+        // Location
+        deviceData.put("LOCATION", device.hasLocation() ? device.getLocation().getReference() : "N/A");
+
+        // Note
+        deviceData.put("NOTE", device.hasNote() && !device.getNote().isEmpty()
+                ? device.getNoteFirstRep().getText()
+                : "N/A");
+
+        return deviceData;
+    }
+
+
 
 }

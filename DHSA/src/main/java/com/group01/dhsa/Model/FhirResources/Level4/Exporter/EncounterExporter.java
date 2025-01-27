@@ -5,10 +5,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
 import com.group01.dhsa.Model.LoggedUser;
-import org.hl7.fhir.r5.model.Bundle;
-import org.hl7.fhir.r5.model.Coding;
-import org.hl7.fhir.r5.model.Encounter;
-import org.hl7.fhir.r5.model.CodeableConcept;
+import org.hl7.fhir.r5.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -361,6 +358,92 @@ public class EncounterExporter implements FhirResourceExporter {
         }
 
         return encountersList;
+    }
+
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Encounter)) {
+            throw new IllegalArgumentException("Resource is not of type Encounter");
+        }
+
+        Encounter encounter = (Encounter) resource;
+        Map<String, String> encounterData = new HashMap<>();
+
+        // ID
+        encounterData.put("Id", encounter.getIdElement().getIdPart());
+
+        // Meta
+        if (encounter.hasMeta()) {
+            encounterData.put("VersionId", encounter.getMeta().hasVersionId() ? encounter.getMeta().getVersionId() : "N/A");
+            encounterData.put("LastUpdated", encounter.getMeta().hasLastUpdated() ? encounter.getMeta().getLastUpdated().toString() : "N/A");
+            encounterData.put("Source", encounter.getMeta().hasSource() ? encounter.getMeta().getSource() : "N/A");
+        } else {
+            encounterData.put("VersionId", "N/A");
+            encounterData.put("LastUpdated", "N/A");
+            encounterData.put("Source", "N/A");
+        }
+
+        // Extensions
+        encounterData.put("BaseEncounterCost", getExtensionValue(encounter, "http://hl7.org/fhir/StructureDefinition/base-encounter-cost"));
+        encounterData.put("TotalClaimCost", getExtensionValue(encounter, "http://hl7.org/fhir/StructureDefinition/total-claim-cost"));
+        encounterData.put("PayerCoverage", getExtensionValue(encounter, "http://hl7.org/fhir/StructureDefinition/payer-coverage"));
+
+        // Identifier
+        encounterData.put("Identifier", encounter.hasIdentifier() && !encounter.getIdentifier().isEmpty()
+                ? encounter.getIdentifierFirstRep().getValue() : "N/A");
+
+
+        // Type
+        if (!encounter.getType().isEmpty() && encounter.getTypeFirstRep().hasCoding()) {
+            Coding typeCoding = encounter.getTypeFirstRep().getCodingFirstRep();
+            encounterData.put("TypeCode", typeCoding.hasCode() ? typeCoding.getCode() : "N/A");
+            encounterData.put("TypeDisplay", typeCoding.hasDisplay() ? typeCoding.getDisplay() : "N/A");
+        } else {
+            encounterData.put("TypeCode", "N/A");
+            encounterData.put("TypeDisplay", "N/A");
+        }
+
+        // Subject
+        encounterData.put("Subject", encounter.hasSubject() ? encounter.getSubject().getReference() : "N/A");
+
+        // Service Provider
+        encounterData.put("ServiceProvider", encounter.hasServiceProvider() ? encounter.getServiceProvider().getReference() : "N/A");
+
+        // Participant (Practitioner)
+        if (encounter.hasParticipant() && !encounter.getParticipant().isEmpty()) {
+            Encounter.EncounterParticipantComponent participant = encounter.getParticipantFirstRep();
+            if (participant.hasActor()) {
+                encounterData.put("Practitioner", participant.getActor().getReference());
+            } else {
+                encounterData.put("Practitioner", "N/A");
+            }
+        } else {
+            encounterData.put("Practitioner", "N/A");
+        }
+
+        // Actual Period
+        if (encounter.hasActualPeriod()) {
+            encounterData.put("Start", encounter.getActualPeriod().hasStart() ? encounter.getActualPeriod().getStartElement().toHumanDisplay() : "N/A");
+            encounterData.put("End", encounter.getActualPeriod().hasEnd() ? encounter.getActualPeriod().getEndElement().toHumanDisplay() : "N/A");
+        } else {
+            encounterData.put("Start", "N/A");
+            encounterData.put("End", "N/A");
+        }
+
+        return encounterData;
+    }
+
+    /**
+     * Utility method to extract the value of an extension as a String.
+     */
+    private String getExtensionValue(Encounter encounter, String url) {
+        if (encounter.hasExtension(url)) {
+            var extension = encounter.getExtensionByUrl(url).getValue();
+            if (extension instanceof org.hl7.fhir.r5.model.Quantity) {
+                return String.valueOf(((org.hl7.fhir.r5.model.Quantity) extension).getValue());
+            }
+        }
+        return "N/A";
     }
 
 

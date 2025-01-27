@@ -245,5 +245,82 @@ public class CarePlanExporter implements FhirResourceExporter {
         return null;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof CarePlan)) {
+            throw new IllegalArgumentException("Resource is not of type CarePlan");
+        }
+
+        CarePlan carePlan = (CarePlan) resource;
+        Map<String, String> carePlanData = new HashMap<>();
+
+        // ID
+        carePlanData.put("Id", carePlan.getIdElement().getIdPart());
+
+        // Meta
+        if (carePlan.hasMeta()) {
+            carePlanData.put("VersionId", carePlan.getMeta().hasVersionId() ? carePlan.getMeta().getVersionId() : "N/A");
+            carePlanData.put("LastUpdated", carePlan.getMeta().hasLastUpdated() ? carePlan.getMeta().getLastUpdated().toString() : "N/A");
+            carePlanData.put("Source", carePlan.getMeta().hasSource() ? carePlan.getMeta().getSource() : "N/A");
+        } else {
+            carePlanData.put("VersionId", "N/A");
+            carePlanData.put("LastUpdated", "N/A");
+            carePlanData.put("Source", "N/A");
+        }
+
+        // Identifier
+        if (carePlan.hasIdentifier() && !carePlan.getIdentifier().isEmpty()) {
+            carePlanData.put("Identifier", carePlan.getIdentifierFirstRep().getValue());
+        } else {
+            carePlanData.put("Identifier", "N/A");
+        }
+
+        // Status
+        carePlanData.put("Status", carePlan.hasStatus() ? carePlan.getStatus().toCode() : "N/A");
+
+        // Category
+        if (!carePlan.getCategory().isEmpty()) {
+            CodeableConcept category = carePlan.getCategoryFirstRep();
+            carePlanData.put("CategoryCode", category.hasCoding() && category.getCodingFirstRep().hasCode() ? category.getCodingFirstRep().getCode() : "N/A");
+            carePlanData.put("CategoryDescription", category.hasCoding() && category.getCodingFirstRep().hasDisplay() ? category.getCodingFirstRep().getDisplay() : "N/A");
+        } else {
+            carePlanData.put("CategoryCode", "N/A");
+            carePlanData.put("CategoryDescription", "N/A");
+        }
+
+        // Subject
+        carePlanData.put("Patient", carePlan.hasSubject() ? carePlan.getSubject().getReference() : "N/A");
+
+        // Encounter
+        carePlanData.put("Encounter", carePlan.hasEncounter() ? carePlan.getEncounter().getReference() : "N/A");
+
+        // Period
+        if (carePlan.hasPeriod()) {
+            carePlanData.put("Start", carePlan.getPeriod().hasStart() ? carePlan.getPeriod().getStart().toString() : "N/A");
+            carePlanData.put("Stop", carePlan.getPeriod().hasEnd() ? carePlan.getPeriod().getEnd().toString() : "N/A");
+        } else {
+            carePlanData.put("Start", "N/A");
+            carePlanData.put("Stop", "N/A");
+        }
+
+        // Addresses (Reason Codes)
+        if (!carePlan.getAddresses().isEmpty()) {
+            CodeableConcept reasonConcept = carePlan.getAddressesFirstRep().getConcept();
+            if (reasonConcept != null) {
+                carePlanData.put("ReasonCode", reasonConcept.hasCoding() && reasonConcept.getCodingFirstRep().hasCode() ? reasonConcept.getCodingFirstRep().getCode() : "N/A");
+                carePlanData.put("ReasonDescription", reasonConcept.hasCoding() && reasonConcept.getCodingFirstRep().hasDisplay() ? reasonConcept.getCodingFirstRep().getDisplay() : "N/A");
+            } else {
+                carePlanData.put("ReasonCode", "N/A");
+                carePlanData.put("ReasonDescription", "N/A");
+            }
+        } else {
+            carePlanData.put("ReasonCode", "N/A");
+            carePlanData.put("ReasonDescription", "N/A");
+        }
+
+        return carePlanData;
+    }
+
+
 
 }

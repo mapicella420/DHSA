@@ -100,6 +100,68 @@ public class AllergyExporter implements FhirResourceExporter {
         return null;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof AllergyIntolerance)) {
+            throw new IllegalArgumentException("Resource is not of type AllergyIntolerance");
+        }
+
+        AllergyIntolerance allergy = (AllergyIntolerance) resource;
+        Map<String, String> allergyData = new HashMap<>();
+
+        // ID
+        allergyData.put("Id", allergy.getIdElement().getIdPart());
+
+        // Meta
+        if (allergy.hasMeta()) {
+            allergyData.put("VersionId", allergy.getMeta().hasVersionId() ? allergy.getMeta().getVersionId() : "N/A");
+            allergyData.put("LastUpdated", allergy.getMeta().hasLastUpdated() ? allergy.getMeta().getLastUpdated().toString() : "N/A");
+            allergyData.put("Source", allergy.getMeta().hasSource() ? allergy.getMeta().getSource() : "N/A");
+        } else {
+            allergyData.put("VersionId", "N/A");
+            allergyData.put("LastUpdated", "N/A");
+            allergyData.put("Source", "N/A");
+        }
+
+        // Patient
+        allergyData.put("Patient", allergy.hasPatient() ? allergy.getPatient().getReference() : "N/A");
+
+        // Encounter
+        if (allergy.hasExtension("http://hl7.org/fhir/StructureDefinition/encounter-reference")) {
+            allergyData.put("Encounter", allergy.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/encounter-reference").getValue().toString());
+        } else {
+            allergyData.put("Encounter", "N/A");
+        }
+
+        // Recorded Date
+        allergyData.put("Start", allergy.hasRecordedDate() ? allergy.getRecordedDateElement().getValueAsString() : "N/A");
+
+        // Allergy End Date
+        if (allergy.hasExtension("http://hl7.org/fhir/StructureDefinition/allergy-end-date")) {
+            allergyData.put("End", allergy.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/allergy-end-date").getValue().toString());
+        } else {
+            allergyData.put("End", "N/A");
+        }
+
+        // Code and Description
+        if (allergy.hasCode()) {
+            allergyData.put("Code", allergy.getCode().getCodingFirstRep().getCode());
+            allergyData.put("Description", allergy.getCode().getCodingFirstRep().getDisplay());
+        } else {
+            allergyData.put("Code", "N/A");
+            allergyData.put("Description", "N/A");
+        }
+
+        // Clinical Status
+        allergyData.put("ClinicalStatus", allergy.hasClinicalStatus() ? allergy.getClinicalStatus().getCodingFirstRep().getCode() : "N/A");
+
+        // Verification Status
+        allergyData.put("VerificationStatus", allergy.hasVerificationStatus() ? allergy.getVerificationStatus().getCodingFirstRep().getCode() : "N/A");
+
+        return allergyData;
+    }
+
+
 
     private boolean matchesAllergy(AllergyIntolerance allergy, String searchTerm) {
         setFhirServerUrl();

@@ -106,6 +106,82 @@ public class ImagingStudyExporter implements FhirResourceExporter {
         return null;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof ImagingStudy)) {
+            throw new IllegalArgumentException("Resource is not of type ImagingStudy");
+        }
+
+        ImagingStudy imagingStudy = (ImagingStudy) resource;
+        Map<String, String> imagingStudyData = new HashMap<>();
+
+        // Meta information
+        if (imagingStudy.hasMeta()) {
+            imagingStudyData.put("VersionId", imagingStudy.getMeta().hasVersionId() ? imagingStudy.getMeta().getVersionId() : "N/A");
+            imagingStudyData.put("LastUpdated", imagingStudy.getMeta().hasLastUpdated() ? imagingStudy.getMeta().getLastUpdated().toString() : "N/A");
+            imagingStudyData.put("Source", imagingStudy.getMeta().hasSource() ? imagingStudy.getMeta().getSource() : "N/A");
+        } else {
+            imagingStudyData.put("VersionId", "N/A");
+            imagingStudyData.put("LastUpdated", "N/A");
+            imagingStudyData.put("Source", "N/A");
+        }
+
+        // Identifier
+        imagingStudyData.put("Id", imagingStudy.getIdentifierFirstRep() != null ? imagingStudy.getIdentifierFirstRep().getValue() : "N/A");
+
+        // Status
+        imagingStudyData.put("Status", imagingStudy.hasStatus() ? imagingStudy.getStatus().toCode() : "N/A");
+
+        // Subject (Patient)
+        imagingStudyData.put("Patient", imagingStudy.hasSubject() ? imagingStudy.getSubject().getReference() : "N/A");
+
+        // Encounter
+        imagingStudyData.put("Encounter", imagingStudy.hasEncounter() ? imagingStudy.getEncounter().getReference() : "N/A");
+
+        // Started date
+        imagingStudyData.put("Started", imagingStudy.hasStarted() ? imagingStudy.getStarted().toString() : "N/A");
+
+        if (!imagingStudy.getSeries().isEmpty()) {
+            // Series-level data extraction
+            ImagingStudy.ImagingStudySeriesComponent firstSeries = imagingStudy.getSeriesFirstRep();
+
+            // Modality
+            if (firstSeries.hasModality()) {
+                Coding modalityCoding = firstSeries.getModality().getCodingFirstRep();
+                imagingStudyData.put("Modality", modalityCoding.hasDisplay() ? modalityCoding.getDisplay() : "N/A");
+            } else {
+                imagingStudyData.put("Modality", "N/A");
+            }
+
+            // BodySite
+            if (firstSeries.hasBodySite() && firstSeries.getBodySite().getConcept() != null) {
+                Coding bodySiteCoding = firstSeries.getBodySite().getConcept().getCodingFirstRep();
+                imagingStudyData.put("BodySite", bodySiteCoding.hasDisplay() ? bodySiteCoding.getDisplay() : "N/A");
+            } else {
+                imagingStudyData.put("BodySite", "N/A");
+            }
+
+            // Instance-level data extraction (e.g., SOPClass)
+            if (!firstSeries.getInstance().isEmpty()) {
+                ImagingStudy.ImagingStudySeriesInstanceComponent firstInstance = firstSeries.getInstanceFirstRep();
+                if (firstInstance.hasSopClass()) {
+                    imagingStudyData.put("SOPClass", firstInstance.getSopClass().hasDisplay() ? firstInstance.getSopClass().getDisplay() : "N/A");
+                } else {
+                    imagingStudyData.put("SOPClass", "N/A");
+                }
+            } else {
+                imagingStudyData.put("SOPClass", "N/A");
+            }
+        } else {
+            imagingStudyData.put("Modality", "N/A");
+            imagingStudyData.put("BodySite", "N/A");
+            imagingStudyData.put("SOPClass", "N/A");
+        }
+
+        return imagingStudyData;
+    }
+
+
     private boolean matchesImagingStudy(ImagingStudy imagingStudy, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

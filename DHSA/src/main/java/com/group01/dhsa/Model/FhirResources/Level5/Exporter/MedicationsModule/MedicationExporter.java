@@ -106,6 +106,74 @@ public class MedicationExporter implements FhirResourceExporter {
         return List.of();
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof MedicationRequest)) {
+            throw new IllegalArgumentException("Resource is not of type MedicationRequest");
+        }
+
+        MedicationRequest medicationRequest = (MedicationRequest) resource;
+        Map<String, String> medicationData = new HashMap<>();
+
+        // Meta information
+        if (medicationRequest.hasMeta()) {
+            medicationData.put("VersionId", medicationRequest.getMeta().hasVersionId() ? medicationRequest.getMeta().getVersionId() : "N/A");
+            medicationData.put("LastUpdated", medicationRequest.getMeta().hasLastUpdated() ? medicationRequest.getMeta().getLastUpdated().toString() : "N/A");
+            medicationData.put("Source", medicationRequest.getMeta().hasSource() ? medicationRequest.getMeta().getSource() : "N/A");
+        } else {
+            medicationData.put("VersionId", "N/A");
+            medicationData.put("LastUpdated", "N/A");
+            medicationData.put("Source", "N/A");
+        }
+
+        // Identifier and Status
+        medicationData.put("Id", medicationRequest.getIdElement().getIdPart());
+        medicationData.put("Status", medicationRequest.hasStatus() ? medicationRequest.getStatus().toCode() : "N/A");
+
+        // Medication
+        if (medicationRequest.hasMedication() && medicationRequest.getMedication().getConcept().getCodingFirstRep() != null) {
+            Coding medicationCoding = medicationRequest.getMedication().getConcept().getCodingFirstRep();
+            medicationData.put("MedicationCode", medicationCoding.hasCode() ? medicationCoding.getCode() : "N/A");
+            medicationData.put("MedicationDisplay", medicationCoding.hasDisplay() ? medicationCoding.getDisplay() : "N/A");
+            medicationData.put("MedicationSystem", medicationCoding.hasSystem() ? medicationCoding.getSystem() : "N/A");
+        } else {
+            medicationData.put("MedicationCode", "N/A");
+            medicationData.put("MedicationDisplay", "N/A");
+            medicationData.put("MedicationSystem", "N/A");
+        }
+
+        // Subject (Patient) and Encounter
+        medicationData.put("Patient", medicationRequest.hasSubject() ? medicationRequest.getSubject().getReference() : "N/A");
+        medicationData.put("Encounter", medicationRequest.hasEncounter() ? medicationRequest.getEncounter().getReference() : "N/A");
+
+        // Base Cost
+        if (medicationRequest.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/base-cost") != null) {
+            var baseCostExtension = medicationRequest.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/base-cost").getValue();
+            if (baseCostExtension instanceof org.hl7.fhir.r5.model.Quantity) {
+                medicationData.put("BaseCost", String.valueOf(((org.hl7.fhir.r5.model.Quantity) baseCostExtension).getValue()));
+            } else {
+                medicationData.put("BaseCost", "N/A");
+            }
+        } else {
+            medicationData.put("BaseCost", "N/A");
+        }
+
+        // Total Cost
+        if (medicationRequest.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/total-cost") != null) {
+            var totalCostExtension = medicationRequest.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/total-cost").getValue();
+            if (totalCostExtension instanceof org.hl7.fhir.r5.model.Quantity) {
+                medicationData.put("TotalCost", String.valueOf(((org.hl7.fhir.r5.model.Quantity) totalCostExtension).getValue()));
+            } else {
+                medicationData.put("TotalCost", "N/A");
+            }
+        } else {
+            medicationData.put("TotalCost", "N/A");
+        }
+
+        return medicationData;
+    }
+
+
     private boolean matchesMedication(MedicationRequest medicationRequest, String searchTerm) {
         setFhirServerUrl();
         String lowerCaseSearchTerm = searchTerm.toLowerCase();

@@ -393,6 +393,131 @@ public class PatientExporter implements FhirResourceExporter {
         return patientsList;
     }
 
+    @Override
+    public Map<String, String> convertResourceToMap(Object resource) {
+        if (!(resource instanceof Patient)) {
+            throw new IllegalArgumentException("Resource is not of type Patient");
+        }
+
+        Patient patient = (Patient) resource;
+        Map<String, String> patientData = new HashMap<>();
+
+        // Identifier
+        patientData.put("Identifier", patient.hasIdentifier() ?
+                patient.getIdentifierFirstRep().getValue() : "N/A");
+
+        // ID
+        patientData.put("Id", patient.getIdElement().getIdPart() != null ?
+                patient.getIdElement().getIdPart() : "N/A");
+
+        // Name
+        if (patient.hasName()) {
+            HumanName name = patient.getNameFirstRep();
+            patientData.put("Name", name.getGivenAsSingleString() +
+                    (name.hasFamily() ? " " + name.getFamily() : ""));
+        } else {
+            patientData.put("Name", "N/A");
+        }
+
+        // Gender
+        patientData.put("Gender", patient.hasGender() ?
+                patient.getGender().toCode() : "N/A");
+
+        // Birth Date
+        patientData.put("BirthDate", patient.hasBirthDate() ?
+                patient.getBirthDate().toString() : "N/A");
+
+        // Deceased Date
+        if (patient.hasDeceasedDateTimeType()) {
+            patientData.put("DeceasedDate",
+                    patient.getDeceasedDateTimeType().getValueAsString());
+        } else if (patient.hasDeceasedBooleanType()) {
+            patientData.put("DeceasedDate", patient.getDeceasedBooleanType().booleanValue() ?
+                    "Deceased" : "Alive");
+        } else {
+            patientData.put("DeceasedDate", "N/A");
+        }
+
+        // Address
+        if (patient.hasAddress()) {
+            Address address = patient.getAddressFirstRep();
+            if (!address.getLine().isEmpty()) {
+                patientData.put("Address", String.join(", ",
+                        address.getLine().stream().map(StringType::getValue).toList()));
+            } else {
+                patientData.put("Address", "N/A");
+            }
+            patientData.put("City", address.hasCity() ? address.getCity() : "N/A");
+            patientData.put("State", address.hasState() ? address.getState() : "N/A");
+            patientData.put("Zip", address.hasPostalCode() ? address.getPostalCode() : "N/A");
+        } else {
+            patientData.put("Address", "N/A");
+            patientData.put("City", "N/A");
+            patientData.put("State", "N/A");
+            patientData.put("Zip", "N/A");
+        }
+
+        // Race
+        Extension raceExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-race");
+        patientData.put("Race", raceExtension != null && raceExtension.hasValue() ?
+                raceExtension.getValue().toString() : "N/A");
+
+        // Ethnicity
+        Extension ethnicityExtension = patient.getExtensionByUrl("http://hl7.org/fhir/StructureDefinition/us-core-ethnicity");
+        patientData.put("Ethnicity", ethnicityExtension != null && ethnicityExtension.hasValue() ?
+                ethnicityExtension.getValue().toString() : "N/A");
+
+        // Telecom
+        if (patient.hasTelecom()) {
+            patientData.put("Telecom", String.join(", ",
+                    patient.getTelecom().stream()
+                            .map(ContactPoint::getValue)
+                            .toList()));
+        } else {
+            patientData.put("Telecom", "N/A");
+        }
+
+        // Marital Status
+        patientData.put("MaritalStatus", patient.hasMaritalStatus() ?
+                patient.getMaritalStatus().getText() : "N/A");
+
+        // Multiple Birth
+        if (patient.hasMultipleBirthBooleanType()) {
+            patientData.put("MultipleBirth", patient.getMultipleBirthBooleanType().booleanValue() ?
+                    "Yes" : "No");
+        } else if (patient.hasMultipleBirthIntegerType()) {
+            patientData.put("MultipleBirth",
+                    String.valueOf(patient.getMultipleBirthIntegerType().getValue()));
+        } else {
+            patientData.put("MultipleBirth", "N/A");
+        }
+
+        // Communication
+        if (patient.hasCommunication()) {
+            patientData.put("Communication", String.join(", ",
+                    patient.getCommunication().stream()
+                            .map(comm -> comm.getLanguage().getText())
+                            .toList()));
+        } else {
+            patientData.put("Communication", "N/A");
+        }
+
+        // General Practitioner
+        if (patient.hasGeneralPractitioner()) {
+            patientData.put("GeneralPractitioner", String.join(", ",
+                    patient.getGeneralPractitioner().stream()
+                            .map(ref -> ref.getReference())
+                            .toList()));
+        } else {
+            patientData.put("GeneralPractitioner", "N/A");
+        }
+
+        // Managing Organization
+        patientData.put("ManagingOrganization", patient.hasManagingOrganization() ?
+                patient.getManagingOrganization().getReference() : "N/A");
+
+        return patientData;
+    }
 
 
 
