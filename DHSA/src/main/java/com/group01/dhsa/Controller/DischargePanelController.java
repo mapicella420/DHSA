@@ -120,6 +120,9 @@ public class DischargePanelController {
 
     @FXML
     void backToHome() {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        System.out.println("[INFO] Unsubscribed from all events.");
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml",currentStage,"Doctor Dashboard");
@@ -267,6 +270,8 @@ public class DischargePanelController {
 
     @FXML
     void downloadPDF(ActionEvent event) {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
         try {
             if (cdaFile != null && cdaFile.exists()) {
                 // Ottieni la finestra corrente
