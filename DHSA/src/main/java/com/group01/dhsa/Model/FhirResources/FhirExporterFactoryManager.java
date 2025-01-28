@@ -1,9 +1,9 @@
 package com.group01.dhsa.Model.FhirResources;
 
-import com.group01.dhsa.Model.FhirResources.Level4.Exporter.*;
-import com.group01.dhsa.Model.FhirResources.Level5.Exporter.ClinicalModule.*;
-import com.group01.dhsa.Model.FhirResources.Level5.Exporter.DiagnosticModule.*;
-import com.group01.dhsa.Model.FhirResources.Level5.Exporter.MedicationsModule.*;
+import com.group01.dhsa.Model.FhirResources.Level3.Exporter.*;
+import com.group01.dhsa.Model.FhirResources.Level4.Exporter.ClinicalModule.*;
+import com.group01.dhsa.Model.FhirResources.Level4.Exporter.DiagnosticModule.*;
+import com.group01.dhsa.Model.FhirResources.Level4.Exporter.MedicationsModule.*;
 
 /**
  * Factory Manager for FHIR Resource Exporters.

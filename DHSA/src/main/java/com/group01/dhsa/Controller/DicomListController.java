@@ -1,7 +1,5 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.EventManager;
-import com.group01.dhsa.Model.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;

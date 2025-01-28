@@ -1,6 +1,7 @@
 package com.group01.dhsa.Model;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
+import com.group01.dhsa.Controller.LoggedUser;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;
@@ -11,17 +12,13 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import jakarta.xml.bind.JAXBException;
 import org.hl7.fhir.r5.model.*;
-import org.w3c.dom.Document;
 
 import javax.xml.transform.TransformerException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 
 /**
  * This class is responsible for creating a CDA document based on FHIR data.

@@ -1,14 +1,14 @@
 package com.group01.dhsa.Model.FhirResources;
 
-import com.group01.dhsa.Model.FhirResources.Level4.Importer.*;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.ClinicalModule.AllergyImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.ClinicalModule.CarePlanImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.ClinicalModule.ConditionImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.ClinicalModule.ProcedureImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.DiagnosticModule.ImagingStudyImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.DiagnosticModule.ObservationImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.MedicationsModule.ImmunizationImporterFactory;
-import com.group01.dhsa.Model.FhirResources.Level5.Importer.MedicationsModule.MedicationImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level3.Importer.*;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.ClinicalModule.AllergyImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.ClinicalModule.CarePlanImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.ClinicalModule.ConditionImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.ClinicalModule.ProcedureImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.DiagnosticModule.ImagingStudyImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.DiagnosticModule.ObservationImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.MedicationsModule.ImmunizationImporterFactory;
+import com.group01.dhsa.Model.FhirResources.Level4.Importer.MedicationsModule.MedicationImporterFactory;
 
 public class FhirImporterFactoryManager {
     public static FhirResourceImporterFactory getFactory(String fileName) {

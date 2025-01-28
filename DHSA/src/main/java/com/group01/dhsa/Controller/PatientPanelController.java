@@ -2,7 +2,6 @@ package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
-import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

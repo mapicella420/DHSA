@@ -3,7 +3,7 @@ package com.group01.dhsa.Model.CDAResources.AdapterPattern.Body;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.AdapterPattern.CdaSection;
 import com.group01.dhsa.Model.CDAResources.SectionModels.ClassXML.*;
-import com.group01.dhsa.Model.LoggedUser;
+import com.group01.dhsa.Controller.LoggedUser;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;

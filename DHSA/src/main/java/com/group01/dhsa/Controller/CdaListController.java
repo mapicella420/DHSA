@@ -1,7 +1,6 @@
 package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
-import com.group01.dhsa.Model.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -31,7 +30,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CdaListController implements DataReceiver{
     public Button dischargePatientButton;

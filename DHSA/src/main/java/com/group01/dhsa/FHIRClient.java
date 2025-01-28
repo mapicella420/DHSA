@@ -5,7 +5,7 @@ import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.DateClientParam;
 import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
-import com.group01.dhsa.Model.LoggedUser;
+import com.group01.dhsa.Controller.LoggedUser;
 import org.hl7.fhir.r5.model.*;
 
 import java.util.HashSet;

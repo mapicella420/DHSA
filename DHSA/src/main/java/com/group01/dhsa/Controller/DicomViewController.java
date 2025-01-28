@@ -1,6 +1,5 @@
 package com.group01.dhsa.Controller;
 
-import com.group01.dhsa.Model.LoggedUser;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;

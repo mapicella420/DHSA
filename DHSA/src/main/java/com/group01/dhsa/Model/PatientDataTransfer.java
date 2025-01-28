@@ -1,9 +1,6 @@
 package com.group01.dhsa.Model;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
+import com.group01.dhsa.Controller.LoggedUser;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.ObserverPattern.EventObservable;
@@ -17,7 +14,6 @@ import org.hl7.fhir.r5.model.*;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;

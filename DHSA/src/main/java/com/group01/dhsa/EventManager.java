@@ -1,5 +1,6 @@
 package com.group01.dhsa;
 
+import com.group01.dhsa.Controller.LoggedUser;
 import com.group01.dhsa.Model.*;
 import com.group01.dhsa.Model.FhirResources.FhirExporterFactoryManager;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
