@@ -4,7 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.TokenClientParam;
 import com.group01.dhsa.Model.FhirResources.*;
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.hl7.fhir.r5.model.*;

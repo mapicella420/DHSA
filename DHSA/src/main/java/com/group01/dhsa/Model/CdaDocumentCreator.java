@@ -1,7 +1,7 @@
 package com.group01.dhsa.Model;
 
 import ca.uhn.fhir.rest.api.MethodOutcome;
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.CDAResources.CdaDocumentBuilder;

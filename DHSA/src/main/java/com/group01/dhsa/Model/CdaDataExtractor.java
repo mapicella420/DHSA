@@ -9,7 +9,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CdaDataExtractor {
-
+    /**
+     * Extracts key data from a CDA (Clinical Document Architecture) file.
+     *
+     * @param cdaFile The CDA file to extract data from.
+     * @return A map containing the extracted data with key-value pairs.
+     */
     public Map<String, String> extractCdaData(File cdaFile) {
         Map<String, String> data = new HashMap<>();
         try {

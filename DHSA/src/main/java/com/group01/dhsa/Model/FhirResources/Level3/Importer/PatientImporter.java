@@ -9,7 +9,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.mindrot.jbcrypt.BCrypt;
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.csv.CSVFormat;
 import org.hl7.fhir.r5.model.*;

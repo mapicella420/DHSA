@@ -5,7 +5,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.IQuery;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r5.model.*;
 

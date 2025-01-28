@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

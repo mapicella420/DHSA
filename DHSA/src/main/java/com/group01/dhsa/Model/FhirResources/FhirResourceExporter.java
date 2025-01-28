@@ -4,39 +4,44 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Interfaccia comune per tutti gli exporter FHIR.
+ * Common interface for all FHIR resource exporters.
+ * This interface defines methods to export, search, and convert FHIR resources into a mappable format.
  */
 public interface FhirResourceExporter {
 
     /**
-     * Esporta tutte le risorse.
+     * Exports all resources.
+     * This method retrieves all available resources and returns them as a list of maps.
      *
-     * @return Una lista di mappe contenenti i dati delle risorse.
+     * @return A list of maps where each map represents the data of a FHIR resource.
      */
     List<Map<String, String>> exportResources();
 
     /**
-     * Cerca risorse in base a un termine di ricerca.
+     * Searches resources based on a search term.
+     * This method allows searching for resources by specifying a general search term.
      *
-     * @param searchTerm Il termine di ricerca.
-     * @return Una lista di mappe contenenti i dati delle risorse corrispondenti.
+     * @param searchTerm The term to search for.
+     * @return A list of maps representing the data of resources that match the search term.
      */
     List<Map<String, String>> searchResources(String searchTerm);
 
     /**
-     * Cerca risorse in base a un campo specifico e un valore.
+     * Searches resources based on specific fields and their corresponding values.
+     * This method performs field-specific searches, where each field is matched against a specific value.
      *
-     * @param searchField Il campo da cercare.
-     * @param searchValue Il valore da cercare.
-     * @return Una lista di mappe contenenti i dati delle risorse corrispondenti.
+     * @param searchField The fields to search within (e.g., "name", "id").
+     * @param searchValue The values to search for in the specified fields.
+     * @return A list of maps representing the data of resources that match the search criteria.
      */
     List<Map<String, String>> searchResources(String[] searchField, String[] searchValue);
 
     /**
-     * Converte una risorsa in una mappa.
+     * Converts a FHIR resource into a map.
+     * This method takes a FHIR resource object and extracts its data into a key-value format.
      *
-     * @param resource La risorsa FHIR da convertire.
-     * @return Una mappa contenente i dati della risorsa.
+     * @param resource The FHIR resource to convert.
+     * @return A map containing the key-value representation of the resource data.
      */
     Map<String, String> convertResourceToMap(Object resource);
 }

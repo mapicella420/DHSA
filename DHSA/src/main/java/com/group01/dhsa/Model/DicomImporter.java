@@ -1,6 +1,6 @@
 package com.group01.dhsa.Model;
 
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.ObserverPattern.EventListener;
 import org.bson.Document;

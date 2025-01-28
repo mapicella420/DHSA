@@ -132,6 +132,7 @@ public class ViewFhirResourcesController {
                 if (!row.isEmpty()) {
                     Map<String, String> item = row.getItem();
                     System.out.println("[DEBUG] Row Context Menu - Item: " + item);
+                    progressBar.setVisible(true);
 
                     dynamicContextMenu.getItems().clear();
                     String resourceType = resourceTypeChoiceBox.getValue();
@@ -353,6 +354,7 @@ public class ViewFhirResourcesController {
                             statusLabel.setText("No linked resources found for " + label);
                             statusLabel.setVisible(true);
                         } else {
+                            statusLabel.setText("No linked resources found  " + label);
                             statusLabel.setVisible(false);
                         }
                     });

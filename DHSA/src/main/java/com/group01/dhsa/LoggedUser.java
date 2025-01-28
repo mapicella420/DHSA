@@ -1,6 +1,4 @@
-package com.group01.dhsa.Controller;
-
-import com.group01.dhsa.FHIRClient;
+package com.group01.dhsa;
 
 /**
  * This class represents the logged-in user in the system,

@@ -5,60 +5,67 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="Fix adaptable screen">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirExporterFactoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirExporterFactoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaPreviewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/CdaPreviewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DicomListController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DicomListController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DicomViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DicomViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DoctorPanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoggedUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/LoggedUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/LoginUserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientCdaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientCdaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientDicomController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientDicomController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/ViewFhirResourcesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/ViewFhirResourcesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/EventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/Body/RelevantDiagnosticAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/Body/RelevantDiagnosticAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/CdaSection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/AdapterPattern/CdaSection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/ClinicalDocument.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CDAResources/ClinicalDocument.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaToHtmlConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaToHtmlConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/DicomImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/DicomImporter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirImporterFactoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DeviceExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/DeviceExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DeviceExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/DeviceExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/EncounterExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/EncounterExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/EncounterExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/EncounterExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/OrganizationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/OrganizationExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/OrganizationExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/OrganizationExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/PatientExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/PatientExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/PatientExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/PatientExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ProviderExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/ProviderExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ProviderExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/ProviderExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DeviceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/DeviceImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DeviceImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/DeviceImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/EncounterImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/EncounterImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/EncounterImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/EncounterImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/OrganizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/OrganizationImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/OrganizationImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/OrganizationImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/PatientImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/PatientImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/PatientImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/PatientImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/ProviderImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ProviderImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/ProviderImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/AllergyExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/AllergyExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/AllergyExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/AllergyExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/CarePlanExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/CarePlanExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/CarePlanExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/CarePlanExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/ConditionExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ConditionExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/ConditionExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ConditionExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/ProcedureExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ProcedureExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/ClinicalModule/ProcedureExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ProcedureExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/DiagnosticModule/ImagingStudyExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ImagingStudyExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/DiagnosticModule/ImagingStudyExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ImagingStudyExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/DiagnosticModule/ObservationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ObservationExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/DiagnosticModule/ObservationExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ObservationExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/MedicationsModule/ImmunizationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/ImmunizationExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/MedicationsModule/ImmunizationExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/ImmunizationExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/MedicationsModule/MedicationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/MedicationExporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Exporter/MedicationsModule/MedicationExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/MedicationExporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/AllergyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/AllergyImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/AllergyImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/AllergyImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/CarePlanImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/CarePlanImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/CarePlanImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/CarePlanImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/ConditionImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ConditionImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/ConditionImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ConditionImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/ProcedureImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ProcedureImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/ClinicalModule/ProcedureImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ProcedureImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/DiagnosticModule/ImagingStudyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ImagingStudyImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/DiagnosticModule/ImagingStudyImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ImagingStudyImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/DiagnosticModule/ObservationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ObservationImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/DiagnosticModule/ObservationImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ObservationImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/MedicationsModule/ImmunizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/ImmunizationImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/MedicationsModule/ImmunizationImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/ImmunizationImporterFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/MedicationsModule/MedicationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/MedicationImporter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level5/Importer/MedicationsModule/MedicationImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/MedicationImporterFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceExporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceExporterFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceImporterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/FhirResourceImporterFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/DeviceExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/DeviceExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/EncounterExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/EncounterExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/OrganizationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/OrganizationExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/PatientExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/PatientExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/ProviderExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Exporter/ProviderExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/DeviceImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/DeviceImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/EncounterImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/EncounterImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/OrganizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/OrganizationImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/PatientImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/PatientImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/ProviderImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level3/Importer/ProviderImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/AllergyExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/AllergyExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/CarePlanExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/CarePlanExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ConditionExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ConditionExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ProcedureExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/ClinicalModule/ProcedureExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ImagingStudyExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ImagingStudyExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ObservationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/DiagnosticModule/ObservationExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/ImmunizationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/ImmunizationExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/MedicationExporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Exporter/MedicationsModule/MedicationExporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/AllergyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/AllergyImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/CarePlanImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/CarePlanImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ConditionImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ConditionImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ProcedureImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/ClinicalModule/ProcedureImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ImagingStudyImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ImagingStudyImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ObservationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/DiagnosticModule/ObservationImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/ImmunizationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/ImmunizationImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/MedicationImporter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/FhirResources/Level4/Importer/MedicationsModule/MedicationImporter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/MyHL7CdaConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/MyHL7CdaConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/PDFTools/CDALetterTemplate.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DischargePanelScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DoctorPanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/DoctorPanelScreen.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/TransferPanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/TransferPanelScreen.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,7 +119,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.MyApp.executor": "Run",
-    "Application.MyHL7CdaConverter.executor": "Debug",
+    "Application.MyHL7CdaConverter.executor": "Run",
     "Application.MyHL7CdaCreator.executor": "Debug",
     "Application.Unnamed.executor": "Run",
     "JUnit.java in DHSA.executor": "Run",
@@ -144,14 +151,14 @@
       <recent name="C:\Users\sasyb\IdeaProjects\DHSA\DHSA\src\main\resources\com\group01\dhsa\styles" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="com.group01.dhsa.Model" />
       <recent name="com.group01.dhsa" />
+      <recent name="com.group01.dhsa.Model" />
       <recent name="com.group01.dhsa.Model.FhirResources.Level4" />
       <recent name="com.group01.dhsa.Model.FhirResources" />
       <recent name="com.group01.dhsa.Model.FhirResources.level5.DiagnosticModule" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MyHL7CdaCreator">
+  <component name="RunManager" selected="Application.MyHL7CdaConverter">
     <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
@@ -160,8 +167,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MyHL7CdaCreator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaCreator" />
+    <configuration name="MyHL7CdaConverter" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.group01.dhsa.MyHL7CdaConverter" />
       <module name="DHSA" />
       <extension name="coverage">
         <pattern>
@@ -183,12 +190,11 @@
     </configuration>
     <list>
       <item itemvalue="Application.MyHL7CdaConverter" />
-      <item itemvalue="Application.MyHL7CdaCreator" />
       <item itemvalue="JUnit.java in DHSA" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.MyHL7CdaCreator" />
+        <item itemvalue="Application.MyHL7CdaConverter" />
         <item itemvalue="JUnit.java in DHSA" />
       </list>
     </recent_temporary>
@@ -251,23 +257,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java</url>
-          <line>121</line>
+          <line>120</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java</url>
-          <line>134</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java</url>
-          <line>137</line>
-          <option name="timeStamp" value="62" />
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java</url>
+          <line>156</line>
+          <properties class="com.group01.dhsa.Model.CdaDataExtractor" method="extractCustodianInfo">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="68" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

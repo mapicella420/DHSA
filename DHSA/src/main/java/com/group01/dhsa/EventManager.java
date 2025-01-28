@@ -1,6 +1,5 @@
 package com.group01.dhsa;
 
-import com.group01.dhsa.Controller.LoggedUser;
 import com.group01.dhsa.Model.*;
 import com.group01.dhsa.Model.FhirResources.FhirExporterFactoryManager;
 import com.group01.dhsa.Model.FhirResources.FhirResourceExporter;
@@ -186,10 +185,13 @@ public class EventManager {
                     }
                 }
 
-                if (resourceSuffix.contains("/Patient/")) {
+                if (resourceSuffix.contains("/Patient/") || resourceSuffix.contains("Patient/")) {
                     String[] patientSplit = resourceSuffix.split("/Patient/");
                     if (patientSplit.length == 2) {
                         patientId = patientSplit[1].trim();
+                        patientId = patientId.replace("Patient/", "").trim(); // Rimuove duplicati se presenti
+                    }else if (patientSplit.length == 1) {
+                        patientId = patientSplit[0].trim();
                         patientId = patientId.replace("Patient/", "").trim(); // Rimuove duplicati se presenti
                     }
                 }

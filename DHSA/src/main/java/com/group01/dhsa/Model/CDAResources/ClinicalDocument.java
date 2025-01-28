@@ -6,6 +6,11 @@ import jakarta.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a Clinical Document Architecture (CDA) document.
+ * This class is used to model and serialize a CDA document using JAXB annotations.
+ * It contains both the header and body of the CDA document and includes the associated metadata and sections.
+ */
 @XmlRootElement(name = "ClinicalDocument")
 @XmlAccessorType(XmlAccessType.FIELD)
 
@@ -78,8 +83,11 @@ public class ClinicalDocument {
     public ClinicalDocument() {
     }
 
-    //Construct with fixed values
-    public ClinicalDocument(Integer idNumber) {
+    /**
+     * Constructs a `ClinicalDocument` with fixed values for certain fields.
+     *
+     * @param idNumber The ID number for the document.
+     */    public ClinicalDocument(Integer idNumber) {
         this.typeId = new TypeId("POCD_HD000040", "2.16.840.1.113883.1.3");
         this.templateId = new TemplateId("2.16.840.1.113883.2.9.10.1.5","1.2");
         this.realmCode = new RealmCode("IT");

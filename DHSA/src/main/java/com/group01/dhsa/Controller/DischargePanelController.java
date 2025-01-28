@@ -4,6 +4,7 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -120,6 +121,9 @@ public class DischargePanelController {
 
     @FXML
     void backToHome() {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        System.out.println("[INFO] Unsubscribed from all events.");
         Stage currentStage = (Stage) dischargePatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
         screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml",currentStage,"Doctor Dashboard");
@@ -138,6 +142,9 @@ public class DischargePanelController {
         stackPaneCDA.setVisible(true);
         previewButton.setDisable(true);
         cdaStatus.setText("Generating CDA...");
+        errorLabel.setText("Generating CDA...");
+        errorLabel.setVisible(true);
+
 
         // Notifica al modello di generare la CDA
         EventManager.getInstance().getEventObservable().notify("generate_cda", new File(patientIDMenu.getText() + "_" + encounterIDMenu.getText() + ".xml"));
@@ -267,6 +274,8 @@ public class DischargePanelController {
 
     @FXML
     void downloadPDF(ActionEvent event) {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
         try {
             if (cdaFile != null && cdaFile.exists()) {
                 // Ottieni la finestra corrente
@@ -302,8 +311,8 @@ public class DischargePanelController {
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
         return checkCda(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
-                    !encounter.getType().getFirst().getCodingFirstRep()
-                            .getDisplay().equals("Death Certification");
+                !encounter.getType().getFirst().getCodingFirstRep()
+                        .getDisplay().equals("Death Certification");
     }
 
     private boolean checkCda(String encounterId){
@@ -347,7 +356,5 @@ public class DischargePanelController {
             e.printStackTrace();
         }
     }
-
-
 
 }

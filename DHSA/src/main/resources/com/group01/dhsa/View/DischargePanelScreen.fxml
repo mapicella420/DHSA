@@ -57,6 +57,7 @@
                                 <Button fx:id="dischargePatientButton" disable="true" layoutX="390.0" layoutY="225.0" onAction="#dischargeSelectedPatient" prefHeight="34.0" prefWidth="120.0" styleClass="button-red" text="Discharge Patient" />
                                 <TextField fx:id="firstNameField" layoutX="92.0" layoutY="36.0" prefHeight="26.0" prefWidth="183.0" promptText="Type First Name" />
                                 <MenuButton fx:id="encounterIDMenu" disable="true" layoutX="92.0" layoutY="183.0" mnemonicParsing="false" onAction="#switchSelectedEncounter" prefHeight="26.0" prefWidth="358.0" text="Encounter ID" />
+
                             </children>
                         </AnchorPane>
                     </children>
@@ -71,11 +72,12 @@
                            <font>
                               <Font size="36.0" />
                            </font></Label>
-                                <Button fx:id="previewButton" disable="true" layoutX="374.0" layoutY="75.0" mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
+                                <Button fx:id="previewButton" disable="true" layoutX="374.0" layoutY="75.0" styleClass="button-red" mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
                             </children>
                         </AnchorPane>
                     </children>
                 </StackPane>
+
             </children>
             <BorderPane.margin>
                 <Insets />

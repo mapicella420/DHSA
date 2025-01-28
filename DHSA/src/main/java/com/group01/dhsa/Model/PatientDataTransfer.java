@@ -1,6 +1,6 @@
 package com.group01.dhsa.Model;
 
-import com.group01.dhsa.Controller.LoggedUser;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.ObserverPattern.EventObservable;
@@ -20,13 +20,19 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The PatientDataTransfer class handles the transfer of patient-related data between different hospitals or systems.
+ * This includes FHIR resources, credentials, and associated files (e.g., DICOM).
+ */
 public class PatientDataTransfer {
     private final EventObservable eventObservable;
     private static String CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
     private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
     private static final String MONGO_DB_NAME = "data_app";
     private static final String MONGO_COLLECTION_NAME = "users";
-
+    /**
+     * Updates the MongoDB URI based on the logged user's organization.
+     */
     public static void setMongoUri() {
         if (LoggedUser.getOrganization().equals("My Hospital")){
             MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
@@ -35,6 +41,10 @@ public class PatientDataTransfer {
             MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
         }
     }
+
+    /**
+     * Updates the credentials file path based on the logged user's organization.
+     */
     public static void setCredentialsFilePath() {
         if (LoggedUser.getOrganization().equals("My Hospital")){
             CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials-other.txt";
@@ -42,16 +52,26 @@ public class PatientDataTransfer {
         } else if (LoggedUser.getOrganization().equals("Other Hospital")) {
             CREDENTIALS_FILE_PATH = "src/main/resources/com/group01/dhsa/CredentialPatient/credentials.txt";
         }
-    }
-
+    } /**
+     * Default constructor that initializes the event observable using the EventManager.
+     */
     public PatientDataTransfer() {
         this.eventObservable = EventManager.getInstance().getEventObservable();
     }
-
+    /**
+     * Constructor that accepts an EventObservable for event notifications.
+     *
+     * @param eventObservable The observable to use for notifying events.
+     */
     public PatientDataTransfer(EventObservable eventObservable) {
         this.eventObservable = eventObservable;
     }
 
+    /**
+     * Notifies observers about the completion or failure of a data transfer.
+     *
+     * @param success Whether the transfer was successful.
+     */
     public void transferAndNotify(boolean success) {
         if (success) {
             eventObservable.notify("transfer_complete", null);
@@ -60,7 +80,13 @@ public class PatientDataTransfer {
             eventObservable.notify("transfer_failed", null);
         }
     }
-
+    /**
+     * Transfers a patient's data and related information (e.g., credentials, DICOM files) to a specified organization.
+     *
+     * @param patientId   The ID of the patient to transfer.
+     * @param encounterId The ID of the encounter associated with the patient.
+     * @param organization The target organization for the data transfer.
+     */
     public void transferPatient(String patientId, String encounterId, String organization) {
         setMongoUri();
         setCredentialsFilePath();

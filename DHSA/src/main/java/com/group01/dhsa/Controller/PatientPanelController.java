@@ -2,6 +2,7 @@ package com.group01.dhsa.Controller;
 
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
+import com.group01.dhsa.LoggedUser;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -240,7 +241,7 @@ public class PatientPanelController {
         List<String> linkedResources = List.of(
                 "AllergyIntolerance", "CarePlan", "Condition", "Device", "Encounter",
                 "ImagingStudy", "Immunization", "MedicationRequest", "Observation",
-                "Organization", "Patient", "Procedure"
+                "Organization", "Procedure"
         );
 
 

@@ -3,9 +3,9 @@ package com.group01.dhsa.Model.FhirResources;
 // Factory Interface per creare FhirResourceExporter.
 public interface FhirResourceExporterFactory {
     /**
-     * Metodo per creare un esportatore specifico.
+     * Method for creating a specific exporter.
      *
-     * @return Un'istanza di FhirResourceExporter.
+     * @return An instance of FhirResourceExporter.
      */
     FhirResourceExporter createExporter();
 }

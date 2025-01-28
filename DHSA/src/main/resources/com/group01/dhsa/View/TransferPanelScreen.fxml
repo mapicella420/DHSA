@@ -43,7 +43,7 @@
                                        </font>
                                     </Label>
                                     <Label fx:id="labelTransfer" layoutX="371.0" layoutY="79.0" text="Transfer in progress..." />
-                                    <Button fx:id="previewTransferButton"  styleClass="button-red" disable="true" layoutX="85.0" layoutY="128.0" mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
+                                    <Button fx:id="previewTransferButton"  styleClass="button-red" disable="true"  mnemonicParsing="false" onAction="#downloadPDF" text="Preview CDA" />
                                  </children>
                               </AnchorPane>
                            </children>

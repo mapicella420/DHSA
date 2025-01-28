@@ -10,13 +10,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+
+/**
+ * The CdaToHtmlConverter class converts a CDA (Clinical Document Architecture) file into an HTML file.
+ * It uses an HTML template and CSS to style the output, filling the template with extracted CDA data.
+ * Notifications are sent upon success or failure of the conversion process.
+ */
 public class CdaToHtmlConverter {
     private final EventObservable eventObservable;
-
+    /**
+     * Default constructor.
+     * Initializes the event observable using the EventManager.
+     */
     public CdaToHtmlConverter() {
         this.eventObservable = EventManager.getInstance().getEventObservable();
     }
-
+    /**
+     * Converts a CDA file into an HTML file and notifies the observers about the conversion status.
+     *
+     * @param cdaFile The CDA file to convert.
+     */
     public void convertAndNotify(File cdaFile) {
         try {
             System.out.println("[DEBUG] Starting conversion for file: " + cdaFile.getAbsolutePath());
