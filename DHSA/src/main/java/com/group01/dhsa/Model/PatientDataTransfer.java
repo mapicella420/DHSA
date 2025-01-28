@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PatientDataTransfer {
     private final EventObservable eventObservable;
@@ -92,8 +93,7 @@ public class PatientDataTransfer {
             patientEntry.setResource(patient);
 
             patientEntry.getRequest()
-                    .setMethod(Bundle.HTTPVerb.POST)
-                    .setUrl("Patient/" + patientId);
+                    .setMethod(Bundle.HTTPVerb.POST);
 
             transactionBundle.addEntry(patientEntry);
             sendData(organization);
@@ -183,15 +183,26 @@ public class PatientDataTransfer {
                 MongoDatabase databaseDicom = mongoClient.getDatabase("medicalData");
                 MongoCollection<Document> collection = databaseDicom.getCollection("dicomFiles");
                 List<Document> files = collection.find().into(new java.util.ArrayList<>());
-                files.forEach(doc -> System.out.println("[DEBUG] Loaded document: " + doc.toJson()));
 
+                if (files.isEmpty()) {
+                    System.out.println("[DEBUG] No documents found in the collection.");
+                } else {
+                    files.forEach(doc ->
+                            System.out.println("[DEBUG] Loaded document: " + doc.toJson()));
+                }
+
+                Set<String> existingFileNames = files.stream()
+                        .map(file -> getFieldValue(file, "fileName"))
+                        .collect(Collectors.toSet());
+ì
                 for (Document filteredFile : filteredFiles) {
                     String fileFilteredName = getFieldValue(filteredFile, "fileName");
-                    for (Document file : files) {
-                        String fileName = getFieldValue(file, "fileName");
-                        if (!fileName.equalsIgnoreCase(fileFilteredName)){
-                            collection.insertOne(filteredFile);
-                        }
+
+                    if (!existingFileNames.contains(fileFilteredName)) {
+                        collection.insertOne(filteredFile);
+                        System.out.println("[INFO] Inserted new document: " + filteredFile.toJson());
+                    } else {
+                        System.out.println("[INFO] File already exists, skipping: " + fileFilteredName);
                     }
                 }
             }
