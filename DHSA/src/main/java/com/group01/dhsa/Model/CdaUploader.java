@@ -31,7 +31,7 @@ public class CdaUploader implements EventListener {
 
     private static String MONGO_URI = "mongodb://admin:mongodb@localhost:27017"; // MongoDB URI
 
-    private static void mongodbURI(){
+    private static void mongodbURI() {
 
         if (LoggedUser.getOrganization().equals("My Hospital")) {
             MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
@@ -41,6 +41,13 @@ public class CdaUploader implements EventListener {
         }
     }
 
+
+    private final Set<String> uploadedFiles = new HashSet<>();
+
+    private boolean isAlreadyUploaded(File file) {
+        return !uploadedFiles.add(file.getAbsolutePath()); // Restituisce true se il file è già stato elaborato
+    }
+
     /**
      * Handles events triggered by the EventManager.
      * If the event type is "cda_upload", it processes the provided file.
@@ -48,16 +55,16 @@ public class CdaUploader implements EventListener {
      * @param eventType The type of the event (e.g., "cda_upload").
      * @param file      The file associated with the event.
      */
-
-
     @Override
     public void handleEvent(String eventType, File file) {
         if ("cda_upload".equals(eventType)) {
-            uploadCdaToMongo(file); // Upload the CDA file to MongoDB
+            uploadCdaToMongo(file);
         } else if ("cda_upload_to_other_mongo".equals(eventType)) {
             uploadCdaToOtherMongo(file);
+            uploadCdaToMongo(file);
         }
     }
+
 
     /**
      * Uploads the content of a CDA file to the MongoDB database.
@@ -87,8 +94,8 @@ public class CdaUploader implements EventListener {
                     .append("patientName", patientName)
                     .append("patientData", patientData);
 
-            mongodbURI();
             // Connessione a MongoDB e salvataggio del documento
+            mongodbURI();
             try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
                 MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
                 MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);

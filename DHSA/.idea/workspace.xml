@@ -6,15 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="465fea15-238b-44fd-b177-3c80fc0b6161" name="Changes" comment="Fix adaptable screen">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/DischargePanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientCdaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientCdaController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDataExtractor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventObservable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/group01/dhsa/ObserverPattern/EventObservable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/CredentialPatient/credentials-other.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/CredentialPatient/credentials-other.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/CdaPreviewScreen.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/TransferPanelScreen.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/group01/dhsa/View/TransferPanelScreen.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +64,7 @@
   "keyToString": {
     "Application.MyApp.executor": "Run",
     "Application.MyHL7CdaConverter.executor": "Debug",
-    "Application.MyHL7CdaCreator.executor": "Run",
+    "Application.MyHL7CdaCreator.executor": "Debug",
     "Application.Unnamed.executor": "Run",
     "JUnit.java in DHSA.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -201,47 +196,37 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java</url>
-          <line>126</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/PatientDataTransfer.java</url>
-          <line>128</line>
-          <option name="timeStamp" value="39" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java</url>
-          <line>320</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java</url>
-          <line>328</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java</url>
-          <line>316</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientPanelController.java</url>
-          <line>317</line>
-          <option name="timeStamp" value="46" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/FHIRClient.java</url>
-          <line>336</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/PatientCdaController.java</url>
           <line>279</line>
           <option name="timeStamp" value="48" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Controller/TransferPanelController.java</url>
+          <line>121</line>
+          <option name="timeStamp" value="55" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaDocumentCreator.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/group01/dhsa/Model/CdaUploader.java</url>
+          <line>137</line>
+          <option name="timeStamp" value="62" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.group01.dhsa.Controller.TransferPanelController" memberName="errorLabel" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

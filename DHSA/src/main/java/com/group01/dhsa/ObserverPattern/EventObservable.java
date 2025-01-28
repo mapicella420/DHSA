@@ -1,10 +1,7 @@
 package com.group01.dhsa.ObserverPattern;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The EventObservable class represents the "observable" component in the observer pattern.
@@ -33,10 +30,39 @@ public class EventObservable {
      */
     public void unsubscribe(String eventType, EventListener listener) {
         List<EventListener> users = listeners.get(eventType);
+
         if (users != null) {
-            users.remove(listener);
+            Iterator<EventListener> iterator = users.iterator();
+            boolean removed = false;
+
+            while (iterator.hasNext()) {
+                EventListener user = iterator.next();
+
+                // Estrai il nome della classe principale ignorando la parte anonima
+                String listenerClassName = listener.getClass().getName().split("\\$\\$")[0];
+                String userClassName = user.getClass().getName().split("\\$\\$")[0];
+
+                if (listenerClassName.equals(userClassName)) {
+                    iterator.remove();
+                    removed = true;
+                    System.out.println("[INFO] Rimosso listener di tipo: " + listenerClassName);
+                    break; // Una volta rimosso, fermiamo il ciclo
+                }
+            }
+
+            if (!removed) {
+                System.out.println("[INFO] Nessun listener rimosso: " + listener.getClass().getName());
+                System.out.println("[DEBUG] Lista attuale:");
+                users.forEach(u -> System.out.println(" - " + u.getClass().getName()));
+            }
+        } else {
+            System.out.println("[WARNING] Nessun listener registrato per l'evento: " + eventType);
         }
     }
+
+
+
+
 
     /**
      * Notifies all listeners subscribed to a specific event type.

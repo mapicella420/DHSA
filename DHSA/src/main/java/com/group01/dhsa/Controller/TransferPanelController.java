@@ -5,6 +5,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import com.group01.dhsa.EventManager;
 import com.group01.dhsa.FHIRClient;
 import com.group01.dhsa.Model.LoggedUser;
+import com.group01.dhsa.ObserverPattern.EventListener;
 import com.group01.dhsa.ObserverPattern.EventObservable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -26,7 +27,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransferPanelController {
+public class TransferPanelController  {
 
     @FXML
     public Button previewTransferButton;
@@ -90,9 +91,9 @@ public class TransferPanelController {
 
     public static void setMongoUri() {
         if (LoggedUser.getOrganization() != null) {
-            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")){
+            if (LoggedUser.getOrganization().equalsIgnoreCase("Other Hospital")) {
                 MONGO_URI = "mongodb://admin:mongodb@localhost:27018";
-            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")){
+            } else if (LoggedUser.getOrganization().equalsIgnoreCase("My Hospital")) {
                 MONGO_URI = "mongodb://admin:mongodb@localhost:27017";
             }
         }
@@ -105,9 +106,16 @@ public class TransferPanelController {
 
         // Iscrizione agli eventi del modello
         eventManager.subscribe("cda_generated", this::onCdaGenerated);
+
         eventManager.subscribe("cda_generation_failed", this::onCdaGenerationFailed);
+
+
         eventManager.subscribe("transfer_complete", this::onTransferCompleted);
+
+
         eventManager.subscribe("transfer_failed", this::onTransferFailed);
+
+
     }
 
 
@@ -118,7 +126,6 @@ public class TransferPanelController {
             uploadCda();
         }
     }
-
 
     private void onCdaGenerationFailed(String eventType, File file) {
         cdaStatus.setText("Failed to generate CDA. Please try again.");
@@ -144,9 +151,15 @@ public class TransferPanelController {
 
     @FXML
     void backToHome() {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        eventManager.unsubscribe("transfer_complete", this::onTransferCompleted);
+        eventManager.unsubscribe("transfer_failed", this::onTransferFailed);
+        System.out.println("[INFO] Unsubscribed from all events.");
         Stage currentStage = (Stage) transferPatientButton.getScene().getWindow();
         ChangeScreen screenChanger = new ChangeScreen();
-        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml",currentStage,"Doctor Dashboard");
+        screenChanger.switchScreen("/com/group01/dhsa/View/DoctorPanelScreen.fxml", currentStage, "Doctor Dashboard");
+
     }
 
 
@@ -227,8 +240,7 @@ public class TransferPanelController {
             MenuItem caller = (MenuItem) event.getSource();
             encounterIDMenu.setText(caller.getText());
             encounterIDMenu.getItems().remove(caller);
-        }
-        else {
+        } else {
             MenuItem caller = (MenuItem) event.getSource();
             String oldCaller = encounterIDMenu.getText();
             encounterIDMenu.setText(caller.getText());
@@ -259,8 +271,7 @@ public class TransferPanelController {
             MenuItem caller = (MenuItem) event.getSource();
             organizationMenu.setText(caller.getText());
             organizationMenu.getItems().remove(caller);
-        }
-        else {
+        } else {
             MenuItem caller = (MenuItem) event.getSource();
             String oldCaller = organizationMenu.getText();
             organizationMenu.setText(caller.getText());
@@ -338,16 +349,16 @@ public class TransferPanelController {
     }
 
 
-    private boolean checkEncounter(Encounter encounter){
+    private boolean checkEncounter(Encounter encounter) {
 
         String patientId = encounter.getSubject().getReference().split("/")[1];
         String pId = FHIRClient.getInstance().getPatientById(patientIDMenu.getText()).getIdPart();
         return checkCda(encounter.getIdentifierFirstRep().getValue()) && patientId.equals(pId) &&
-                    !encounter.getType().getFirst().getCodingFirstRep()
-                            .getDisplay().equals("Death Certification");
+                !encounter.getType().getFirst().getCodingFirstRep()
+                        .getDisplay().equals("Death Certification");
     }
 
-    private boolean checkCda(String encounterId){
+    private boolean checkCda(String encounterId) {
         setMongoUri();
         try (MongoClient mongoClient = MongoClients.create(MONGO_URI)) {
             MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
@@ -376,8 +387,8 @@ public class TransferPanelController {
 
     void uploadCda() {
         try {
-            EventManager.getInstance().getEventObservable().notify("cda_upload", this.cdaFile);
-            EventManager.getInstance().getEventObservable().notify("cda_upload_to_other_mongo",
+            EventManager manager = EventManager.getInstance();
+            manager.getEventObservable().notify("cda_upload_to_other_mongo",
                     this.cdaFile);
 
             cdaStatus.setText("CDA uploaded successfully!");
@@ -387,7 +398,6 @@ public class TransferPanelController {
         }
     }
 
-
     @FXML
     void switchPanel() {
         stackPaneDischarge.setVisible(true);
@@ -396,6 +406,11 @@ public class TransferPanelController {
 
     @FXML
     void downloadPDF(ActionEvent event) {
+        eventManager.unsubscribe("cda_generated", this::onCdaGenerated);
+        eventManager.unsubscribe("cda_generation_failed", this::onCdaGenerationFailed);
+        eventManager.unsubscribe("transfer_complete", this::onTransferCompleted);
+        eventManager.unsubscribe("transfer_failed", this::onTransferFailed);
+        System.out.println("[INFO] Unsubscribed from all events.");
         try {
             if (cdaFile != null && cdaFile.exists()) {
                 // Ottieni la finestra corrente
@@ -424,5 +439,4 @@ public class TransferPanelController {
             e.printStackTrace();
         }
     }
-
 }
