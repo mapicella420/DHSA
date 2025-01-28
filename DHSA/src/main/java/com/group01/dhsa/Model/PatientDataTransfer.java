@@ -185,10 +185,10 @@ public class PatientDataTransfer {
                 List<Document> files = collection.find().into(new java.util.ArrayList<>());
                 files.forEach(doc -> System.out.println("[DEBUG] Loaded document: " + doc.toJson()));
 
-                for (Document file : files) {
-                    String fileName = getFieldValue(file, "fileName");
-                    for (Document filteredFile : filteredFiles) {
-                        String fileFilteredName = getFieldValue(filteredFile, "fileName");
+                for (Document filteredFile : filteredFiles) {
+                    String fileFilteredName = getFieldValue(filteredFile, "fileName");
+                    for (Document file : files) {
+                        String fileName = getFieldValue(file, "fileName");
                         if (!fileName.equalsIgnoreCase(fileFilteredName)){
                             collection.insertOne(filteredFile);
                         }
