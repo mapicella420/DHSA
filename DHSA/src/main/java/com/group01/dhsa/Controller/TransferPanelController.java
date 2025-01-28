@@ -211,6 +211,9 @@ public class TransferPanelController {
                 encounterIDMenu.setDisable(false);
             }
         }
+        organizationMenu.setDisable(true);
+        organizationMenu.setText("Select Organization");
+        organizationMenu.getItems().clear();
 
         transferPatientButton.setDisable(patientIDMenu.getText().equals("Patient ID") ||
                 encounterIDMenu.getText().equals("Encounter ID") ||
@@ -236,6 +239,8 @@ public class TransferPanelController {
                 organizationMenu.getText().equals("Select Organization"));
 
         organizationMenu.setDisable(false);
+        organizationMenu.setText("Select Organization");
+        organizationMenu.getItems().clear();
 
         MenuItem item1 = new MenuItem();
         item1.setText("My Hospital");

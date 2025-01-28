@@ -342,8 +342,6 @@ public class FHIRClient {
         } else {
             System.err.println("[ERROR] No Patient found for identifier: " + patientIdentifier);
             return null;
-            3
-
         }
     }
 

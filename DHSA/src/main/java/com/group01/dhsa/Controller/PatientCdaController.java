@@ -147,7 +147,7 @@ public class PatientCdaController  implements DataReceiver{
                     System.out.println("[DEBUG] Normalized patient name: " + normalizedPatientName);
 
                     // Verifica se il nome del paziente corrisponde
-                    if (!extractedPatientName.equalsIgnoreCase(normalizedPatientName)) {
+                    if (!isNameMatch(extractedPatientName,normalizedPatientName)) {
                         System.out.println("[DEBUG] Patient name does not match. Expected: " + normalizedPatientName + ", Found: " + extractedPatientName);
                         return null; // Non corrisponde, ritorna senza estrarre il documento
                     }
