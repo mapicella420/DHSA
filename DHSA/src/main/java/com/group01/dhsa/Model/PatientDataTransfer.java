@@ -194,7 +194,7 @@ public class PatientDataTransfer {
                 Set<String> existingFileNames = files.stream()
                         .map(file -> getFieldValue(file, "fileName"))
                         .collect(Collectors.toSet());
-ì
+
                 for (Document filteredFile : filteredFiles) {
                     String fileFilteredName = getFieldValue(filteredFile, "fileName");
 
