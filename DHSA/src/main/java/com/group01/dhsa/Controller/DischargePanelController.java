@@ -142,8 +142,6 @@ public class DischargePanelController {
         stackPaneCDA.setVisible(true);
         previewButton.setDisable(true);
         cdaStatus.setText("Generating CDA...");
-        errorLabel.setText("Generating CDA...");
-        errorLabel.setVisible(true);
 
 
         // Notifica al modello di generare la CDA
