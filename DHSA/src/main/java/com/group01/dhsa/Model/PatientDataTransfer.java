@@ -83,14 +83,12 @@ public class PatientDataTransfer {
 
         String uploadedPatientId = "";
         if (existingPatient != null) {
-            String fullId = existingPatient.getId();
-            String normalizedId = fullId.substring(0, fullId.lastIndexOf("/_history"));
-            normalizedId = normalizedId.substring(normalizedId.lastIndexOf("/") + 1);
-
-            uploadedPatientId = normalizedId;
+            uploadedPatientId = existingPatient.getIdPart();
         } else {
             Bundle.BundleEntryComponent patientEntry = new Bundle.BundleEntryComponent();
-            patientEntry.setResource(patient);
+            Patient patient1 = patient.copy();
+            patient1.setId("");
+            patientEntry.setResource(patient1);
 
             patientEntry.getRequest()
                     .setMethod(Bundle.HTTPVerb.POST);
@@ -98,7 +96,7 @@ public class PatientDataTransfer {
             transactionBundle.addEntry(patientEntry);
             sendData(organization);
             Bundle response = fhirClient.transaction(transactionBundle);
-             uploadedPatientId = response.getEntry().getFirst()
+            uploadedPatientId = response.getEntry().getFirst()
                     .getResponse().getLocation().split("/")[1];
         }
 
@@ -117,7 +115,8 @@ public class PatientDataTransfer {
             String username = generateUsername(firstName, lastName);
             String password = generatePassword();
 
-            if (userExistsByUsername(usersCollection, username)) {
+            if (userExistsByUsername(usersCollection, username)
+            || userExistsByIdentifier(usersCollection, patientId)) {
                 System.out.println("Username " + username + " già esistente. Skipping.");
             } else{
                 Document userDocument = new Document("username", username)
@@ -483,6 +482,10 @@ public class PatientDataTransfer {
 
     private boolean userExistsByUsername(MongoCollection<Document> usersCollection, String username) {
         return usersCollection.find(new Document("username", username)).first() != null;
+    }
+
+    private boolean userExistsByIdentifier(MongoCollection<Document> usersCollection, String fhirId) {
+        return usersCollection.find(new Document("fhirID", fhirId)).first() != null;
     }
 
     private boolean isNameMatch(String dbPatientName, String inputPatientName) {
