@@ -108,6 +108,7 @@ public class CdaDocumentCreator {
                 Date endDate = new Date();
                 encounter.getActualPeriod().setEnd(endDate);
                 try{
+                    encounter.setId(encounter.getIdPart());
                     MethodOutcome meth = client.updateResource(encounter);
                     if (meth == null){
                         throw new NullPointerException("MethodOutcome is null");

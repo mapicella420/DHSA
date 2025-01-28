@@ -199,7 +199,7 @@ public class PatientDataTransfer {
 
         //New Encounter for other hospital
         Encounter encounter = new Encounter();
-        encounter.addIdentifier().setValue(encounterId);
+        encounter.addIdentifier().setValue(encounterId+1);
 
         CodeableConcept classConcept = new CodeableConcept();
         classConcept.addCoding(new Coding()
