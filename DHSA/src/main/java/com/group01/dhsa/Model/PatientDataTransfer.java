@@ -123,7 +123,7 @@ public class PatientDataTransfer {
                 Document userDocument = new Document("username", username)
                         .append("passwordHash", BCrypt.hashpw(password, BCrypt.gensalt()))
                         .append("fhirID", patientId)
-                        .append("organization", LoggedUser.getOrganization())
+                        .append("organization", organization)
                         .append("role", "patient")
                         .append("createdAt", new Date());
                 usersCollection.insertOne(userDocument);

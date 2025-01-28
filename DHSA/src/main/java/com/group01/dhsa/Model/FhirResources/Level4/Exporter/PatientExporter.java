@@ -219,7 +219,8 @@ public class PatientExporter implements FhirResourceExporter {
                     if (matches) {
                         Map<String, String> patientData = new HashMap<>();
 
-                        patientData.put("Patient", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
+                        patientData.put("Identifier", patient.getIdentifierFirstRep() != null ? patient.getIdentifierFirstRep().getValue() : "N/A");
+                        patientData.put("Patient", patient.getIdPart() != null ? patient.getIdPart() : "N/A");
 
                         HumanName name = patient.getNameFirstRep();
                         if (name != null) {
