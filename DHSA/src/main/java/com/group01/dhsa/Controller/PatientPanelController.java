@@ -315,6 +315,7 @@ public class PatientPanelController {
 
         // Recupera l'identificativo dell'utente loggato
         String patientIdentifier = LoggedUser.getInstance().getFhirId();
+        System.out.println(patientIdentifier);
         if (patientIdentifier == null || patientIdentifier.isEmpty()) {
             statusLabel.setText("Error: Logged user identifier is missing.");
             return;

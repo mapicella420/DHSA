@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -279,7 +280,7 @@ public class PatientCdaController  implements DataReceiver{
                     String extractedPatientName = parsedDocument.getString("patientName");
                     System.out.println("[DEBUG] Extracted patient name: " + extractedPatientName);
 
-                    if (extractedPatientName.equalsIgnoreCase(normalizedPatientName)) {
+                    if (isNameMatch(extractedPatientName,normalizedPatientName)) {
                         parsedDocument.append("_id", doc.getObjectId("_id")); // Include `_id` nel documento parsato
                         cdaDocuments.add(parsedDocument);
                         System.out.println("[DEBUG] Added document for patient: " + extractedPatientName);
@@ -300,6 +301,29 @@ public class PatientCdaController  implements DataReceiver{
     }
 
 
+    private boolean isNameMatch(String dbPatientName, String inputPatientName) {
+
+        String[] dbParts = dbPatientName.split(" ");
+        String[] inputParts = inputPatientName.split(" ");
+
+
+        if (dbParts.length <= inputParts.length) {
+            for (String dbPart : dbParts) {
+                if (!Arrays.asList(inputParts).contains(dbPart)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        for (String inputPart : inputParts) {
+            if (!Arrays.asList(dbParts).contains(inputPart)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
 
 

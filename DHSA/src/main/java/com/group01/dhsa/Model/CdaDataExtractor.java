@@ -80,7 +80,7 @@ public class CdaDataExtractor {
         data.put("patientGiven", getTextContentByTagName(patientElement, "given"));
         data.put("patientFamily", getTextContentByTagName(patientElement, "family"));
         data.put("patientGender", getAttributeValue(patientElement, "administrativeGenderCode", "displayName"));
-        data.put("patientBirthTime", getAttributeValue(patientElement, "birthTime", "value"));
+        data.put("patientBirthTime", formatDate(getAttributeValue(patientElement, "birthTime", "value")));
         data.put("patientAddress", getTextContentByTagName(addressElement, "streetAddressLine"));
         data.put("patientCountry", getTextContentByTagName(addressElement, "country"));
         data.put("patientState", getTextContentByTagName(addressElement, "state"));

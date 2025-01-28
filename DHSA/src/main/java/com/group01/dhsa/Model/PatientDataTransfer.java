@@ -115,10 +115,7 @@ public class PatientDataTransfer {
             String username = generateUsername(firstName, lastName);
             String password = generatePassword();
 
-            if (userExistsByUsername(usersCollection, username)
-            || userExistsByIdentifier(usersCollection, patientId)) {
-                System.out.println("Username " + username + " già esistente. Skipping.");
-            } else{
+            if (!userExistsByUsername(usersCollection, username) && !userExistsByIdentifier(usersCollection, patientId)) {
                 Document userDocument = new Document("username", username)
                         .append("passwordHash", BCrypt.hashpw(password, BCrypt.gensalt()))
                         .append("fhirID", patientId)
@@ -127,10 +124,13 @@ public class PatientDataTransfer {
                         .append("createdAt", new Date());
                 usersCollection.insertOne(userDocument);
 
+                System.out.println("[INFO] User inserted into MongoDB: " + userDocument.toJson());
+
                 credentialsWriter.write("ID FHIR: " + patientId + ", Username: " + username + ", Password: " + password);
                 credentialsWriter.newLine();
                 credentialsWriter.close();
             }
+
 
         } catch (IOException e) {
             transferAndNotify(false);

@@ -235,6 +235,7 @@ public class DischargePanelController {
                 .where(Patient.FAMILY.matches().value(surname))
                 .and(Patient.GIVEN.matches().values(name))
                 .returnBundle(Bundle.class)
+                .count(20)
                 .execute();
 
         if (response.getEntry().isEmpty()) {

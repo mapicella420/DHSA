@@ -33,7 +33,7 @@ public class FHIRClient {
      * The FhirContext is used to configure the client for FHIR R5 resources.
      */
     private FHIRClient() {
-        FHIR_SERVER_URL = "http://localhost:8080/fhir";
+
         FhirContext fhirContext = FhirContext.forR5();
         this.client = fhirContext.newRestfulGenericClient(FHIR_SERVER_URL);
     }
@@ -284,7 +284,15 @@ public class FHIRClient {
                 .execute();
 
         System.out.println("[DEBUG] Bundle returned: " + bundle);
+        if (!bundle.hasEntry()){
+            bundle = client.search()
+                    .forResource(Patient.class)
+                    .where(Patient.RES_ID.exactly().identifier(patientIdentifier))
+                    .returnBundle(Bundle.class)
+                    .execute();
 
+            System.out.println("[DEBUG] Bundle returned: " + bundle);
+        }
         if (bundle.hasEntry() && !bundle.getEntry().isEmpty()) {
             Resource resource = bundle.getEntryFirstRep().getResource();
             System.out.println("[DEBUG] Resource retrieved: " + resource);
@@ -311,14 +319,22 @@ public class FHIRClient {
                 .execute();
 
         System.out.println("[DEBUG] Bundle returned: " + bundle);
+        if (!bundle.hasEntry()){
+            bundle = client.search()
+                    .forResource(Patient.class)
+                    .where(Patient.RES_ID.exactly().identifier(patientIdentifier))
+                    .returnBundle(Bundle.class)
+                    .execute();
 
+            System.out.println("[DEBUG] Bundle returned: " + bundle);
+        }
         if (bundle.hasEntry() && !bundle.getEntry().isEmpty()) {
             Resource resource = bundle.getEntryFirstRep().getResource();
             System.out.println("[DEBUG] Resource retrieved: " + resource);
 
             if (resource instanceof Patient) {
                 Patient patient = (Patient) resource;
-                return patient.getIdElement().getIdPart();
+                return patient.getIdPart();
             } else {
                 System.err.println("[ERROR] Retrieved resource is not a Patient.");
                 return null;
@@ -326,6 +342,8 @@ public class FHIRClient {
         } else {
             System.err.println("[ERROR] No Patient found for identifier: " + patientIdentifier);
             return null;
+            3
+
         }
     }
 
@@ -359,7 +377,7 @@ public class FHIRClient {
         Bundle bundle = client.search()
                 .forResource(Encounter.class)
                 .where(new ReferenceClientParam("patient").hasId(patient.getIdPart()))
-                .count(100)
+                .count(20)
                 .returnBundle(Bundle.class)
                 .execute();
 
